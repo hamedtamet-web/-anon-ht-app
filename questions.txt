@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الأسئلة | Anon</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics-compat.js"></script>
+    <script src="lang.js"></script>
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+
+    <style>
+        :root {
+            --primary: #f80566;
+            --bg: #050505;
+            --card: rgba(13,13,13,0.9);
+            --text: #ffffff;
+            --dim: #888;
+            --border: rgba(255,255,255,0.06);
+            --gold: #ffcc00;
+            --admin-red: #ff002b;
+            --verify-blue: #00bfff;
+            --shout-color: #f80566;
+            --shout-bg: rgba(248,5,102,0.08);
+            --shout-border: rgba(248,5,102,0.2);
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; margin: 0; padding-bottom: 100px; }
+
+        /* ═══ SWAL ═══ */
+        .swal-popup  { border-radius:24px!important; border:1px solid rgba(255,255,255,0.07)!important; box-shadow:0 20px 60px rgba(0,0,0,0.8)!important; backdrop-filter:blur(20px)!important; }
+        .swal-title  { font-size:17px!important; font-weight:900!important; color:#fff!important; }
+        .swal-html   { font-size:13px!important; color:#888!important; font-weight:600!important; line-height:1.6!important; }
+        .swal-confirm{ background:linear-gradient(135deg,#f80566,#c0004e)!important; border-radius:50px!important; font-family:'Cairo',sans-serif!important; font-weight:800!important; font-size:13px!important; padding:10px 28px!important; box-shadow:0 4px 15px rgba(248,5,102,0.35)!important; border:none!important; }
+        .swal-confirm-danger { background:linear-gradient(135deg,#ff4b4b,#c00)!important; border-radius:50px!important; font-family:'Cairo',sans-serif!important; font-weight:800!important; font-size:13px!important; padding:10px 28px!important; box-shadow:0 4px 15px rgba(255,75,75,0.35)!important; border:none!important; }
+        .swal-cancel { background:rgba(255,255,255,0.06)!important; color:#aaa!important; border-radius:50px!important; font-family:'Cairo',sans-serif!important; font-weight:800!important; font-size:13px!important; padding:10px 28px!important; border:1px solid rgba(255,255,255,0.08)!important; }
+        .swal-input-field { background:#0e0e0e!important; border:1px solid rgba(255,255,255,0.08)!important; border-radius:14px!important; color:#fff!important; font-family:'Cairo',sans-serif!important; font-size:13px!important; }
+
+        /* ═══ HEADER ═══ */
+        header {
+            padding: 10px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(5,5,5,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-img { width: 35px; height: auto; }
+        .lang-select-global {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            color: white; padding: 5px 10px; border-radius: 50px;
+            font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Cairo';
+            appearance: none; -webkit-appearance: none;
+        }
+        .coins-pill {
+            background: rgba(255,204,0,0.1); padding: 5px 12px;
+            border-radius: 50px; border: 1px solid rgba(255,204,0,0.2);
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        /* ═══ LAYOUT ═══ */
+        .container { padding: 12px; max-width: 550px; margin: 0 auto; }
+
+        /* ═══ FILTER TABS ═══ */
+        .filter-tabs {
+            display: flex; background: rgba(255,255,255,0.03);
+            padding: 4px; border-radius: 16px; margin-bottom: 16px;
+            border: 1px solid var(--border); gap: 4px;
+        }
+        .tab-btn {
+            flex: 1; border: none; background: transparent; color: var(--dim);
+            padding: 8px 5px; border-radius: 12px;
+            font-family: 'Cairo'; font-weight: 700; font-size: 11px; cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .tab-badge {
+            background: rgba(255,255,255,0.2); color: inherit;
+            font-size: 9px; font-weight: 900; padding: 1px 6px;
+            border-radius: 20px; min-width: 18px; text-align: center;
+            display: none;
+        }
+        .tab-badge.show { display: inline-block; }
+
+        /* ═══ QUESTION CARD ═══ */
+        .ask-card {
+            background: var(--card);
+            backdrop-filter: blur(15px);
+            border-radius: 18px; margin-bottom: 12px;
+            border: 1px solid var(--border); overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .ask-body { padding: 14px 16px; }
+        .ask-label {
+            font-size: 9px; font-weight: 900; padding: 2px 9px;
+            border-radius: 50px; margin-bottom: 10px; display: inline-block;
+        }
+        .label-personal { background: rgba(248,5,102,0.1); color: var(--primary); border: 1px solid rgba(248,5,102,0.2); }
+        .ask-text { font-size: 14px; font-weight: 600; line-height: 1.55; color: #fff; margin: 0; }
+
+        .sender-info {
+            display: flex; align-items: center; gap: 8px;
+            margin-top: 10px; padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .sender-avatar-wrap {
+            position: relative; width: 32px; height: 32px; flex-shrink: 0;
+        }
+        .sender-img {
+            width: 32px; height: 32px; border-radius: 50%;
+            object-fit: cover; border: 2px solid var(--border);
+            display: block;
+        }
+        .sender-avatar-wrap.admin-glow .sender-img { border-color: var(--admin-red); box-shadow: 0 0 8px rgba(255,0,43,0.6); }
+        .sender-avatar-wrap.verify-glow .sender-img { border-color: var(--verify-blue); box-shadow: 0 0 8px rgba(0,191,255,0.5); }
+
+        .sender-text-col { display: flex; flex-direction: column; }
+        .sender-name-row { display: flex; align-items: center; gap: 4px; }
+        .sender-name { font-size: 12px; font-weight: 800; color: #fff; }
+        .sender-user { font-size: 9px; color: var(--dim); margin-top: 1px; }
+
+        .badge-icon-sm {
+            width: 13px; height: 13px; border-radius: 50%;
+            vertical-align: middle; display: inline-block;
+        }
+        img.admin-badge-sm {
+            filter: drop-shadow(0 0 3px rgba(255,0,43,0.7));
+            animation: admin-badge-pulse 2s infinite ease-in-out;
+        }
+        img.verify-badge-sm {
+            filter: drop-shadow(0 0 3px rgba(0,191,255,0.6));
+            animation: user-badge-pulse 2s infinite ease-in-out;
+        }
+        @keyframes admin-badge-pulse {
+            0%,100% { transform:scale(1); filter:drop-shadow(0 0 3px rgba(255,0,43,0.6)); opacity:.9; }
+            50%      { transform:scale(1.15); filter:drop-shadow(0 0 8px rgba(255,0,43,0.9)); opacity:1; }
+        }
+        @keyframes user-badge-pulse {
+            0%,100% { transform:scale(1); filter:drop-shadow(0 0 3px rgba(0,191,255,0.5)); opacity:.8; }
+            50%      { transform:scale(1.15); filter:drop-shadow(0 0 8px rgba(0,191,255,0.8)); opacity:1; }
+        }
+
+        .anon-shout-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 10px; color: #666; font-weight: 700; margin-top: 8px;
+        }
+
+        .ask-footer {
+            display: flex; padding: 10px 14px;
+            background: rgba(255,255,255,0.02); gap: 8px;
+            border-top: 1px solid var(--border); align-items: center;
+        }
+        .ask-btn {
+            border: none; border-radius: 12px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.2s, transform 0.15s; font-family: 'Cairo';
+        }
+        .ask-btn:active { transform: scale(0.97); }
+        .ask-btn.reply {
+            flex: 1; padding: 10px; font-weight: 800; font-size: 12px;
+            gap: 7px; background: var(--primary); color: white;
+        }
+        .ask-btn.icon-only {
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.05);
+            color: #666; border: 1px solid var(--border);
+            font-size: 13px;
+        }
+        .ask-btn.icon-only:hover { color: #ff4b4b; border-color: rgba(255,75,75,0.3); }
+        .ask-btn.report-btn:hover { color: var(--gold); border-color: rgba(255,204,0,0.3); }
+
+        .reply-box {
+            display: none; padding: 14px;
+            border-top: 1px solid var(--border);
+            background: rgba(0,0,0,0.3);
+        }
+        .reply-textarea {
+            width: 100%; background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border); border-radius: 12px;
+            padding: 12px; color: #fff; font-family: 'Cairo';
+            margin-bottom: 8px; min-height: 70px; resize: none;
+            font-size: 13px; transition: border-color 0.2s;
+        }
+        .reply-textarea:focus { border-color: rgba(248,5,102,0.35); }
+        .reply-send-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 10px; border-radius: 12px; width: 100%;
+            font-weight: 900; cursor: pointer; font-family: 'Cairo'; font-size: 13px;
+        }
+
+        /* ═══ SHOUT INBOX CARD ═══ */
+        .shout-inbox-card {
+            background: var(--card);
+            border-radius: 18px; margin-bottom: 12px;
+            border: 1px solid var(--shout-border);
+            overflow: hidden; animation: slideUp 0.3s ease;
+            position: relative;
+        }
+        .shout-inbox-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--shout-color), transparent);
+        }
+        [dir="ltr"] .shout-inbox-card::before {
+            background: linear-gradient(90deg, transparent, var(--shout-color));
+        }
+        .shout-inbox-body { padding: 14px 16px; }
+        .shout-label {
+            font-size: 9px; font-weight: 900; padding: 2px 9px;
+            border-radius: 50px; margin-bottom: 10px; display: inline-block;
+            background: var(--shout-bg); color: var(--shout-color);
+            border: 1px solid var(--shout-border);
+        }
+
+        .shout-sender-row {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+        }
+        .shout-avatar-wrap {
+            position: relative; width: 36px; height: 36px; flex-shrink: 0;
+        }
+        .shout-sender-img {
+            width: 36px; height: 36px; border-radius: 50%;
+            object-fit: cover; border: 2px solid var(--shout-border);
+            display: block;
+        }
+        .shout-avatar-wrap.admin-glow .shout-sender-img { border-color: var(--admin-red); box-shadow: 0 0 8px rgba(255,0,43,0.6); }
+        .shout-avatar-wrap.verify-glow .shout-sender-img { border-color: var(--verify-blue); box-shadow: 0 0 8px rgba(0,191,255,0.5); }
+
+        .shout-sender-text { display: flex; flex-direction: column; }
+        .shout-sender-name-row { display: flex; align-items: center; gap: 4px; }
+        .shout-sender-name { font-size: 12px; font-weight: 800; color: #fff; }
+        .shout-sender-meta { font-size: 9px; color: var(--dim); margin-top: 1px; }
+
+        .shout-inbox-text {
+            font-size: 14px; font-weight: 600; line-height: 1.6;
+            color: #f0f0f0; margin: 0 0 4px;
+        }
+
+        .shout-inbox-footer {
+            display: flex; padding: 10px 14px;
+            background: rgba(255,255,255,0.015);
+            gap: 8px; border-top: 1px solid var(--border);
+            align-items: center;
+        }
+        .shout-reply-btn {
+            flex: 1;
+            background: var(--shout-bg); color: var(--shout-color);
+            border: 1px solid var(--shout-border);
+            padding: 9px 13px; border-radius: 12px;
+            font-size: 12px; font-weight: 800; cursor: pointer;
+            font-family: 'Cairo'; display: flex; align-items: center;
+            justify-content: center; gap: 6px;
+            transition: background 0.2s;
+        }
+        .shout-reply-btn:hover { background: rgba(248,5,102,0.15); }
+
+        .shout-icon-btn {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: rgba(255,255,255,0.05); color: #666;
+            border: 1px solid var(--border); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; transition: color 0.2s, border-color 0.2s;
+            flex-shrink: 0;
+        }
+        .shout-icon-btn:hover { color: #ff4b4b; border-color: rgba(255,75,75,0.3); }
+        .shout-icon-btn.report-btn:hover { color: var(--gold); border-color: rgba(255,204,0,0.3); }
+
+        .shout-reply-box {
+            display: none; padding: 14px;
+            border-top: 1px solid var(--shout-border);
+            background: rgba(248,5,102,0.03);
+        }
+        .shout-reply-textarea {
+            width: 100%; background: rgba(255,255,255,0.04);
+            border: 1px solid var(--shout-border); border-radius: 12px;
+            padding: 12px; color: #fff; font-family: 'Cairo';
+            margin-bottom: 8px; min-height: 70px; resize: none;
+            font-size: 13px; transition: border-color 0.2s;
+        }
+        .shout-reply-textarea:focus { border-color: rgba(248,5,102,0.4); }
+        .shout-reply-send {
+            background: var(--shout-color); color: white; border: none;
+            padding: 10px; border-radius: 12px; width: 100%;
+            font-weight: 900; cursor: pointer; font-family: 'Cairo'; font-size: 13px;
+        }
+
+        /* ═══ BOTTOM NAV ═══ */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(10,10,10,0.96);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            display: flex; justify-content: space-around;
+            padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000;
+        }
+        .nav-item {
+            text-decoration: none; display: flex; flex-direction: column;
+            align-items: center; color: #555; font-size: 10px; font-weight: 700; position: relative;
+        }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); }
+        .badge-nav {
+            position: absolute; top: -5px; right: -8px;
+            background: var(--primary); color: white;
+            font-size: 9px; min-width: 16px; height: 16px;
+            border-radius: 50%; display: none; align-items: center;
+            justify-content: center; border: 2px solid var(--bg); font-weight: 900;
+        }
+
+        /* ═══ EMPTY ═══ */
+        .empty-state { text-align: center; padding: 60px 20px; color: #333; }
+        .empty-state i { font-size: 44px; display: block; margin-bottom: 12px; }
+        .empty-state p { font-size: 13px; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="images/logo.png" class="logo-img" alt="Anon Logo" width="35" height="35">
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div class="coins-pill">
+            <span id="userCoins" style="color:var(--gold);font-size:12px;font-weight:800;">0.00</span>
+            <i class="fa-solid fa-coins" style="color:var(--gold);font-size:10px;" aria-hidden="true"></i>
+        </div>
+        <!-- زر اللغة المشترك — نفس index.html -->
+        
+    </div>
+</header>
+
+<div class="container">
+    <div class="filter-tabs">
+        <button class="tab-btn active" id="btn-filterAll" onclick="setFilter('all',this)">
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+            <span id="txt-tabAll">الكل</span>
+            <span class="tab-badge" id="badge-all"></span>
+        </button>
+        <button class="tab-btn" id="btn-filterPersonal" onclick="setFilter('personal',this)">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            <span id="txt-tabPersonal">شخصي</span>
+            <span class="tab-badge" id="badge-personal"></span>
+        </button>
+        <button class="tab-btn" id="btn-filterShout" onclick="setFilter('shout',this)">
+            <i class="fa-solid fa-broadcast-tower" aria-hidden="true"></i>
+            <span id="txt-tabShout">شاوت</span>
+            <span class="tab-badge" id="badge-shout"></span>
+        </button>
+    </div>
+
+    <div id="questionsList"></div>
+</div>
+
+<nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <a href="index.html"         class="nav-item"><i class="fa-solid fa-house" aria-hidden="true"></i><span id="nav-home">الرئيسية</span></a>
+    <a href="questions.html"     class="nav-item active" aria-current="page" style="position:relative;">
+        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+        <span id="nav-ques">الأسئلة</span>
+        <div id="qBadge" class="badge-nav" aria-label="رسائل جديدة">0</div>
+    </a>
+    <a href="quiet-corner.html"  class="nav-item"><i class="fa-solid fa-leaf" aria-hidden="true"></i><span id="nav-quiet">سكينة</span></a>
+    <a href="game.html"          class="nav-item"><i class="fa-solid fa-ghost" aria-hidden="true"></i><span id="nav-ghost">طيف</span></a>
+    <a href="profile.html" id="navProfileLink" class="nav-item"><i class="fa-solid fa-user" aria-hidden="true"></i><span id="nav-profile">بروفايلي</span></a>
+</nav>
+
+<audio id="sndQuestion" src="sounds/question.wav" preload="none"></audio>
+
+<script>
+'use strict';
+firebase.initializeApp(APP_CONFIG.firebase);
+firebase.analytics();;
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+let currentUserId     = null;
+let currentFilter     = 'all';
+let lastQuestionsSnap = null;
+let lastShoutsSnap    = null;
+let isInitialLoad     = true;
+let lastTotalCount    = 0;
+
+/* ══ اللغة الحالية ══ */
+let currentLang = LangManager.get();
+const t = k => LangManager.t(k);
+
+/* ══ Swal config ══ */
+const swalBase = {
+    background: 'linear-gradient(145deg,#0d0d0d,#111)',
+    color: '#fff', fontFamily: 'Cairo, sans-serif',
+    customClass: {
+        popup: 'swal-popup', title: 'swal-title',
+        htmlContainer: 'swal-html', confirmButton: 'swal-confirm',
+        cancelButton: 'swal-cancel', input: 'swal-input-field',
+    }
+};
+
+const toast = (icon, text, timer = 2000) => {
+    if (typeof Swal === 'undefined') return;
+    Swal.fire({
+        ...swalBase, icon, text, timer,
+        toast: true, position: 'bottom', showConfirmButton: false, timerProgressBar: true,
+        iconColor: icon==='success' ? '#00e676' : icon==='error' ? '#f80566' : icon==='warning' ? '#ffcc00' : '#fff',
+    });
+};
+
+const confirmSwal = (title, text, confirmTxt, dangerMode = false) => {
+    if (typeof Swal === 'undefined') return Promise.resolve({ isConfirmed: confirm(text) });
+    return Swal.fire({
+        ...swalBase,
+        icon: dangerMode ? 'warning' : 'question',
+        iconColor: dangerMode ? '#ff4b4b' : '#f80566',
+        title, text, showCancelButton: true,
+        confirmButtonText: confirmTxt, cancelButtonText: t('cancelBtn'),
+        customClass: {
+            ...swalBase.customClass,
+            confirmButton: dangerMode ? 'swal-confirm-danger' : 'swal-confirm'
+        }
+    });
+};
+
+/* ══ Helpers ══ */
+const _esc = document.createElement('div');
+function safe(s) { _esc.textContent = String(s ?? ''); return _esc.innerHTML; }
+
+function timeAgo(ts) {
+    if (!ts) return '';
+    const m = Math.floor((Date.now() - ts.seconds * 1000) / 60000);
+    if (m < 1)  return currentLang === 'ar' ? 'الآن' : 'Now';
+    if (m < 60) return currentLang === 'ar' ? m+'د'  : m+'m';
+    const h = Math.floor(m / 60);
+    if (h < 24) return currentLang === 'ar' ? h+'س'  : h+'h';
+    return currentLang === 'ar' ? Math.floor(h/24)+'ي' : Math.floor(h/24)+'d';
+}
+
+const forbiddenWords = ['كلمة_سيئة_1','كلمة_سيئة_2','badword1','badword2'];
+function filterProfanity(text) {
+    if (!text) return '';
+    let r = text;
+    forbiddenWords.forEach(w => { r = r.replace(new RegExp(w, 'gi'), '****'); });
+    return r;
+}
+
+function safeImg(url, fallback = 'images/user.png') {
+    if (!url) return fallback;
+    try { return new URL(url).protocol === 'https:' ? url : fallback; } catch { return fallback; }
+}
+
+/* ══════════════════════════════════════
+   تطبيق اللغة على عناصر الصفحة الثابتة
+══════════════════════════════════════ */
+function applyLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
+
+    /* Tabs */
+    const tabAll      = document.getElementById('txt-tabAll');
+    const tabPersonal = document.getElementById('txt-tabPersonal');
+    const tabShout    = document.getElementById('txt-tabShout');
+    if (tabAll)      tabAll.textContent      = t('tabAll');
+    if (tabPersonal) tabPersonal.textContent = t('tabPersonal');
+    if (tabShout)    tabShout.textContent    = t('tabShout');
+
+    /* Bottom Nav */
+    const navHome    = document.getElementById('nav-home');
+    const navQues    = document.getElementById('nav-ques');
+    const navQuiet   = document.getElementById('nav-quiet');
+    const navGhost   = document.getElementById('nav-ghost');
+    const navProfile = document.getElementById('nav-profile');
+    if (navHome)    navHome.textContent    = t('nav_home');
+    if (navQues)    navQues.textContent    = t('nav_qs');
+    if (navQuiet)   navQuiet.textContent   = t('nav_skina');
+    if (navGhost)   navGhost.textContent   = t('nav_tayf');
+    if (navProfile) navProfile.textContent = t('nav_profile');
+
+    /* زر اللغة نفسه */
+    document.querySelectorAll('.lang-select-global').forEach(sel => { sel.value = lang; });
+}
+
+/* ══ استماع لتغيير اللغة من LangManager ══ */
+document.addEventListener('langChanged', (e) => {
+    const lang = e.detail?.lang || LangManager.get();
+    applyLanguage(lang);
+    renderAll();
+});
+
+/* ══════════════════════════════════════
+   AUTH
+══════════════════════════════════════ */
+auth.onAuthStateChanged(user => {
+    if (!user) { location.href = 'signin.html'; return; }
+    currentUserId = user.uid;
+    document.getElementById('navProfileLink').href = `profile.html?id=${user.uid}`;
+
+    db.collection('users').doc(user.uid).onSnapshot(doc => {
+        if (doc.exists) {
+            document.getElementById('userCoins').textContent = (doc.data().anonCoins || 0).toFixed(2);
+        }
+    });
+
+    /* ══ الأسئلة الشخصية ══ */
+    db.collection('questions')
+    .where('receiverId', '==', user.uid)
+    .where('status', '==', 'pending')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snap => {
+        lastQuestionsSnap = snap;
+        updateBadges();
+        checkNewMessages();
+        renderAll();
+    }, err => console.error('Questions error:', err));
+
+    /* ══ الشاوتات الواردة (من الآخرين فقط) ══ */
+    db.collection('shouts')
+        .orderBy('createdAt', 'desc')
+        .limit(200)
+        .onSnapshot(snap => {
+            const filtered = {
+                docs: snap.docs.filter(d => {
+                    const data = d.data();
+                    return data.ownerId !== user.uid && data.senderId !== user.uid;
+                })
+            };
+            lastShoutsSnap = filtered;
+            updateBadges();
+            renderAll();
+        }, err => console.error('Shouts error:', err));
+
+    /* تطبيق اللغة المحفوظة عند أول تحميل */
+    applyLanguage(LangManager.get());
+});
+
+/* ══════════════════════════════════════
+   BADGES
+══════════════════════════════════════ */
+function updateBadges() {
+    let qCount = 0, sCount = 0;
+    if (lastQuestionsSnap) {
+        lastQuestionsSnap.docs.forEach(d => { if (d.data().status === 'pending') qCount++; });
+    }
+    if (lastShoutsSnap) {
+        lastShoutsSnap.docs.forEach(d => { if (!d.data().answeredAt) sCount++; });
+    }
+    const total = qCount + sCount;
+    const navBadge = document.getElementById('qBadge');
+    navBadge.textContent   = total;
+    navBadge.style.display = total > 0 ? 'flex' : 'none';
+    setBadge('badge-all',      total);
+    setBadge('badge-personal', qCount);
+    setBadge('badge-shout',    sCount);
+}
+
+function setBadge(id, count) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = count;
+    el.classList.toggle('show', count > 0);
+}
+
+function checkNewMessages() {
+    if (!lastQuestionsSnap) return;
+    const pendingCount = lastQuestionsSnap.docs.filter(d => d.data().status === 'pending').length;
+    if (!isInitialLoad && pendingCount > lastTotalCount) {
+        document.getElementById('sndQuestion')?.play().catch(() => {});
+        toast('success', t('newMsg'));
+    }
+    lastTotalCount = pendingCount;
+    isInitialLoad  = false;
+}
+
+/* ══════════════════════════════════════
+   RENDER
+══════════════════════════════════════ */
+function getMergedItems() {
+    const items = [];
+    if (lastQuestionsSnap) {
+        lastQuestionsSnap.docs.forEach(doc => {
+            const data = doc.data();
+            items.push({ type:'question', id:doc.id, data, displayText: data.text||data.question||'', ts: data.createdAt?.seconds||0 });
+        });
+    }
+    if (lastShoutsSnap) {
+        lastShoutsSnap.docs.forEach(doc => {
+            const data = doc.data();
+            items.push({ type:'shout', id:doc.id, data, displayText: data.text||'', ts: data.createdAt?.seconds||0 });
+        });
+    }
+    items.sort((a, b) => b.ts - a.ts);
+    return items;
+}
+
+function renderAll() {
+    const list  = document.getElementById('questionsList');
+    let   items = getMergedItems();
+    if (currentFilter === 'personal') items = items.filter(i => i.type === 'question');
+    if (currentFilter === 'shout')    items = items.filter(i => i.type === 'shout');
+
+    if (items.length === 0) {
+        const emptyKey = currentFilter==='personal' ? 'emptyPersonal' : currentFilter==='shout' ? 'emptyShout' : 'emptyAll';
+        const icons    = { personal:'fa-envelope', shout:'fa-broadcast-tower', all:'fa-inbox' };
+        const iconKey  = currentFilter==='personal' ? 'personal' : currentFilter==='shout' ? 'shout' : 'all';
+        list.innerHTML = `<div class="empty-state"><i class="fa-solid ${icons[iconKey]}" aria-hidden="true"></i><p>${safe(t(emptyKey))}</p></div>`;
+        return;
+    }
+
+    const frag = document.createDocumentFragment();
+    items.forEach(item => {
+        const el = item.type === 'question' ? buildQuestionCard(item) : buildShoutCard(item);
+        if (el) frag.appendChild(el);
+    });
+    list.innerHTML = '';
+    list.appendChild(frag);
+}
+
+/* ══════════════════════════════════════
+   بناء صف الاسم + الشارة
+══════════════════════════════════════ */
+function buildSenderElements(opts) {
+    const { avatarUrl, name, username, isAdmin, isVerified, imgClass, wrapClass } = opts;
+
+    const avatarWrap = document.createElement('div');
+    avatarWrap.className = wrapClass + (isAdmin ? ' admin-glow' : isVerified ? ' verify-glow' : '');
+
+    const img = document.createElement('img');
+    img.src       = safeImg(avatarUrl);
+    img.className = imgClass;
+    img.alt       = '';
+    img.loading   = 'lazy';
+    img.onerror   = () => { img.src = 'images/user.png'; };
+    avatarWrap.appendChild(img);
+
+    const nameRow = document.createElement('div');
+    nameRow.style.cssText = 'display:flex;align-items:center;gap:4px;flex-wrap:wrap;';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.style.cssText = 'font-size:12px;font-weight:800;color:#fff;';
+    nameSpan.textContent   = name || '';
+    nameRow.appendChild(nameSpan);
+
+    if (isAdmin) {
+        const badge = document.createElement('img');
+        badge.src       = 'images/admin-verified-logo.png';
+        badge.className = 'badge-icon-sm admin-badge-sm';
+        badge.alt       = '';
+        nameRow.appendChild(badge);
+    } else if (isVerified) {
+        const badge = document.createElement('img');
+        badge.src       = 'images/verified-logo.png';
+        badge.className = 'badge-icon-sm verify-badge-sm';
+        badge.alt       = '';
+        nameRow.appendChild(badge);
+    }
+
+    const userLine = document.createElement('div');
+    userLine.style.cssText = 'font-size:9px;color:var(--dim);margin-top:1px;';
+    userLine.textContent   = username ? '@' + username : '';
+
+    return { avatarWrap, nameRow, userLine };
+}
+
+/* ══════════════════════════════════════
+   QUESTION CARD
+══════════════════════════════════════ */
+function buildQuestionCard(item) {
+    const q       = item.data;
+    const isAnon  = q.isAnonymous !== false;
+    const isAdmin = (q.senderUsername || '').toUpperCase() === 'HT';
+    const isVerif = !!(q.senderIsVerified || q.senderIsPremium);
+
+    const div = document.createElement('div');
+    div.className = 'ask-card';
+
+    const body = document.createElement('div');
+    body.className = 'ask-body';
+
+    const label = document.createElement('span');
+    label.className   = 'ask-label label-personal';
+    label.textContent = t('personalLabel');
+
+    const askText = document.createElement('p');
+    askText.className   = 'ask-text';
+    askText.textContent = filterProfanity(item.displayText);
+
+    body.appendChild(label);
+    body.appendChild(askText);
+
+    if (!isAnon) {
+        const senderRow = document.createElement('div');
+        senderRow.className = 'sender-info';
+        senderRow.style.cursor = 'pointer';
+        senderRow.onclick = () => {
+        if (q.senderId) {
+        window.location.href = `profile.html?id=${q.senderId}`;
+    }
+};
+        const { avatarWrap, nameRow, userLine } = buildSenderElements({
+            avatarUrl:  q.senderAvatar,
+            name:       q.senderName,
+            username:   q.senderUsername,
+            isAdmin,
+            isVerified: isVerif,
+            imgClass:   'sender-img',
+            wrapClass:  'sender-avatar-wrap',
+        });
+
+        const textCol = document.createElement('div');
+        textCol.className = 'sender-text-col';
+        textCol.appendChild(nameRow);
+        textCol.appendChild(userLine);
+
+        senderRow.appendChild(avatarWrap);
+        senderRow.appendChild(textCol);
+        body.appendChild(senderRow);
+    } else {
+        const anonBadge = document.createElement('div');
+        anonBadge.className = 'anon-shout-badge';
+        anonBadge.innerHTML = `<i class="fa-solid fa-mask" aria-hidden="true"></i> ${safe(t('anonLabel'))}`;
+        body.appendChild(anonBadge);
+    }
+
+    const footer = document.createElement('div');
+    footer.className = 'ask-footer';
+
+    const replyBtn = document.createElement('button');
+    replyBtn.className = 'ask-btn reply';
+    replyBtn.innerHTML = `<i class="fa-solid fa-feather-pointed" aria-hidden="true"></i> ${safe(t('replyPublish'))}`;
+    replyBtn.onclick   = () => toggleBox(`qbox-${item.id}`);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className     = 'ask-btn icon-only';
+    deleteBtn.setAttribute('aria-label', 'حذف');
+    deleteBtn.innerHTML     = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+    deleteBtn.onclick       = () => handleDelete(item.id, 'question');
+
+    const reportBtn = document.createElement('button');
+    reportBtn.className     = 'ask-btn icon-only report-btn';
+    reportBtn.setAttribute('aria-label', 'إبلاغ');
+    reportBtn.innerHTML     = '<i class="fa-solid fa-flag" aria-hidden="true"></i>';
+    reportBtn.onclick = () => handleReport(item.id, 'question', q.senderId || null);
+    footer.appendChild(replyBtn);
+    footer.appendChild(deleteBtn);
+    footer.appendChild(reportBtn);
+
+    const replyBox = document.createElement('div');
+    replyBox.className = 'reply-box';
+    replyBox.id        = `qbox-${item.id}`;
+
+    const ta = document.createElement('textarea');
+    ta.className   = 'reply-textarea';
+    ta.id          = `qin-${item.id}`;
+    ta.placeholder = t('replyPlaceholder');
+    ta.maxLength   = 500;
+
+    const sendBtn = document.createElement('button');
+    sendBtn.className   = 'reply-send-btn';
+    sendBtn.textContent = t('publishAnswer');
+    sendBtn.onclick     = () => sendQuestionReply(item.id);
+
+    replyBox.appendChild(ta);
+    replyBox.appendChild(sendBtn);
+
+    div.appendChild(body);
+    div.appendChild(footer);
+    div.appendChild(replyBox);
+    return div;
+}
+
+/* ══════════════════════════════════════
+   SHOUT INBOX CARD
+══════════════════════════════════════ */
+function buildShoutCard(item) {
+    const s       = item.data;
+    const isAnon  = s.isAnonymous === true;
+    const senderId = s.senderId || s.ownerId || null;
+    const isAdmin = (s.senderUsername || '').toUpperCase() === 'HT';
+    const isVerif = !!(s.senderIsVerified || s.senderIsPremium);
+    const timeStr = timeAgo(s.createdAt);
+
+    const div = document.createElement('div');
+    div.className = 'shout-inbox-card';
+
+    const body = document.createElement('div');
+    body.className = 'shout-inbox-body';
+
+    const topRow = document.createElement('div');
+    topRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;';
+    const labelEl = document.createElement('span');
+    labelEl.className   = 'shout-label';
+    labelEl.textContent = t('shoutLabel');
+    const timeEl = document.createElement('span');
+    timeEl.style.cssText = 'font-size:10px;color:var(--dim);';
+    timeEl.textContent   = timeStr;
+    topRow.appendChild(labelEl);
+    topRow.appendChild(timeEl);
+    body.appendChild(topRow);
+
+    if (!isAnon) {
+        const senderRow = document.createElement('div');
+        senderRow.className = 'shout-sender-row';
+        senderRow.style.cursor = 'pointer';
+        senderRow.onclick = () => {
+            if (senderId) {
+    window.location.href = `profile.html?id=${senderId}`;
+}
+        };
+
+        const { avatarWrap, nameRow, userLine } = buildSenderElements({
+            avatarUrl:  s.senderAvatar || s.ownerAvatar || '',
+name:       s.senderName   || s.ownerName   || '',
+username:   s.senderUsername || s.ownerUsername || '',
+            isAdmin,
+            isVerified: isVerif,
+            imgClass:   'shout-sender-img',
+            wrapClass:  'shout-avatar-wrap',
+        });
+
+        const textCol = document.createElement('div');
+        textCol.className = 'shout-sender-text';
+        textCol.appendChild(nameRow);
+
+        const metaLine = document.createElement('div');
+        metaLine.style.cssText = 'font-size:9px;color:var(--dim);margin-top:1px;';
+        const uname = s.senderUsername || s.ownerUsername || '';
+metaLine.textContent = (uname ? '@'+uname+' · ' : '') + t('sentToAll');
+        textCol.appendChild(metaLine);
+
+        senderRow.appendChild(avatarWrap);
+        senderRow.appendChild(textCol);
+        body.appendChild(senderRow);
+    }
+
+    const shoutText = document.createElement('p');
+    shoutText.className   = 'shout-inbox-text';
+    shoutText.textContent = filterProfanity(item.displayText);
+    body.appendChild(shoutText);
+
+    const footer = document.createElement('div');
+    footer.className = 'shout-inbox-footer';
+
+    const replyBtn = document.createElement('button');
+    replyBtn.className = 'shout-reply-btn';
+    replyBtn.innerHTML = `<i class="fa-solid fa-reply" aria-hidden="true"></i> ${safe(t('shoutReplyBtn'))}`;
+    replyBtn.onclick   = () => toggleBox(`sbox-${item.id}`);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'shout-icon-btn';
+    deleteBtn.setAttribute('aria-label', 'حذف');
+    deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+    deleteBtn.onclick   = () => handleDelete(item.id, 'shout');
+
+    const reportBtn = document.createElement('button');
+    reportBtn.className = 'shout-icon-btn report-btn';
+    reportBtn.setAttribute('aria-label', 'إبلاغ');
+    reportBtn.innerHTML = '<i class="fa-solid fa-flag" aria-hidden="true"></i>';
+    reportBtn.onclick   = () => handleReport(item.id, 'shout', s.senderId || null);
+
+    footer.appendChild(replyBtn);
+    footer.appendChild(deleteBtn);
+    footer.appendChild(reportBtn);
+
+    const replyBox = document.createElement('div');
+    replyBox.className = 'shout-reply-box';
+    replyBox.id        = `sbox-${item.id}`;
+
+    const ta = document.createElement('textarea');
+    ta.className   = 'shout-reply-textarea';
+    ta.id          = `sin-${item.id}`;
+    ta.placeholder = t('shoutReplyPlaceholder');
+    ta.maxLength   = 300;
+
+    const sendBtn = document.createElement('button');
+    sendBtn.className   = 'shout-reply-send';
+    sendBtn.textContent = t('sendShoutReply');
+    sendBtn.onclick     = () => sendShoutReply(item.id);
+
+    replyBox.appendChild(ta);
+    replyBox.appendChild(sendBtn);
+
+    div.appendChild(body);
+    div.appendChild(footer);
+    div.appendChild(replyBox);
+    return div;
+}
+
+/* ══════════════════════════════════════
+   TOGGLE BOX
+══════════════════════════════════════ */
+function toggleBox(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    if (el.style.display === 'block') {
+        const ta = el.querySelector('textarea');
+        if (ta) setTimeout(() => ta.focus(), 100);
+    }
+}
+
+/* ══════════════════════════════════════
+   SEND QUESTION REPLY
+══════════════════════════════════════ */
+async function sendQuestionReply(id) {
+    const input   = document.getElementById(`qin-${id}`);
+    const rawText = input?.value?.trim();
+    if (!rawText) return toast('warning', t('replyEmpty'));
+    const text = filterProfanity(rawText);
+
+    try {
+        const [qDoc, uDoc] = await Promise.all([
+            db.collection('questions').doc(id).get(),
+            db.collection('users').doc(currentUserId).get()
+        ]);
+        const qData = qDoc.data() || {};
+        const uData = uDoc.data() || {};
+
+        await db.collection('answers').add({
+            questionId:   id,
+            questionText: qData.text || qData.question || '',
+            reply:        text,
+            userId:       currentUserId,
+            username:     uData.username || '',
+            isVerified: !!(uData.username?.toUpperCase() === 'HT' || uData.isVerified || uData.isPremium),
+            avatar:       uData.avatarUrl || '',
+            answeredAt:   firebase.firestore.FieldValue.serverTimestamp(),
+            likes:        []
+        });
+        await db.collection('questions').doc(id).update({ status: 'answered' });
+        await db.collection('users').doc(currentUserId).update({
+            answersCount: firebase.firestore.FieldValue.increment(1)
+        });
+        toast('success', t('replySuccess'));
+        toggleBox(`qbox-${id}`);
+        if (input) input.value = '';
+    } catch (e) {
+        console.error('sendQuestionReply:', e);
+        toast('error', t('connError'));
+    }
+}
+
+/* ══════════════════════════════════════
+   SEND SHOUT REPLY
+══════════════════════════════════════ */
+async function sendShoutReply(shoutId) {
+    const input   = document.getElementById(`sin-${shoutId}`);
+    const rawText = input?.value?.trim();
+    if (!rawText) return toast('warning', t('replyEmpty'));
+    const text = filterProfanity(rawText);
+
+    try {
+        const [shoutDoc, uDoc] = await Promise.all([
+            db.collection('shouts').doc(shoutId).get(),
+            db.collection('users').doc(currentUserId).get()
+        ]);
+        const sData = shoutDoc.data() || {};
+        const uData = uDoc.data() || {};
+
+        await db.collection('shouts').doc(shoutId).collection('replies').add({
+            senderId:     currentUserId,
+            senderName:   uData.name || uData.username || '',
+            senderAvatar: uData.avatarUrl || '',
+            text,
+            isAnswer:   true,
+            likesCount: 0,
+            likedBy:    [],
+            createdAt:  firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        await db.collection('answers').add({
+            questionId:   shoutId,
+            questionText: sData.text || '',
+            reply:        text,
+            userId:       currentUserId,
+            username:     uData.username || '',
+            name:         uData.name || '',
+            isVerified:   !!(uData.username?.toUpperCase() === 'HT' || uData.isVerified || uData.isPremium),
+            avatar:       uData.avatarUrl || '',
+            answeredAt:   firebase.firestore.FieldValue.serverTimestamp(),
+            likes:        [],
+            type:         'shout_reply'
+        });
+
+        await db.collection('shouts').doc(shoutId).update({
+            repliesCount: firebase.firestore.FieldValue.increment(1)
+        });
+
+        await db.collection('users').doc(currentUserId).update({
+            answersCount: firebase.firestore.FieldValue.increment(1)
+        });
+
+        toast('success', t('replySuccess'));
+        toggleBox(`sbox-${shoutId}`);
+        if (input) input.value = '';
+        const card = document.getElementById(`sbox-${shoutId}`)?.closest('.shout-inbox-card');
+        if (card) card.remove();
+        lastShoutsSnap = { docs: lastShoutsSnap.docs.filter(d => d.id !== shoutId) };
+        updateBadges();
+
+    } catch (e) {
+        console.error('sendShoutReply:', e);
+        toast('error', t('connError'));
+    }
+}
+/* ══════════════════════════════════════
+   DELETE
+══════════════════════════════════════ */
+async function handleDelete(id, type) {
+    const res = await confirmSwal(t('deleteTitle'), t('deleteDesc'), t('deleteBtn'), true);
+    if (!res.isConfirmed) return;
+    try {
+        if (type === 'shout') {
+            await db.collection('shouts').doc(id).delete();
+        } else {
+            await db.collection('questions').doc(id).delete();
+        }
+        toast('success', t('deleted'));
+    } catch (e) {
+        console.error('delete error:', e);
+        toast('error', t('connError'));
+    }
+}
+
+/* ══════════════════════════════════════
+   REPORT
+══════════════════════════════════════ */
+async function handleReport(contentId, type, senderId) {
+    if (typeof Swal === 'undefined') return;
+    const { value: reason } = await Swal.fire({
+        ...swalBase,
+        title:            t('reportTitle'),
+        input:            'textarea',
+        inputPlaceholder: t('reportPlaceholder'),
+        showCancelButton: true,
+        confirmButtonText: t('reportSend'),
+        cancelButtonText:  t('cancelBtn'),
+    });
+    if (!reason || !reason.trim()) return;
+
+    try {
+        await db.collection('reports').add({
+            reportedBy:  currentUserId,
+            contentId,
+            contentType: type,
+            reportedUser: senderId || null,
+            reason:      reason.trim().slice(0, 500),
+            createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+        });
+        toast('success', t('reportSuccess'));
+    } catch (e) {
+        console.error('report error:', e);
+        toast('error', t('connError'));
+    }
+}
+
+/* ══════════════════════════════════════
+   FILTER TABS
+══════════════════════════════════════ */
+function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderAll();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Anon | الدخول - تسجيل</title>
+    <meta name="description" content="منصة Anon - اكتشف من يراقبك في صمت. منصة مجهولة الهوية للأسئلة والتفاعل الاجتماعي بأمان تام.">
+    <meta name="keywords" content="anon, أسئلة مجهولة, تواصل اجتماعي, منصة عربية, اكتشف متابعيك">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Anon Platform">
+    <meta property="og:title" content="Anon | منصة الأسئلة المجهولة">
+    <meta property="og:description" content="اكتشف من يراقبك في صمت - منصة مجهولة الهوية للأسئلة والتفاعل الاجتماعي">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/logo.png">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"></noscript>
+    <style>
+        :root {
+            --primary: #f80566;
+            --overlay: rgba(0, 0, 0, 0.85);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body, html {
+            width: 100%; min-height: 100%; font-family: 'Cairo', sans-serif;
+            overflow-x: hidden; display: flex; flex-direction: column; align-items: center;
+            background: #050505 url('images/bbgg.jpg') center/cover fixed;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay); z-index: -1;
+        }
+        .ad-slot {
+            width: 100%; max-width: 728px; margin: 10px auto; min-height: 90px;
+            background: rgba(255,255,255,0.02); border-radius: 15px;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .main-wrapper {
+            display: flex; flex-direction: column; align-items: center;
+            width: 100%; flex: 1; padding: 20px; z-index: 1; gap: 24px;
+        }
+        .auth-card {
+            background: rgba(15, 15, 15, 0.7); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 35px; padding: 40px 30px;
+            text-align: center; width: 100%; max-width: 400px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+        .logo-box img { width: 65px; filter: drop-shadow(0 0 12px var(--primary)); margin-bottom: 20px; }
+        h2 { color: #fff; margin-bottom: 8px; font-size: 26px; font-weight: 900; }
+        .subtitle { color: #bbb; font-size: 13px; margin-bottom: 25px; }
+        .input-group { width: 100%; margin-bottom: 15px; position: relative; }
+        .input-group input {
+            width: 100%; padding: 16px 20px; background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; color: #fff;
+            outline: none; font-family: 'Cairo', sans-serif; font-size: 14px; text-align: right;
+            transition: 0.3s;
+        }
+        .input-group input:focus { border-color: var(--primary); background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(248,5,102,0.2); }
+        .strength-bar { display: flex; gap: 4px; margin-top: 6px; padding: 0 4px; }
+        .strength-bar span { flex: 1; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.1); transition: background 0.3s; }
+        .strength-label { font-size: 11px; color: #777; text-align: right; margin-top: 3px; padding: 0 4px; }
+        .privacy-wrap {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: rgba(248,5,102,0.05); border: 1px solid rgba(248,5,102,0.15);
+            border-radius: 16px; padding: 12px 14px; margin-bottom: 16px; text-align: right;
+            cursor: pointer; transition: border-color 0.3s, background 0.3s;
+        }
+        .privacy-wrap:hover { border-color: rgba(248,5,102,0.35); background: rgba(248,5,102,0.08); }
+        .privacy-wrap.checked { border-color: rgba(248,5,102,0.5); background: rgba(248,5,102,0.1); }
+        .custom-cb {
+            width: 22px; height: 22px; min-width: 22px; border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.04);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); margin-top: 1px;
+            cursor: pointer; position: relative; overflow: hidden;
+        }
+        .custom-cb.checked { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 14px rgba(248,5,102,0.5); }
+        .custom-cb .cb-check {
+            opacity: 0; transform: scale(0) rotate(-45deg);
+            transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+            color: #fff; font-size: 13px; font-weight: 900; line-height: 1;
+        }
+        .custom-cb.checked .cb-check { opacity: 1; transform: scale(1) rotate(0deg); }
+        .privacy-text { flex: 1; font-size: 12px; color: #aaa; line-height: 1.7; }
+        .privacy-text a {
+            color: var(--primary); text-decoration: none; font-weight: 700;
+            border-bottom: 1px dashed rgba(248,5,102,0.4); transition: border-color 0.2s;
+        }
+        .privacy-text a:hover { border-color: var(--primary); }
+        .submit-btn {
+            width: 100%; padding: 16px; background: var(--primary); color: white; border: none;
+            border-radius: 22px; font-weight: 800; font-size: 17px; cursor: pointer; transition: 0.4s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(248,5,102,0.3); }
+        .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: grayscale(0.3); }
+        .forgot-link { display: block; margin-top: 12px; color: #777; font-size: 12px; cursor: pointer; text-decoration: none; }
+        .switch-area { margin-top: 25px; color: #aaa; font-size: 13px; }
+        .switch-area b { color: var(--primary); cursor: pointer; margin-right: 5px; }
+        .hidden { display: none !important; }
+        .loader { width: 25px; height: 25px; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .missing-notice {
+            background: rgba(248,5,102,0.08); border: 1px solid rgba(248,5,102,0.3);
+            border-radius: 18px; padding: 14px 16px; margin-bottom: 18px; text-align: right;
+        }
+        .missing-notice .mn-title { color: #f80566; font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+        .missing-notice ul { list-style: none; padding: 0; margin: 0; }
+        .missing-notice ul li { color: #ccc; font-size: 13px; padding: 3px 0; display: flex; align-items: center; gap: 7px; }
+        .missing-notice ul li::before { content: '⚠️'; font-size: 12px; }
+        .phone-group { display: flex; gap: 8px; align-items: center; }
+        .country-selector { position: relative; flex-shrink: 0; }
+        .country-btn {
+            display: flex; align-items: center; gap: 6px; cursor: pointer;
+            padding: 16px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+            color: #fff; font-family: 'Cairo', sans-serif; font-size: 13px;
+            white-space: nowrap; transition: 0.3s; user-select: none;
+        }
+        .country-btn:hover { border-color: var(--primary); background: rgba(255,255,255,0.1); }
+        .country-btn .cflag { font-size: 18px; line-height: 1; }
+        .country-btn .ccode { font-size: 12px; color: #ccc; }
+        .country-btn .carrow { font-size: 9px; color: #777; transition: 0.3s; display: inline-block; }
+        .country-btn.open .carrow { transform: rotate(180deg); }
+        .country-dropdown {
+            position: absolute; top: calc(100% + 6px); right: 0;
+            width: 260px; max-height: 210px; overflow-y: auto;
+            background: rgba(18,18,18,0.99); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px; z-index: 9999; display: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+        }
+        .country-dropdown.open { display: block; animation: dropIn 0.18s ease; }
+        @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+        .country-search {
+            width: 100%; padding: 11px 15px; background: rgba(255,255,255,0.05);
+            border: none; border-bottom: 1px solid rgba(255,255,255,0.08);
+            color: #fff; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none;
+            border-radius: 18px 18px 0 0; text-align: right;
+        }
+        .country-item { display:flex; align-items:center; gap:10px; padding:10px 15px; cursor:pointer; transition:0.18s; font-size:13px; color:#ccc; }
+        .country-item:hover { background: rgba(248,5,102,0.15); color:#fff; }
+        .country-item .ci-flag { font-size:19px; }
+        .country-item .ci-name { flex:1; text-align:right; }
+        .country-item .ci-dial { color:#666; font-size:12px; direction:ltr; }
+        .phone-group input { flex: 1; }
+        .about-section {
+            width: 100%; max-width: 400px;
+            background: rgba(15,15,15,0.55); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.07); border-radius: 28px;
+            padding: 0; overflow: hidden;
+        }
+        .about-banner {
+            background: linear-gradient(135deg, rgba(248,5,102,0.18) 0%, rgba(120,0,60,0.18) 100%);
+            border-bottom: 1px solid rgba(248,5,102,0.12);
+            padding: 20px 22px 16px;
+            display: flex; align-items: center; gap: 14px; text-align: right;
+        }
+        .about-banner-icon {
+            width: 52px; height: 52px; min-width: 52px;
+            background: rgba(248,5,102,0.15); border: 1px solid rgba(248,5,102,0.25);
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+        }
+        .about-banner-title { color: #fff; font-size: 15px; font-weight: 900; margin-bottom: 3px; }
+        .about-banner-sub { color: #aaa; font-size: 12px; line-height: 1.6; }
+        .about-stats { display: flex; justify-content: stretch; }
+        .stat-item {
+            flex: 1; padding: 16px 8px; text-align: center;
+            border-left: 1px solid rgba(255,255,255,0.06); transition: background 0.2s;
+        }
+        .stat-item:last-child { border-left: none; }
+        .stat-item:hover { background: rgba(248,5,102,0.05); }
+        .stat-num { color: var(--primary); font-size: 18px; font-weight: 900; display: block; line-height: 1; margin-bottom: 5px; }
+        .stat-label { color: #666; font-size: 10.5px; }
+        .about-features {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .feat-pill {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 50px; padding: 6px 12px; font-size: 11.5px; color: #ccc; white-space: nowrap;
+        }
+        .feat-pill .fp-icon { font-size: 13px; }
+        .updates-section {
+            width: 100%; max-width: 400px;
+            background: rgba(15,15,15,0.6); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.07); border-radius: 28px;
+            padding: 24px 24px 20px; overflow: hidden;
+        }
+        .updates-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 18px; gap: 10px;
+        }
+        .updates-title { display: flex; align-items: center; gap: 9px; color: #fff; font-size: 15px; font-weight: 800; }
+        .updates-title .u-icon {
+            width: 32px; height: 32px; background: rgba(248,5,102,0.15);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px;
+        }
+        .updates-badge { background: var(--primary); color: #fff; font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 50px; letter-spacing: 0.5px; }
+        .article-list { display: flex; flex-direction: column; gap: 10px; }
+        .article-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px; padding: 14px 16px;
+            display: flex; align-items: flex-start; gap: 13px;
+            transition: border-color 0.25s, background 0.25s; cursor: pointer; text-decoration: none;
+        }
+        .article-card:hover { border-color: rgba(248,5,102,0.3); background: rgba(248,5,102,0.05); }
+        .article-icon {
+            width: 40px; height: 40px; min-width: 40px; border-radius: 12px;
+            background: rgba(248,5,102,0.1); display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        .article-body { flex: 1; }
+        .article-cat { font-size: 10px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+        .article-title { color: #e8e8e8; font-size: 13px; font-weight: 700; line-height: 1.5; margin-bottom: 5px; }
+        .article-meta { color: #666; font-size: 11px; display: flex; gap: 10px; align-items: center; }
+        .article-meta span { display: flex; align-items: center; gap: 4px; }
+        .article-arrow { color: #444; font-size: 14px; margin-top: 2px; transition: color 0.2s; }
+        .article-card:hover .article-arrow { color: var(--primary); }
+        .no-articles { text-align: center; color: #555; font-size: 13px; padding: 20px 0; }
+        .page-footer { width: 100%; max-width: 400px; padding: 16px 10px 30px; text-align: center; color: #444; font-size: 12px; line-height: 2; }
+        .page-footer a { color: #666; text-decoration: none; transition: color 0.2s; margin: 0 6px; }
+        .page-footer a:hover { color: var(--primary); }
+        .footer-divider { color: #333; margin: 0 4px; }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88); backdrop-filter: blur(12px);
+            z-index: 99990; display: flex; align-items: flex-end; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .modal-sheet {
+            width: 100%; max-width: 600px; max-height: 85vh;
+            background: #0f0f0f; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px 30px 0 0; overflow: hidden;
+            display: flex; flex-direction: column;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34,1.1,0.64,1);
+        }
+        .modal-overlay.open .modal-sheet { transform: translateY(0); }
+        .modal-handle { width: 40px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 4px; margin: 12px auto 0; }
+        .modal-head {
+            padding: 16px 24px 14px; border-bottom: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-head h3 { color: #fff; font-size: 16px; font-weight: 800; }
+        .modal-close {
+            width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.06);
+            border: none; color: #aaa; font-size: 16px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .modal-close:hover { background: rgba(248,5,102,0.2); color: var(--primary); }
+        .modal-body {
+            padding: 20px 24px; overflow-y: auto; flex: 1;
+            scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+        }
+        .modal-body h4 { color: var(--primary); font-size: 13px; font-weight: 800; margin: 18px 0 8px; }
+        .modal-body h4:first-child { margin-top: 0; }
+        .modal-body p, .modal-body li { color: #aaa; font-size: 12.5px; line-height: 1.85; }
+        .modal-body ul { padding-right: 16px; margin: 6px 0; }
+        .modal-body ul li { margin-bottom: 4px; }
+        .modal-footer-btn { padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.07); }
+        .modal-accept-btn {
+            width: 100%; padding: 14px; background: var(--primary); color: #fff;
+            border: none; border-radius: 18px; font-family: 'Cairo', sans-serif;
+            font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        .modal-accept-btn:hover { box-shadow: 0 8px 20px rgba(248,5,102,0.3); transform: translateY(-2px); }
+        #toast {
+            position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-80px);
+            background: rgba(20,20,20,0.95); backdrop-filter: blur(20px);
+            border-radius: 18px; padding: 14px 22px;
+            display: flex; align-items: center; gap: 12px;
+            font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 600;
+            color: #fff; z-index: 99999; min-width: 260px; max-width: 340px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08);
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+            opacity: 0; pointer-events: none;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+        #toast .t-icon { font-size: 20px; flex-shrink: 0; }
+        #toast .t-text { flex: 1; text-align: right; line-height: 1.5; }
+        #toast.t-error   { border-color: rgba(248,5,102,0.4); }
+        #toast.t-error   .t-icon-wrap { background: rgba(248,5,102,0.15); }
+        #toast.t-success { border-color: rgba(74,222,128,0.35); }
+        #toast.t-success .t-icon-wrap { background: rgba(74,222,128,0.12); }
+        #toast.t-info    { border-color: rgba(96,165,250,0.35); }
+        #toast.t-info    .t-icon-wrap { background: rgba(96,165,250,0.12); }
+        .t-icon-wrap {
+            width: 36px; height: 36px; border-radius: 12px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        #toast .t-bar {
+            position: absolute; bottom: 0; right: 0; height: 3px; border-radius: 0 0 18px 18px;
+            background: var(--primary); animation: shrink linear forwards;
+        }
+        @keyframes shrink { from{width:100%} to{width:0%} }
+        .maintenance-banner {
+            width: 100%; max-width: 400px;
+            background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.3);
+            border-radius: 24px; padding: 28px 24px; text-align: center; margin-bottom: 0;
+            animation: maintPulse 3s ease-in-out infinite;
+        }
+        @keyframes maintPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); }
+            50% { box-shadow: 0 0 30px rgba(244,63,94,0.15); }
+        }
+        .maint-icon { font-size: 52px; margin-bottom: 14px; display: block; animation: maintSpin 4s linear infinite; }
+        @keyframes maintSpin {
+            0%,100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        .maint-title { color: #f43f5e; font-size: 20px; font-weight: 900; margin-bottom: 10px; }
+        .maint-msg { color: #ccc; font-size: 13px; line-height: 1.8; margin-bottom: 20px; }
+        .maint-timer-label { color: #888; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .maint-timer { font-size: 52px; font-weight: 900; color: #fff; font-family: 'Cairo', sans-serif; letter-spacing: 2px; line-height: 1; margin-bottom: 6px; text-shadow: 0 0 30px rgba(244,63,94,0.5); }
+        .maint-timer span { color: #f43f5e; }
+        .maint-timer-sub { color: #555; font-size: 11px; margin-bottom: 20px; }
+        .maint-progress { width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; margin-bottom: 18px; }
+        .maint-progress-fill { height: 100%; background: linear-gradient(90deg, #f43f5e, #f80566); border-radius: 4px; transition: width 1s linear; }
+        .maint-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.25);
+            border-radius: 50px; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #f43f5e;
+        }
+        .maint-badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #f43f5e; animation: maintSpin 1s infinite; }
+        .maint-admin-link { display: block; margin-top: 14px; color: #666; font-size: 12px; cursor: pointer; text-decoration: underline; transition: color 0.2s; }
+        .maint-admin-link:hover { color: #f43f5e; }
+    </style>
+</head>
+<body>
+
+    <!-- Toast -->
+    <div id="toast" role="alert" aria-live="polite">
+        <div class="t-icon-wrap"><span class="t-icon">⚠️</span></div>
+        <span class="t-text" id="toastText"></span>
+        <div class="t-bar" id="toastBar"></div>
+    </div>
+
+    <!-- Privacy & Terms Modal -->
+    <div class="modal-overlay" id="privacyModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-sheet">
+            <div class="modal-handle"></div>
+            <div class="modal-head">
+                <h3 id="modalTitle">🔒 سياسة الخصوصية والشروط</h3>
+                <button class="modal-close" onclick="closePrivacyModal()" aria-label="إغلاق">✕</button>
+            </div>
+            <div class="modal-body">
+                <h4>📋 مقدمة</h4>
+                <p>مرحباً بك في منصة <strong style="color:#fff">Anon</strong>. باستخدامك للمنصة فأنت توافق على هذه السياسة. نحن نأخذ خصوصيتك على محمل الجد ونلتزم بحماية بياناتك الشخصية.</p>
+                <h4>📦 البيانات التي نجمعها</h4>
+                <ul>
+                    <li>الاسم الكامل وعنوان البريد الإلكتروني</li>
+                    <li>رقم الهاتف (للتحقق من الهوية فقط)</li>
+                    <li>بيانات الاستخدام وتفضيلات التطبيق</li>
+                    <li>معلومات الجهاز والموقع الجغرافي التقريبي</li>
+                </ul>
+                <h4>🔐 كيف نحمي بياناتك</h4>
+                <p>تُحفظ جميع بياناتك بشكل مشفر على خوادم Firebase الآمنة. لا نشارك بياناتك مع أطراف ثالثة إلا بموافقتك الصريحة أو عند الضرورة القانونية. يتم استخدام HTTPS في جميع الاتصالات.</p>
+                <h4>🕵️ المحتوى المجهول</h4>
+                <p>الأسئلة المرسلة عبر المنصة مجهولة الهوية. نحن لا نكشف هوية المرسل للمستقبل. ومع ذلك نحتفظ بسجلات داخلية للحد من الإساءة وحماية المجتمع.</p>
+                <h4>🍪 ملفات تعريف الارتباط</h4>
+                <p>نستخدم ملفات الكوكيز لتحسين تجربتك وتذكر تفضيلاتك. يمكنك تعطيلها من إعدادات متصفحك علماً بأن ذلك قد يؤثر على بعض الوظائف.</p>
+                <h4>📢 الإعلانات</h4>
+                <p>قد تعرض المنصة إعلانات من خلال شركاء موثوقين مثل Google AdSense. هذه الإعلانات قد تستخدم ملفات الكوكيز لعرض محتوى ذي صلة باهتماماتك.</p>
+                <h4>👤 حقوقك</h4>
+                <ul>
+                    <li>حق الوصول إلى بياناتك الشخصية</li>
+                    <li>حق تصحيح أي بيانات غير دقيقة</li>
+                    <li>حق حذف حسابك ومعلوماتك</li>
+                    <li>حق الاعتراض على معالجة بياناتك</li>
+                </ul>
+                <h4>📞 تواصل معنا</h4>
+                <p>لأي استفسار حول سياسة الخصوصية، يمكنك التواصل معنا عبر البريد: <strong style="color:var(--primary)">support@anon-ht.web.app</strong></p>
+                <h4>📅 آخر تحديث</h4>
+                <p>تم تحديث هذه السياسة في يناير 2025. نحتفظ بحق تعديلها في أي وقت مع إشعارك بذلك.</p>
+            </div>
+            <div class="modal-footer-btn">
+                <button class="modal-accept-btn" onclick="acceptPrivacy()">✅ أوافق على السياسة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Ad -->
+    <div id="header-ad-placeholder" class="ad-slot"></div>
+
+    <div class="main-wrapper">
+
+        <!-- Maintenance Banner -->
+        <div class="maintenance-banner hidden" id="maintenanceBanner">
+            <span class="maint-icon">🔧</span>
+            <div class="maint-title" id="maintTitle">الموقع في وضع الصيانة</div>
+            <div class="maint-msg" id="maintMsg">نعمل على تحسين تجربتك. سنعود قريباً!</div>
+            <div class="maint-timer-label">⏱ العودة خلال</div>
+            <div class="maint-timer" id="maintTimer">
+                <span id="maintHH">00</span>:<span id="maintMM">00</span>:<span id="maintSS">00</span>
+            </div>
+            <div class="maint-timer-sub">ساعة : دقيقة : ثانية</div>
+            <div class="maint-progress">
+                <div class="maint-progress-fill" id="maintProgressFill" style="width:0%"></div>
+            </div>
+            <div class="maint-badge">
+                <div class="maint-badge-dot"></div>
+                جاري الصيانة الآن
+            </div>
+            <a class="maint-admin-link" onclick="showAdminLoginFromMaint()">🔐 دخول المشرف</a>
+        </div>
+
+        <!-- Auth Card -->
+        <div class="auth-card">
+            <div class="logo-box"><img src="images/logo.png" alt="Anon" width="65" height="65" loading="lazy"></div>
+
+            <!-- تسجيل الدخول -->
+            <div id="signin-section">
+                <h2>تسجيل الدخول</h2>
+                <p class="subtitle">أهلاً بك مجدداً في عالم الغموض</p>
+                <div id="loginForm">
+                    <div class="input-group"><input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required maxlength="254" autocomplete="email"></div>
+                    <div class="input-group"><input type="password" id="loginPass" placeholder="كلمة المرور" required maxlength="128" autocomplete="current-password"></div>
+                    <button class="submit-btn" id="loginBtn" onclick="handleLogin()">دخول</button>
+                    <span class="forgot-link" onclick="openResetModal()">نسيت كلمة السر؟</span>
+                </div>
+                <div class="switch-area">مستخدم جديد؟ <b onclick="toggleAuth()">أنشئ حساباً</b></div>
+            </div>
+
+            <!-- إكمال البيانات الناقصة -->
+            <div id="complete-section" class="hidden">
+                <h2>أكمل بياناتك 📋</h2>
+                <p class="subtitle">بياناتك غير مكتملة، يرجى تعبئة الحقول التالية للمتابعة</p>
+                <div class="missing-notice" id="missingNotice">
+                    <div class="mn-title">⚠️ البيانات الناقصة:</div>
+                    <ul id="missingList"></ul>
+                </div>
+                <div id="completeForm">
+                    <div class="input-group hidden" id="completeNameGroup">
+                        <input type="text" id="completeName" placeholder="الاسم الكامل" maxlength="60" autocomplete="name">
+                    </div>
+                    <div class="input-group hidden" id="completePhoneGroup">
+                        <div class="phone-group">
+                            <div class="country-selector">
+                                <div class="country-btn" id="countryBtn2" role="button" aria-label="اختر رمز الدولة">
+                                    <span class="cflag" id="selectedFlag2">🇪🇬</span>
+                                    <span class="ccode" id="selectedCode2">+20</span>
+                                    <span class="carrow" aria-hidden="true">&#9660;</span>
+                                </div>
+                                <div class="country-dropdown" id="countryDropdown2" role="listbox">
+                                    <input class="country-search" id="countrySearch2" type="text" placeholder="ابحث عن دولة..." aria-label="ابحث عن دولة">
+                                    <div id="countryList2"></div>
+                                </div>
+                            </div>
+                            <input type="tel" id="completePhone" placeholder="رقم الهاتف" maxlength="15" pattern="[0-9]*" autocomplete="tel">
+                        </div>
+                    </div>
+                    <button class="submit-btn" id="completeBtn" onclick="handleComplete()">حفظ والمتابعة</button>
+                </div>
+            </div>
+
+            <!-- إنشاء حساب -->
+            <div id="signup-section" class="hidden">
+                <h2>حساب جديد</h2>
+                <p class="subtitle">اكتشف من يراقبك في صمت</p>
+                <div id="signupForm">
+                    <div class="input-group"><input type="text" id="regName" placeholder="الاسم الكامل" required maxlength="60" autocomplete="name"></div>
+                    <div class="input-group"><input type="text" id="regUser" placeholder="اسم المستخدم (4+ حروف)" required maxlength="30" autocomplete="username"></div>
+                    <div class="input-group"><input type="email" id="emailInput" placeholder="البريد الإلكتروني" required maxlength="254" autocomplete="email"></div>
+                    <div class="input-group">
+                        <input type="password" id="regPass" placeholder="كلمة المرور (8+ حروف)" required maxlength="128" autocomplete="new-password">
+                        <div class="strength-bar" aria-hidden="true">
+                            <span id="sb1"></span><span id="sb2"></span><span id="sb3"></span><span id="sb4"></span>
+                        </div>
+                        <div class="strength-label" id="strengthLabel" aria-live="polite"></div>
+                    </div>
+                    <div class="input-group">
+                        <div class="phone-group">
+                            <div class="country-selector">
+                                <div class="country-btn" id="countryBtn" role="button" aria-label="اختر رمز الدولة">
+                                    <span class="cflag" id="selectedFlag">🇪🇬</span>
+                                    <span class="ccode" id="selectedCode">+20</span>
+                                    <span class="carrow" aria-hidden="true">&#9660;</span>
+                                </div>
+                                <div class="country-dropdown" id="countryDropdown" role="listbox">
+                                    <input class="country-search" id="countrySearch" type="text" placeholder="ابحث عن دولة..." aria-label="ابحث عن دولة">
+                                    <div id="countryList"></div>
+                                </div>
+                            </div>
+                            <input type="tel" id="regPhone" placeholder="رقم الهاتف (إجباري)" maxlength="15" pattern="[0-9]*" required autocomplete="tel">
+                        </div>
+                    </div>
+                    <div class="privacy-wrap" id="privacyWrap" onclick="togglePrivacyCheck()" role="checkbox" aria-checked="false" tabindex="0">
+                        <div class="custom-cb" id="privacyCb">
+                            <span class="cb-check">✓</span>
+                        </div>
+                        <div class="privacy-text">
+                            أوافق على
+                            <a href="#" onclick="openPrivacyModal(event)">سياسة الخصوصية والشروط</a>
+                            وأقر بأن جميع بياناتي صحيحة وأنني أعمر 13 سنة أو أكثر
+                        </div>
+                    </div>
+                    <button class="submit-btn" id="signupBtn" onclick="handleSignup()" disabled>إنشاء الحساب</button>
+                </div>
+                <div class="switch-area">لديك حساب؟ <b onclick="toggleAuth()">سجل دخولك</b></div>
+            </div>
+
+            <!-- انتظار التفعيل -->
+            <div id="verify-waiting" class="hidden">
+                <h2 style="font-size: 20px;">تفقد بريدك 📧</h2>
+                <p class="subtitle">أرسلنا رابط التفعيل. اضغط عليه لتأكيد هويتك.</p>
+                <div class="loader"></div>
+                <button onclick="location.reload()" class="submit-btn" style="margin-top:20px">تم التفعيل، دخول</button>
+            </div>
+        </div>
+
+        <!-- نبذة عن المنصة -->
+        <section class="about-section" aria-label="نبذة عن منصة Anon">
+            <div class="about-banner">
+                <div class="about-banner-icon">🕵️</div>
+                <div class="about-banner-text">
+                    <div class="about-banner-title">المنصة المجهولة الأولى عربياً</div>
+                    <div class="about-banner-sub">شارك رابطك، واكتشف من يراقبك في صمت.<br>خصوصيتك هي أولويتنا القصوى.</div>
+                </div>
+            </div>
+            <div class="about-stats">
+                <div class="stat-item"><span class="stat-num">100%</span><div class="stat-label">مجهول الهوية</div></div>
+                <div class="stat-item"><span class="stat-num">🔒</span><div class="stat-label">بيانات مشفرة</div></div>
+                <div class="stat-item"><span class="stat-num">24/7</span><div class="stat-label">متاح دائماً</div></div>
+                <div class="stat-item"><span class="stat-num">مجاني</span><div class="stat-label">للأبد</div></div>
+            </div>
+            <div class="about-features">
+                <div class="feat-pill"><span class="fp-icon">🛡️</span> أمان تام</div>
+                <div class="feat-pill"><span class="fp-icon">⚡</span> سريع وخفيف</div>
+                <div class="feat-pill"><span class="fp-icon">🌍</span> عربي بالكامل</div>
+                <div class="feat-pill"><span class="fp-icon">🎁</span> مكافآت يومية</div>
+                <div class="feat-pill"><span class="fp-icon">📱</span> يعمل على الجوال</div>
+            </div>
+        </section>
+
+        <!-- مقالات التحديثات -->
+        <section class="updates-section" aria-label="آخر تحديثات المنصة">
+            <div class="updates-header">
+                <div class="updates-title">
+                    <div class="u-icon">📢</div>
+                    آخر تحديثات المنصة
+                </div>
+                <span class="updates-badge" id="articlesBadge">جديد</span>
+            </div>
+            <div class="article-list" id="articlesList">
+                <div class="no-articles">⏳ جاري تحميل التحديثات...</div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer Ad -->
+    <div id="footer-ad-placeholder" class="ad-slot" style="margin-bottom: 10px;"></div>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+        <div>
+            <a href="#" onclick="openPrivacyModal(event)">سياسة الخصوصية</a>
+            <span class="footer-divider">·</span>
+            <a href="#" onclick="openPrivacyModal(event)">شروط الاستخدام</a>
+            <span class="footer-divider">·</span>
+            <a href="mailto:support@anon-ht.web.app">تواصل معنا</a>
+        </div>
+        <div style="margin-top:6px; color:#333;">© 2025 Anon Platform · جميع الحقوق محفوظة</div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="header-ad.js"></script>
+    <script src="footer-ad.js"></script>
+
+    <script>
+    /* ══ Firebase Init ══ */
+        const firebaseConfig = {
+            apiKey: "AIzaSyDbAYctYxiv3mTUlpfdY4ZeZDNxH89nklk",
+            authDomain: "anon-ht.firebaseapp.com",
+            projectId: "anon-ht",
+            storageBucket: "anon-ht.firebasestorage.app",
+            messagingSenderId: "214497552351",
+            appId: "1:214497552351:web:9645cd0ce48b9d5466a"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ← ضيف السطرين دول
+db.settings({
+    experimentalForceLongPolling: true,
+    useFetchStreams: false
+});
+
+        /* ══ BAD WORDS FILTER ══ */
+        let _badWords = [];
+
+        async function loadBadWords() {
+            try {
+                const langs = ['ar', 'en', 'fr'];
+                const results = await Promise.all(
+                    langs.map(lang =>
+                        fetch(`bad_words/${lang}.txt`)
+                            .then(r => r.ok ? r.text() : '')
+                            .catch(() => '')
+                    )
+                );
+                _badWords = results
+                    .join('\n')
+                    .split('\n')
+                    .map(w => w.trim().toLowerCase())
+                    .filter(w => w.length > 0);
+            } catch(e) {
+                console.error('loadBadWords error:', e);
+            }
+        }
+
+        function containsBadWord(text) {
+            if (!text || _badWords.length === 0) return false;
+            const lower = text.toLowerCase();
+            return _badWords.some(w => lower.includes(w));
+        }
+
+        /* ══ Helpers ══ */
+        const cleanInput = (val) => {
+            if (typeof val !== "string") return "";
+            return val.trim().slice(0,200).replace(/[<>'"\\\/\x00-\x1F\x7F]/g,"");
+        };
+        const isValidEmail = (email) =>
+            /^[^\s@]{1,64}@[^\s@]{1,253}\.[^\s@]{2,}$/.test(email) && email.length <= 254;
+
+        const toggleAuth = () => {
+            document.getElementById('signin-section').classList.toggle('hidden');
+            document.getElementById('signup-section').classList.toggle('hidden');
+        };
+
+        /* ══ Toast ══ */
+        var _toastTimer = null;
+        function showToast(msg, type, duration) {
+            type = type || "error"; duration = duration || 3000;
+            var toast = document.getElementById("toast");
+            var icons  = { error:"⛔", success:"✅", info:"💡" };
+            var colors = { error:"#f80566", success:"#4ade80", info:"#60a5fa" };
+            toast.className = "show t-" + type;
+            document.getElementById("toastText").textContent = msg;
+            document.querySelector("#toast .t-icon").textContent = icons[type] || "ℹ️";
+            var bar = document.getElementById("toastBar");
+            bar.style.background = colors[type] || "#f80566";
+            bar.style.animation = "none";
+            bar.offsetHeight;
+            bar.style.animation = "shrink " + (duration/1000) + "s linear forwards";
+            if (_toastTimer) clearTimeout(_toastTimer);
+            _toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, duration);
+        }
+
+        /* ══ Privacy Modal ══ */
+        var _privacyAccepted = false;
+
+        function openPrivacyModal(e) {
+            if (e) e.preventDefault();
+            document.getElementById("privacyModal").classList.add("open");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closePrivacyModal() {
+            document.getElementById("privacyModal").classList.remove("open");
+            document.body.style.overflow = "";
+        }
+
+        function acceptPrivacy() {
+            _privacyAccepted = true;
+            var cb   = document.getElementById("privacyCb");
+            var wrap = document.getElementById("privacyWrap");
+            var btn  = document.getElementById("signupBtn");
+            cb.classList.add("checked");
+            wrap.classList.add("checked");
+            wrap.setAttribute("aria-checked","true");
+            if (btn) btn.disabled = false;
+            closePrivacyModal();
+            showToast("تم قبول سياسة الخصوصية ✅","success",2000);
+        }
+
+        function togglePrivacyCheck() {
+            if (!_privacyAccepted) { openPrivacyModal(null); return; }
+            _privacyAccepted = !_privacyAccepted;
+            var cb   = document.getElementById("privacyCb");
+            var wrap = document.getElementById("privacyWrap");
+            var btn  = document.getElementById("signupBtn");
+            cb.classList.toggle("checked", _privacyAccepted);
+            wrap.classList.toggle("checked", _privacyAccepted);
+            wrap.setAttribute("aria-checked", String(_privacyAccepted));
+            if (btn) btn.disabled = !_privacyAccepted;
+        }
+
+        document.getElementById("privacyModal").addEventListener("click", function(e){
+            if (e.target === this) closePrivacyModal();
+        });
+
+        document.getElementById("privacyWrap").addEventListener("keydown", function(e){
+            if (e.key === " " || e.key === "Enter") { e.preventDefault(); togglePrivacyCheck(); }
+        });
+
+        /* ══ Rate Limiting ══ */
+        var RATE_LIMIT = {
+            maxAttempts: 5,
+            windowMs: 15 * 60 * 1000,
+            getKey: function(action) { return "rl_" + action; },
+            check: function(action) {
+                var key  = this.getKey(action);
+                var data = JSON.parse(localStorage.getItem(key) || '{"count":0,"resetAt":0}');
+                var now  = Date.now();
+                if (now > data.resetAt) data = { count: 0, resetAt: now + this.windowMs };
+                if (data.count >= this.maxAttempts) {
+                    var mins = Math.ceil((data.resetAt - now) / 60000);
+                    return { allowed: false, mins: mins };
+                }
+                return { allowed: true };
+            },
+            increment: function(action) {
+                var key  = this.getKey(action);
+                var data = JSON.parse(localStorage.getItem(key) || '{"count":0,"resetAt":0}');
+                var now  = Date.now();
+                if (now > data.resetAt) data = { count: 0, resetAt: now + this.windowMs };
+                data.count++;
+                localStorage.setItem(key, JSON.stringify(data));
+            },
+            reset: function(action) { localStorage.removeItem(this.getKey(action)); }
+        };
+
+        /* ══ بيانات الدول ══ */
+        var COUNTRIES = [
+            {name:"مصر",flag:"🇪🇬",code:"+20"},{name:"السعودية",flag:"🇸🇦",code:"+966"},
+            {name:"الإمارات",flag:"🇦🇪",code:"+971"},{name:"الكويت",flag:"🇰🇼",code:"+965"},
+            {name:"قطر",flag:"🇶🇦",code:"+974"},{name:"البحرين",flag:"🇧🇭",code:"+973"},
+            {name:"عمان",flag:"🇴🇲",code:"+968"},{name:"الأردن",flag:"🇯🇴",code:"+962"},
+            {name:"لبنان",flag:"🇱🇧",code:"+961"},{name:"العراق",flag:"🇮🇶",code:"+964"},
+            {name:"سوريا",flag:"🇸🇾",code:"+963"},{name:"فلسطين",flag:"🇵🇸",code:"+970"},
+            {name:"اليمن",flag:"🇾🇪",code:"+967"},{name:"ليبيا",flag:"🇱🇾",code:"+218"},
+            {name:"تونس",flag:"🇹🇳",code:"+216"},{name:"الجزائر",flag:"🇩🇿",code:"+213"},
+            {name:"المغرب",flag:"🇲🇦",code:"+212"},{name:"السودان",flag:"🇸🇩",code:"+249"},
+            {name:"موريتانيا",flag:"🇲🇷",code:"+222"},{name:"الصومال",flag:"🇸🇴",code:"+252"},
+            {name:"جيبوتي",flag:"🇩🇯",code:"+253"},{name:"جزر القمر",flag:"🇰🇲",code:"+269"},
+            {name:"تركيا",flag:"🇹🇷",code:"+90"},{name:"باكستان",flag:"🇵🇰",code:"+92"},
+            {name:"الهند",flag:"🇮🇳",code:"+91"},{name:"المملكة المتحدة",flag:"🇬🇧",code:"+44"},
+            {name:"الولايات المتحدة",flag:"🇺🇸",code:"+1"},{name:"فرنسا",flag:"🇫🇷",code:"+33"},
+            {name:"المانيا",flag:"🇩🇪",code:"+49"},{name:"كندا",flag:"🇨🇦",code:"+1"},
+            {name:"استراليا",flag:"🇦🇺",code:"+61"},{name:"ايطاليا",flag:"🇮🇹",code:"+39"},
+            {name:"اسبانيا",flag:"🇪🇸",code:"+34"},{name:"هولندا",flag:"🇳🇱",code:"+31"},
+            {name:"بلجيكا",flag:"🇧🇪",code:"+32"},{name:"السويد",flag:"🇸🇪",code:"+46"},
+            {name:"النرويج",flag:"🇳🇴",code:"+47"},{name:"الدنمارك",flag:"🇩🇰",code:"+45"},
+            {name:"روسيا",flag:"🇷🇺",code:"+7"},{name:"الصين",flag:"🇨🇳",code:"+86"},
+            {name:"اليابان",flag:"🇯🇵",code:"+81"},{name:"كوريا الجنوبية",flag:"🇰🇷",code:"+82"},
+            {name:"البرازيل",flag:"🇧🇷",code:"+55"},{name:"المكسيك",flag:"🇲🇽",code:"+52"},
+            {name:"جنوب افريقيا",flag:"🇿🇦",code:"+27"},{name:"نيجيريا",flag:"🇳🇬",code:"+234"},
+            {name:"اثيوبيا",flag:"🇪🇹",code:"+251"},{name:"افغانستان",flag:"🇦🇫",code:"+93"},
+            {name:"ايران",flag:"🇮🇷",code:"+98"},{name:"اندونيسيا",flag:"🇮🇩",code:"+62"}
+        ];
+
+        var selectedDial  = "+20";
+        var selectedDial2 = "+20";
+        var _pendingUser  = null;
+        var _missingKeys  = [];
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+                .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+        }
+
+        function renderCountries(list, containerId) {
+            var html = "";
+            for (var i = 0; i < list.length; i++) {
+                var c = list[i];
+                html += '<div class="country-item" role="option" data-flag="'+escapeHtml(c.flag)+'" data-code="'+escapeHtml(c.code)+'">';
+                html += '<span class="ci-flag">'+escapeHtml(c.flag)+'</span>';
+                html += '<span class="ci-name">'+escapeHtml(c.name)+'</span>';
+                html += '<span class="ci-dial" dir="ltr">'+escapeHtml(c.code)+'</span></div>';
+            }
+            document.getElementById(containerId).innerHTML = html;
+        }
+
+        function setupCountrySelector(btnId, dropdownId, searchId, listId, flagId, codeId, dialVar) {
+            var btn = document.getElementById(btnId);
+            var dd  = document.getElementById(dropdownId);
+            btn.addEventListener("click", function(e) {
+                e.stopPropagation();
+                if (dd.classList.contains("open")) { dd.classList.remove("open"); btn.classList.remove("open"); return; }
+                dd.classList.add("open"); btn.classList.add("open");
+                document.getElementById(searchId).value = "";
+                renderCountries(COUNTRIES, listId);
+                setTimeout(function(){ document.getElementById(searchId).focus(); }, 80);
+            });
+            document.getElementById(searchId).addEventListener("input", function() {
+                var q = this.value.trim();
+                renderCountries(q ? COUNTRIES.filter(function(c){ return c.name.indexOf(q)!==-1||c.code.indexOf(q)!==-1; }) : COUNTRIES, listId);
+            });
+            document.getElementById(listId).addEventListener("click", function(e) {
+                var item = e.target.closest(".country-item");
+                if (!item) return;
+                if (dialVar === 1) selectedDial  = item.getAttribute("data-code");
+                else               selectedDial2 = item.getAttribute("data-code");
+                document.getElementById(flagId).textContent  = item.getAttribute("data-flag");
+                document.getElementById(codeId).textContent  = (dialVar===1) ? selectedDial : selectedDial2;
+                dd.classList.remove("open"); btn.classList.remove("open");
+            });
+        }
+
+        document.addEventListener("click", function(e) {
+            if (!e.target.closest(".country-selector")) {
+                document.querySelectorAll(".country-dropdown").forEach(function(d){ d.classList.remove("open"); });
+                document.querySelectorAll(".country-btn").forEach(function(b){ b.classList.remove("open"); });
+            }
+        });
+
+        setupCountrySelector("countryBtn","countryDropdown","countrySearch","countryList","selectedFlag","selectedCode",1);
+        setupCountrySelector("countryBtn2","countryDropdown2","countrySearch2","countryList2","selectedFlag2","selectedCode2",2);
+        renderCountries(COUNTRIES, "countryList");
+        renderCountries(COUNTRIES, "countryList2");
+
+        /* ══ مؤشر قوة كلمة المرور ══ */
+        document.getElementById("regPass").addEventListener("input", function() {
+            var val = this.value, score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            var colors = ["#f80566","#ff6b35","#ffd166","#4ade80"];
+            var labels = ["ضعيفة جداً","ضعيفة","متوسطة","قوية"];
+            for (var i = 1; i <= 4; i++)
+                document.getElementById("sb"+i).style.background = i<=score ? colors[score-1] : "rgba(255,255,255,0.1)";
+            document.getElementById("strengthLabel").textContent = val.length>0 ? "قوة كلمة المرور: "+(labels[score-1]||"ضعيفة جداً") : "";
+        });
+        /* ══ MAINTENANCE ══ */
+        var _maintInterval = null;
+        var _maintEndTime  = null;
+        var _maintStart    = null;
+
+        async function checkMaintenanceMode() {
+            try {
+                const snap = await db.collection("admin").doc("settings").get();
+                if (!snap.exists) return;
+                const data = snap.data();
+                if (!data.maintenance) { applyNormalMode(); return; }
+                const msg         = data.maintenanceMsg || "نعمل على تحسين تجربتك. سنعود قريباً!";
+                const durationMin = data.maintenanceDuration || 60;
+                const startedAt   = data.maintenanceStartedAt;
+                document.getElementById("maintTitle").textContent = data.maintenanceTitle || "الموقع في وضع الصيانة";
+                document.getElementById("maintMsg").textContent   = msg;
+                if (startedAt && startedAt.toDate) {
+                    _maintStart   = startedAt.toDate().getTime();
+                    _maintEndTime = _maintStart + durationMin * 60 * 1000;
+                } else {
+                    _maintEndTime = Date.now() + durationMin * 60 * 1000;
+                    _maintStart   = Date.now();
+                }
+                applyMaintenanceMode();
+            } catch(e) { console.error("checkMaintenanceMode:", e); }
+        }
+
+        function applyMaintenanceMode() {
+            document.getElementById("maintenanceBanner").classList.remove("hidden");
+            document.getElementById("signin-section").classList.add("hidden");
+            document.getElementById("signup-section").classList.add("hidden");
+            document.getElementById("complete-section").classList.add("hidden");
+            document.getElementById("verify-waiting").classList.add("hidden");
+            document.querySelector(".auth-card").style.display = "none";
+            startMaintCountdown();
+        }
+
+        function applyNormalMode() {
+            document.getElementById("maintenanceBanner").classList.add("hidden");
+            document.querySelector(".auth-card").style.display = "";
+            if (_maintInterval) { clearInterval(_maintInterval); _maintInterval = null; }
+        }
+
+        function showAdminLoginFromMaint() {
+            document.getElementById("maintenanceBanner").classList.add("hidden");
+            document.querySelector(".auth-card").style.display = "";
+            document.getElementById("signin-section").classList.remove("hidden");
+            showToast("دخول المشرف — سيتم التحقق من الصلاحيات","info");
+        }
+
+        function startMaintCountdown() {
+            if (_maintInterval) clearInterval(_maintInterval);
+            function tick() {
+                const now  = Date.now();
+                const left = Math.max(0, _maintEndTime - now);
+                const total = Math.max(1, _maintEndTime - _maintStart);
+                const pct  = Math.min(100, ((total - left) / total) * 100);
+                document.getElementById("maintProgressFill").style.width = pct + "%";
+                const hh = Math.floor(left / 3600000);
+                const mm = Math.floor((left % 3600000) / 60000);
+                const ss = Math.floor((left % 60000) / 1000);
+                document.getElementById("maintHH").textContent = String(hh).padStart(2,"0");
+                document.getElementById("maintMM").textContent = String(mm).padStart(2,"0");
+                document.getElementById("maintSS").textContent = String(ss).padStart(2,"0");
+                if (left <= 0) {
+                    clearInterval(_maintInterval);
+                    document.getElementById("maintTimer").innerHTML = "✅ انتهت الصيانة";
+                    setTimeout(() => location.reload(), 3000);
+                }
+            }
+            tick();
+            _maintInterval = setInterval(tick, 1000);
+        }
+
+        /* ══ تسجيل الدخول ══ */
+        async function handleLogin() {
+            var rl = RATE_LIMIT.check("login");
+            if (!rl.allowed) { showToast("تم تجاوز عدد المحاولات. حاول بعد "+rl.mins+" دقيقة","error",5000); return; }
+            const btn   = document.getElementById('loginBtn');
+            btn.disabled = true; btn.innerHTML = '<div class="loader"></div>';
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass  = document.getElementById('loginPass').value;
+            if (!isValidEmail(email)) {
+                showToast("صيغة البريد الإلكتروني غير صحيحة","error");
+                btn.disabled=false; btn.innerText="دخول"; return;
+            }
+            try {
+                /* تحقق الصيانة داخل Login */
+                const maintCheck = await db.collection("admin").doc("settings").get();
+                if (maintCheck.exists && maintCheck.data().maintenance) {
+                    const adminEmails = (maintCheck.data().adminEmails || []);
+                    const isAdminEmail = adminEmails.map(e => e.toLowerCase()).includes(email.toLowerCase());
+                    if (!isAdminEmail) {
+                        showToast("الموقع في وضع الصيانة 🔧","error");
+                        btn.disabled=false; btn.innerHTML="دخول"; return;
+                    }
+                }
+                const cred = await auth.signInWithEmailAndPassword(email, pass);
+                if (!cred.user.emailVerified) {
+                    showToast("يرجى تفعيل بريدك الإلكتروني أولاً 📧","info");
+                    await auth.signOut(); btn.disabled=false; btn.innerText="دخول"; return;
+                }
+                const userDoc  = await db.collection("users").doc(cred.user.uid).get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+                const missing = [];
+                if (!userData.name||userData.name.trim()==="")  missing.push({key:"name",label:"الاسم الكامل"});
+                if (!userData.phone||userData.phone.trim()==="") missing.push({key:"phone",label:"رقم الهاتف"});
+                if (missing.length > 0) { _pendingUser=cred.user; showCompleteSection(missing); btn.disabled=false; btn.innerText="دخول"; return; }
+                await syncUserCollections(cred.user.uid, userData);
+                const currentLang = document.getElementById('htmlTag').getAttribute('lang')||'ar';
+                await db.collection("users").doc(cred.user.uid).update({
+                    lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    language: currentLang
+                });
+                RATE_LIMIT.reset("login");
+                window.location.replace('index.html');
+            } catch(err) {
+                RATE_LIMIT.increment("login");
+                showToast("البريد الإلكتروني أو كلمة المرور غير صحيحة","error");
+                btn.disabled=false; btn.innerText="دخول";
+            }
+        }
+
+        /* ══ إكمال البيانات الناقصة ══ */
+        function showCompleteSection(missing) {
+            document.getElementById('signin-section').classList.add('hidden');
+            document.getElementById('complete-section').classList.remove('hidden');
+            var listHtml = "";
+            missing.forEach(function(m){ listHtml += "<li>"+escapeHtml(m.label)+"</li>"; });
+            document.getElementById('missingList').innerHTML = listHtml;
+            missing.forEach(function(m){
+                if (m.key==="name")  document.getElementById('completeNameGroup').classList.remove('hidden');
+                if (m.key==="phone") document.getElementById('completePhoneGroup').classList.remove('hidden');
+            });
+            _missingKeys = missing.map(function(m){ return m.key; });
+        }
+
+        async function handleComplete() {
+            if (!_pendingUser) return;
+            const btn = document.getElementById('completeBtn');
+            btn.disabled=true; btn.innerHTML='<div class="loader"></div>';
+            const updates = {};
+            if (_missingKeys.includes("name")) {
+                const name = cleanInput(document.getElementById('completeName').value);
+                if (!name) { showToast("الاسم الكامل مطلوب","error"); btn.disabled=false; btn.innerText="حفظ والمتابعة"; return; }
+                if (containsBadWord(name)) { showToast("⚠️ الاسم يحتوي على كلمات غير مسموح بها","error"); btn.disabled=false; btn.innerText="حفظ والمتابعة"; return; }
+                updates.name = name;
+            }
+            if (_missingKeys.includes("phone")) {
+                const rawPhone = document.getElementById('completePhone').value.trim().replace(/\D/g,"");
+                if (!rawPhone) { showToast("رقم الهاتف مطلوب","error"); btn.disabled=false; btn.innerText="حفظ والمتابعة"; return; }
+                updates.phone = selectedDial2 + rawPhone;
+            }
+            try {
+                const currentLang = document.getElementById('htmlTag').getAttribute('lang')||'ar';
+                updates.lastLoginAt = firebase.firestore.FieldValue.serverTimestamp();
+                updates.language    = currentLang;
+                await db.collection("users").doc(_pendingUser.uid).update(updates);
+                const updatedDoc  = await db.collection("users").doc(_pendingUser.uid).get();
+                const updatedData = updatedDoc.exists ? updatedDoc.data() : {};
+                await syncUserCollections(_pendingUser.uid, updatedData);
+                RATE_LIMIT.reset("login");
+                window.location.replace('index.html');
+            } catch(err) {
+                showToast("حدث خطأ أثناء الحفظ، حاول مجدداً","error");
+                btn.disabled=false; btn.innerText="حفظ والمتابعة";
+            }
+        }
+
+        /* ══ إنشاء حساب ══ */
+        async function handleSignup() {
+            if (!_privacyAccepted) { showToast("يجب الموافقة على سياسة الخصوصية أولاً 🔒","error"); openPrivacyModal(null); return; }
+            const btn      = document.getElementById('signupBtn');
+            const user     = cleanInput(document.getElementById('regUser').value).toLowerCase();
+            const email    = document.getElementById('emailInput').value.trim();
+            const pass     = document.getElementById('regPass').value;
+            const rawPhone = document.getElementById('regPhone').value.trim().replace(/\D/g,"");
+            const name     = cleanInput(document.getElementById('regName').value);
+            const ADMIN_UN = "ht";
+            const isAdminSlot = (user === ADMIN_UN);
+            if (!isAdminSlot && user.length < 4) { showToast("اسم المستخدم يجب أن يكون 4 حروف على الأقل","error"); return; }
+            if (!isAdminSlot && !/^[a-z0-9._]+$/.test(user)) { showToast("اسم المستخدم: حروف إنجليزية صغيرة وأرقام فقط","error"); return; }
+            if (!isValidEmail(email)) { showToast("صيغة البريد الإلكتروني غير صحيحة","error"); return; }
+            if (pass.length < 8) { showToast("كلمة المرور يجب أن تكون 8 أحرف على الأقل","error"); return; }
+            if (!name) { showToast("الاسم الكامل مطلوب","error"); return; }
+            if (containsBadWord(name)) { showToast("⚠️ الاسم يحتوي على كلمات غير مسموح بها","error"); return; }
+            if (containsBadWord(user)) { showToast("⚠️ اسم المستخدم يحتوي على كلمات غير مسموح بها","error"); return; }
+            if (!rawPhone) { showToast("رقم الهاتف إجباري للتسجيل 📱","error"); return; }
+            btn.disabled=true; btn.innerText="جاري التأمين...";
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                const check = await db.collection("users").where("username","==",user).limit(1).get();
+                if (!check.empty) {
+                    await cred.user.delete(); await auth.signOut();
+                    showToast("⚠️ اسم المستخدم مأخوذ، جرب اسماً آخر","error");
+                    btn.disabled=false; btn.innerText="إنشاء الحساب"; return;
+                }
+                const currentLang = document.getElementById('htmlTag').getAttribute('lang')||'ar';
+                const now      = firebase.firestore.FieldValue.serverTimestamp();
+                const todayKey = new Date().toISOString().slice(0,10);
+                await db.collection("users").doc(cred.user.uid).set({
+                    id:cred.user.uid, uid:cred.user.uid, username:user, name:name, email:email,
+                    phone:selectedDial+rawPhone, role:"user", isAdmin:false, isVIP:false, isPremium:false,
+                    anonCoins:10.00, bio:"I'm new here! 🕵️", avatar:"", avatarUrl:"", coverUrl:"",
+                    adminPass:"", followersCount:0, likesCount:0, blockedUsers:[], lang:"AR",
+                    language:currentLang, lastDailyQuestions:null, createdAt:now, lastLoginAt:now,
+                    isVerified:false, isBanned:false, banReason:"", banUntil:null, isDeleted:false,
+                    deletedAt:null, questionsReceived:0, questionsAnswered:0, questionsIgnored:0,
+                    profileViews:0, shareCount:0, premiumUntil:null, premiumPlan:"", totalSpent:0.00,
+                    notifNewQuestion:true, notifNewFollower:true, notifAnswers:true, fcmToken:"",
+                    allowAnonQuestions:true, allowLinks:false, profileIsPublic:true, sensitiveFilter:true,
+                    followingCount:0, following:[], mutedUsers:[], reportCount:0, lastDevice:"", lastIP:"",
+                    country:"", timezone:"", themeColor:"#f80566", profileLink:"",
+                    socialLinks:{instagram:"",twitter:"",tiktok:""}, badge:"", badgeLabel:"",
+                    xp:0, level:1, streak:1, lastStreakDate:now, achievements:[],
+                    referralCode:cred.user.uid.slice(0,8).toUpperCase(), referredBy:"", referralCount:0,
+                    welcomeNotifSent:true, welcomeBonusSent:true, collectionsInitialized:true,
+                    privacyAccepted:true, privacyAcceptedAt:now,
+                });
+                await db.collection("notifications").add({ userId:cred.user.uid, type:"system", title:"مرحباً بك في Anon! 🎉", body:"ابدأ رحلتك الغامضة، شارك رابطك واكتشف من يراقبك", icon:"🎉", isRead:false, actionUrl:"/index.html", refId:"", createdAt:now });
+                await db.collection("transactions").add({ userId:cred.user.uid, type:"bonus", amount:10.00, balanceBefore:0.00, balanceAfter:10.00, reason:"welcome_bonus", refId:"", createdAt:now });
+                await db.collection("analytics").doc(cred.user.uid+"_"+todayKey).set({ userId:cred.user.uid, date:todayKey, profileViews:0, questionsReceived:0, answersGiven:0, coinsEarned:10, loginCount:1, createdAt:now });
+                await secureInjectQuestions(cred.user.uid);
+                await cred.user.sendEmailVerification();
+                await auth.signOut();
+                document.getElementById('signup-section').classList.add('hidden');
+                document.getElementById('verify-waiting').classList.remove('hidden');
+            } catch(err) {
+                let msg = "فشل التسجيل، حاول مجدداً";
+                if (err.code==="auth/too-many-requests")          msg="⏳ تم تجاوز عدد المحاولات، انتظر قليلاً";
+                else if (err.code==="auth/email-already-in-use")  msg="📧 البريد الإلكتروني مستخدم بالفعل";
+                else if (err.code==="auth/weak-password")         msg="🔒 كلمة المرور ضعيفة، 8 أحرف على الأقل";
+                else if (err.code==="auth/invalid-email")         msg="📧 البريد الإلكتروني غير صحيح";
+                else if (err.code==="auth/network-request-failed")msg="🌐 تحقق من اتصالك بالإنترنت";
+                showToast(msg,"error");
+                btn.disabled=false; btn.innerText="إنشاء الحساب";
+            }
+        }
+        /* ══ حقن الأسئلة الترحيبية ══ */
+        async function secureInjectQuestions(userId) {
+            try {
+                const config = await db.collection("system_settings").doc("defaults").get();
+                if (!config.exists) return;
+                const questions = config.data().welcome_questions;
+                if (!Array.isArray(questions)) return;
+                const batch = db.batch();
+                questions.slice(0,20).forEach(qText => {
+                    if (typeof qText !== "string") return;
+                    const ref = db.collection("questions").doc();
+                    batch.set(ref, {
+                        receiverId: userId, senderId: "AnonSystem",
+                        text: cleanInput(qText), status: "pending",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                });
+                await batch.commit();
+            } catch(e){ console.error("secureInjectQuestions error:", e); }
+        }
+
+        /* ══ مزامنة الكولكشنز ══ */
+        async function syncUserCollections(uid, userData) {
+            try {
+                const now     = firebase.firestore.FieldValue.serverTimestamp();
+                const userRef = db.collection("users").doc(uid);
+                const userUpdates = {};
+                const defaults = {
+                    isVerified:false, isBanned:false, banReason:"", banUntil:null, isDeleted:false,
+                    deletedAt:null, questionsReceived:0, questionsAnswered:0, questionsIgnored:0,
+                    profileViews:0, shareCount:0, premiumUntil:null, premiumPlan:"", totalSpent:0.00,
+                    notifNewQuestion:true, notifNewFollower:true, notifAnswers:true, fcmToken:"",
+                    allowAnonQuestions:true, allowLinks:false, profileIsPublic:true, sensitiveFilter:true,
+                    followingCount:0, following:[], mutedUsers:[], reportCount:0, lastDevice:"", lastIP:"",
+                    country:"", timezone:"", themeColor:"#f80566", profileLink:"",
+                    socialLinks:{instagram:"",twitter:"",tiktok:""}, badge:"", badgeLabel:"",
+                    xp:0, level:1, streak:0, lastStreakDate:null, achievements:[],
+                    referralCode:uid.slice(0,8).toUpperCase(), referredBy:"", referralCount:0,
+                };
+                const numericFields = [
+                    "questionsReceived","questionsAnswered","questionsIgnored","profileViews",
+                    "shareCount","totalSpent","followingCount","reportCount","xp","level",
+                    "streak","referralCount","anonCoins","followersCount","likesCount"
+                ];
+                Object.keys(defaults).forEach(key => {
+                    if (userData[key] === undefined || userData[key] === null) userUpdates[key] = defaults[key];
+                });
+                numericFields.forEach(key => {
+                    const current = userData[key];
+                    if (current !== undefined && current !== null) {
+                        const safe = Math.max(0, Number(current) || 0);
+                        if (safe !== current) userUpdates[key] = safe;
+                    }
+                });
+                const today    = new Date().toDateString();
+                const lastDate = userData.lastStreakDate
+                    ? (userData.lastStreakDate.toDate ? userData.lastStreakDate.toDate().toDateString() : new Date(userData.lastStreakDate).toDateString())
+                    : null;
+                if (lastDate !== today) {
+                    const yesterday = new Date(Date.now() - 86400000).toDateString();
+                    userUpdates.lastStreakDate = now;
+                    userUpdates.streak = (lastDate === yesterday) ? Math.max(0,(Number(userData.streak)||0)+1) : 1;
+                }
+                const batch = db.batch();
+                if (!userData.collectionsInitialized) {
+                    const notifRef = db.collection("notifications").doc();
+                    batch.set(notifRef, { userId:uid, type:"system", title:"مرحباً بك في Anon! 🎉", body:"ابدأ رحلتك الغامضة، شارك رابطك واكتشف من يراقبك", icon:"🎉", isRead:false, actionUrl:"/index.html", refId:"", createdAt:now });
+                    const txRef = db.collection("transactions").doc();
+                    batch.set(txRef, { userId:uid, type:"bonus", amount:10.00, balanceBefore:0.00, balanceAfter:10.00, reason:"welcome_bonus", refId:"", createdAt:now });
+                    const todayKey = new Date().toISOString().slice(0,10);
+                    const analyticsRef = db.collection("analytics").doc(uid+"_"+todayKey);
+                    batch.set(analyticsRef, { userId:uid, date:todayKey, profileViews:0, questionsReceived:0, answersGiven:0, coinsEarned:10, loginCount:1, createdAt:now }, { merge:true });
+                    if (!userData.welcomeBonusSent) { userUpdates.anonCoins = Math.max(0,Number(userData.anonCoins)||0)+10; userUpdates.welcomeBonusSent = true; }
+                    userUpdates.collectionsInitialized = true;
+                } else {
+                    const todayKey = new Date().toISOString().slice(0,10);
+                    const analyticsRef = db.collection("analytics").doc(uid+"_"+todayKey);
+                    const analyticsSnap = await analyticsRef.get();
+                    if (!analyticsSnap.exists) {
+                        batch.set(analyticsRef, { userId:uid, date:todayKey, profileViews:0, questionsReceived:0, answersGiven:0, coinsEarned:0, loginCount:1, createdAt:now });
+                    } else {
+                        batch.update(analyticsRef, { loginCount: firebase.firestore.FieldValue.increment(1) });
+                    }
+                }
+                if (Object.keys(userUpdates).length > 0) batch.update(userRef, userUpdates);
+                await batch.commit();
+            } catch(err) { console.error("syncUserCollections error:", err); }
+        }
+
+        /* ══ تحميل مقالات التحديثات ══ */
+        async function loadArticles() {
+    try {
+        const snap = await db.collection("site_updates")
+            .limit(5)
+            .get();
+                const list  = document.getElementById("articlesList");
+                const badge = document.getElementById("articlesBadge");
+                if (snap.empty) {
+                    list.innerHTML = '<div class="no-articles">📭 لا توجد تحديثات حالياً</div>';
+                    badge.style.display = "none";
+                    return;
+                }
+                var newCount = 0;
+                var html = "";
+                var icons = ["🚀","✨","🔧","📢","🎉","🛡️","💎","⚡"];
+                var cats  = ["تحديث","ميزة جديدة","إصلاح","إعلان","حدث","أمان","مميز","تحسين"];
+                var i = 0;
+snap.forEach(function(doc) {
+                    var d = doc.data();
+                    var title = escapeHtml(d.title || "تحديث جديد");
+                    var date  = d.createdAt
+                        ? new Date(d.createdAt.toDate()).toLocaleDateString("ar-EG",{year:"numeric",month:"long",day:"numeric"})
+                        : "";
+                    var views  = d.views ? (d.views > 999 ? Math.floor(d.views/1000)+"k" : d.views) : "0";
+                    var icon   = icons[i % icons.length];
+                    var cat    = escapeHtml(d.category || cats[i % cats.length]);
+                    var link = "article.html?id=" + doc.id;
+                    var isNew  = d.isNew === true;
+                    if (isNew) newCount++;
+                    html += '<a class="article-card" href="'+link+'" target="_blank" rel="noopener">';
+                    html += '<div class="article-icon">'+icon+'</div>';
+                    html += '<div class="article-body">';
+                    html += '<div class="article-cat">'+cat+(isNew?' &nbsp;🆕':'')+'</div>';
+                    html += '<div class="article-title">'+title+'</div>';
+                    html += '<div class="article-meta">';
+                    if (date) html += '<span>📅 '+date+'</span>';
+                    html += '<span>👁️ '+views+'</span>';
+                    html += '</div></div>';
+                    html += '<span class="article-arrow">‹</span>';
+                    html += '</a>';
+                    i++;
+                });
+                list.innerHTML = html;
+                badge.textContent = newCount > 0 ? newCount+" جديد" : snap.size+" مقال";
+            } catch(e) {
+                document.getElementById("articlesList").innerHTML = '<div class="no-articles">⚠️ تعذر تحميل التحديثات</div>';
+                console.error("loadArticles error:", e);
+            }
+        }
+
+        /* ══ إعادة تعيين كلمة المرور ══ */
+        function openResetModal() {
+            const email = document.getElementById('loginEmail').value.trim();
+            if (!email) { showToast("اكتب بريدك الإلكتروني الأول ثم اضغط نسيت كلمة السر","info"); return; }
+            if (!isValidEmail(email)) { showToast("صيغة البريد الإلكتروني غير صحيحة","error"); return; }
+            var rl = RATE_LIMIT.check("reset");
+            if (!rl.allowed) { showToast("تم إرسال البريد مسبقاً. انتظر "+rl.mins+" دقيقة","info",4000); return; }
+            RATE_LIMIT.increment("reset");
+            auth.sendPasswordResetEmail(email)
+                .then(()  => showToast("تم إرسال رابط استعادة كلمة السر 📧","success"))
+                .catch(()  => showToast("إذا كان البريد مسجلاً سيصلك الرابط قريباً","info"));
+        }
+
+        document.getElementById('loginPass').addEventListener('keydown', function(e){
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        /* ══ تحميل كل شيء عند البدء ══ */
+        window.addEventListener("load", function() {
+            loadBadWords();
+            checkMaintenanceMode();
+            setTimeout(loadArticles, 800);
+        });
+    </script>
+</body>
+</html>

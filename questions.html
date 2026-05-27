@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الأسئلة | Anon</title>
+    <meta name="description" content="Anon - استقبل أسئلة مجهولة وأجب عليها بصدق وشفافية">
+    <meta name="keywords" content="أسئلة مجهولة, anon, اسأل بشكل مجهول, ردود صريحة">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Anon HT">
+    <meta property="og:title" content="الأسئلة | Anon">
+    <meta property="og:description" content="استقبل أسئلة مجهولة وأجب عليها بصدق وشفافية">
+    <meta property="og:image" content="https://anon-ht.web.app/images/logo.png">
+    <meta property="og:url" content="https://anon-ht.web.app/questions.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_EG">
+    <meta property="og:site_name" content="Anon HT">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="الأسئلة | Anon">
+    <meta name="twitter:description" content="استقبل أسئلة مجهولة وأجب عليها بصدق وشفافية">
+    <meta name="twitter:image" content="https://anon-ht.web.app/images/logo.png">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics-compat.js"></script>
+    <script src="lang.js"></script>
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <style>
+        :root {
+            --primary: #f80566;
+            --bg: #050505;
+            --card: rgba(13,13,13,0.9);
+            --text: #ffffff;
+            --dim: #888;
+            --border: rgba(255,255,255,0.06);
+            --gold: #ffcc00;
+            --admin-red: #ff002b;
+            --verify-blue: #00bfff;
+            --shout-color: #f80566;
+            --shout-bg: rgba(248,5,102,0.08);
+            --shout-border: rgba(248,5,102,0.2);
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; margin: 0; padding-bottom: 100px; }
+
+        .swal-popup  { border-radius:24px!important; border:1px solid rgba(255,255,255,0.07)!important; box-shadow:0 20px 60px rgba(0,0,0,0.8)!important; backdrop-filter:blur(20px)!important; }
+        .swal-title  { font-size:17px!important; font-weight:900!important; color:#fff!important; }
+        .swal-html   { font-size:13px!important; color:#888!important; font-weight:600!important; line-height:1.6!important; }
+        .swal-confirm{ background:linear-gradient(135deg,#f80566,#c0004e)!important; border-radius:50px!important; font-family:'Cairo',sans-serif!important; font-weight:800!important; font-size:13px!important; padding:10px 28px!important; box-shadow:0 4px 15px rgba(248,5,102,0.35)!important; border:none!important; }
+        .swal-confirm-danger { background:linear-gradient(135deg,#ff4b4b,#c00)!important; border-radius:50px!important; font-family:'Cairo',sans-serif!important; font-weight:800!important; font-size:13px!important; padding:10px 28px!important; box-shadow:0 4px 15px rgba(255,75,75,0.35)!important; border:none!important; }
+        .swal-cancel { background:rgba(255,255,255,0.06)!important; color:#aaa!important; border-radius:50px!important; font-family:'Cairo',sans-serif!important; font-weight:800!important; font-size:13px!important; padding:10px 28px!important; border:1px solid rgba(255,255,255,0.08)!important; }
+        .swal-input-field { background:#0e0e0e!important; border:1px solid rgba(255,255,255,0.08)!important; border-radius:14px!important; color:#fff!important; font-family:'Cairo',sans-serif!important; font-size:13px!important; }
+
+        header {
+            padding: 10px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(5,5,5,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-img { width: 35px; height: auto; }
+        .coins-pill {
+            background: rgba(255,204,0,0.1); padding: 5px 12px;
+            border-radius: 50px; border: 1px solid rgba(255,204,0,0.2);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .container { padding: 12px; max-width: 550px; margin: 0 auto; }
+
+        .filter-tabs {
+            display: flex; background: rgba(255,255,255,0.03);
+            padding: 4px; border-radius: 16px; margin-bottom: 16px;
+            border: 1px solid var(--border); gap: 4px;
+        }
+        .tab-btn {
+            flex: 1; border: none; background: transparent; color: var(--dim);
+            padding: 8px 5px; border-radius: 12px;
+            font-family: 'Cairo'; font-weight: 700; font-size: 11px; cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .tab-badge {
+            background: rgba(255,255,255,0.2); color: inherit;
+            font-size: 9px; font-weight: 900; padding: 1px 6px;
+            border-radius: 20px; min-width: 18px; text-align: center; display: none;
+        }
+        .tab-badge.show { display: inline-block; }
+
+        .ask-card {
+            background: var(--card); backdrop-filter: blur(15px);
+            border-radius: 18px; margin-bottom: 12px;
+            border: 1px solid var(--border); overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .ask-body { padding: 14px 16px; }
+        .ask-label {
+            font-size: 9px; font-weight: 900; padding: 2px 9px;
+            border-radius: 50px; margin-bottom: 10px; display: inline-block;
+        }
+        .label-personal { background: rgba(248,5,102,0.1); color: var(--primary); border: 1px solid rgba(248,5,102,0.2); }
+        .ask-text { font-size: 14px; font-weight: 600; line-height: 1.55; color: #fff; margin: 0; }
+
+        .sender-info {
+            display: flex; align-items: center; gap: 8px;
+            margin-top: 10px; padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .sender-avatar-wrap { position: relative; width: 32px; height: 32px; flex-shrink: 0; }
+        .sender-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); display: block; }
+        .sender-avatar-wrap.admin-glow .sender-img { border-color: var(--admin-red); box-shadow: 0 0 8px rgba(255,0,43,0.6); }
+        .sender-avatar-wrap.verify-glow .sender-img { border-color: var(--verify-blue); box-shadow: 0 0 8px rgba(0,191,255,0.5); }
+        .sender-text-col { display: flex; flex-direction: column; }
+        .sender-name-row { display: flex; align-items: center; gap: 4px; }
+        .badge-icon-sm { width: 18px; height: 18px; border-radius: 50%; vertical-align: middle; display: inline-block; }
+        img.admin-badge-sm { filter: drop-shadow(0 0 3px rgba(255,0,43,0.7)); animation: admin-badge-pulse 2s infinite ease-in-out; }
+        img.verify-badge-sm { filter: drop-shadow(0 0 3px rgba(0,191,255,0.6)); animation: user-badge-pulse 2s infinite ease-in-out; }
+        @keyframes admin-badge-pulse {
+            0%,100% { transform:scale(1); filter:drop-shadow(0 0 3px rgba(255,0,43,0.6)); opacity:.9; }
+            50%      { transform:scale(1.15); filter:drop-shadow(0 0 8px rgba(255,0,43,0.9)); opacity:1; }
+        }
+        @keyframes user-badge-pulse {
+            0%,100% { transform:scale(1); filter:drop-shadow(0 0 3px rgba(0,191,255,0.5)); opacity:.8; }
+            50%      { transform:scale(1.15); filter:drop-shadow(0 0 8px rgba(0,191,255,0.8)); opacity:1; }
+        }
+        .anon-shout-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; color: #666; font-weight: 700; margin-top: 8px; }
+
+        .ask-footer {
+            display: flex; padding: 10px 14px;
+            background: rgba(255,255,255,0.02); gap: 8px;
+            border-top: 1px solid var(--border); align-items: center;
+        }
+        .ask-btn { border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s, transform 0.15s; font-family: 'Cairo'; }
+        .ask-btn:active { transform: scale(0.97); }
+        .ask-btn.reply { flex: 1; padding: 10px; font-weight: 800; font-size: 12px; gap: 7px; background: var(--primary); color: white; }
+        .ask-btn.icon-only { width: 40px; height: 40px; background: rgba(255,255,255,0.05); color: #666; border: 1px solid var(--border); font-size: 13px; }
+        .ask-btn.icon-only:hover { color: #ff4b4b; border-color: rgba(255,75,75,0.3); }
+        .ask-btn.report-btn:hover { color: var(--gold); border-color: rgba(255,204,0,0.3); }
+
+        .reply-box { display: none; padding: 14px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.3); }
+        .reply-textarea {
+            width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px; color: #fff; font-family: 'Cairo';
+            margin-bottom: 8px; min-height: 70px; resize: none; font-size: 13px; transition: border-color 0.2s;
+        }
+        .reply-textarea:focus { border-color: rgba(248,5,102,0.35); }
+        .reply-send-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; font-family: 'Cairo'; font-size: 13px; }
+
+        .shout-inbox-card {
+            background: var(--card); border-radius: 18px; margin-bottom: 12px;
+            border: 1px solid var(--shout-border); overflow: hidden;
+            animation: slideUp 0.3s ease; position: relative;
+        }
+        .shout-inbox-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--shout-color), transparent);
+        }
+        [dir="ltr"] .shout-inbox-card::before { background: linear-gradient(90deg, transparent, var(--shout-color)); }
+        .shout-inbox-body { padding: 14px 16px; }
+        .shout-label {
+            font-size: 9px; font-weight: 900; padding: 2px 9px; border-radius: 50px;
+            margin-bottom: 10px; display: inline-block;
+            background: var(--shout-bg); color: var(--shout-color); border: 1px solid var(--shout-border);
+        }
+        .shout-sender-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .shout-avatar-wrap { position: relative; width: 36px; height: 36px; flex-shrink: 0; }
+        .shout-sender-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--shout-border); display: block; }
+        .shout-avatar-wrap.admin-glow .shout-sender-img { border-color: var(--admin-red); box-shadow: 0 0 8px rgba(255,0,43,0.6); }
+        .shout-avatar-wrap.verify-glow .shout-sender-img { border-color: var(--verify-blue); box-shadow: 0 0 8px rgba(0,191,255,0.5); }
+        .shout-sender-text { display: flex; flex-direction: column; }
+        .shout-inbox-text { font-size: 14px; font-weight: 600; line-height: 1.6; color: #f0f0f0; margin: 0 0 4px; }
+
+        .shout-inbox-footer {
+            display: flex; padding: 10px 14px; background: rgba(255,255,255,0.015);
+            gap: 8px; border-top: 1px solid var(--border); align-items: center;
+        }
+        .shout-reply-btn {
+            flex: 1; background: var(--shout-bg); color: var(--shout-color);
+            border: 1px solid var(--shout-border); padding: 9px 13px; border-radius: 12px;
+            font-size: 12px; font-weight: 800; cursor: pointer; font-family: 'Cairo';
+            display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s;
+        }
+        .shout-reply-btn:hover { background: rgba(248,5,102,0.15); }
+        .shout-icon-btn {
+            width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.05);
+            color: #666; border: 1px solid var(--border); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 13px;
+            transition: color 0.2s, border-color 0.2s; flex-shrink: 0;
+        }
+        .shout-icon-btn:hover { color: #ff4b4b; border-color: rgba(255,75,75,0.3); }
+        .shout-icon-btn.report-btn:hover { color: var(--gold); border-color: rgba(255,204,0,0.3); }
+        .shout-reply-box { display: none; padding: 14px; border-top: 1px solid var(--shout-border); background: rgba(248,5,102,0.03); }
+        .shout-reply-textarea {
+            width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--shout-border);
+            border-radius: 12px; padding: 12px; color: #fff; font-family: 'Cairo';
+            margin-bottom: 8px; min-height: 70px; resize: none; font-size: 13px; transition: border-color 0.2s;
+        }
+        .shout-reply-textarea:focus { border-color: rgba(248,5,102,0.4); }
+        .shout-reply-send { background: var(--shout-color); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; font-family: 'Cairo'; font-size: 13px; }
+
+        /* ══ صدى كارد ══ */
+        .sada-card {
+            background: var(--card); border-radius: 18px; margin-bottom: 10px;
+            border: 1px solid var(--border); overflow: hidden;
+            animation: slideUp 0.3s ease; position: relative;
+        }
+        .sada-card::before {
+            content:''; position:absolute; top:0; right:0; left:0; height:2px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+        [dir="ltr"] .sada-card::before { background: linear-gradient(90deg, transparent, var(--primary)); }
+        .sada-body { padding: 12px 14px 10px; }
+        .sada-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:7px; }
+        .sada-meta { display:flex; align-items:center; gap:6px; }
+        .sada-lbl {
+            font-size:9px; font-weight:900; padding:2px 8px; border-radius:50px;
+            background:var(--shout-bg); color:var(--shout-color); border:1px solid var(--shout-border);
+        }
+        .sada-count { font-size:10px; color:var(--dim); font-weight:700; }
+        .sada-time  { font-size:10px; color:var(--dim); }
+        .sada-text  { font-size:13px; font-weight:600; color:#ccc; margin:0 0 10px; line-height:1.5; }
+        .sada-replies { display:flex; flex-direction:column; gap:5px; }
+        .sada-reply-item {
+            display:flex; align-items:center; gap:8px;
+            padding:7px 9px; border-radius:10px;
+            background:rgba(255,255,255,0.03);
+            border:1px solid rgba(255,255,255,0.05);
+            cursor:pointer; transition:background 0.18s, border-color 0.18s;
+        }
+        .sada-reply-item:active { transform:scale(0.99); }
+        .sada-reply-item:hover  { background:rgba(248,5,102,0.06); border-color:rgba(248,5,102,0.15); }
+        .sada-reply-av {
+            width:26px; height:26px; border-radius:50%; object-fit:cover; flex-shrink:0;
+            border:1px solid rgba(255,255,255,0.08);
+        }
+        .sada-reply-col { flex:1; min-width:0; }
+        .sada-reply-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:1px; }
+        .sada-reply-name { font-size:11px; font-weight:800; color:#fff; }
+        .sada-reply-time { font-size:9px; color:var(--dim); flex-shrink:0; }
+        .sada-reply-txt  { font-size:11px; font-weight:600; color:#999; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .sada-empty { font-size:11px; color:#444; font-weight:700; text-align:center; padding:8px 0 4px; }
+
+        /* ══ BOTTOM NAV — موحّد مع profile.html ══ */
+        .bottom-nav{position:fixed;bottom:0;left:0;width:100%;background:rgba(10,10,10,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid var(--border);z-index:1000;}
+.nav-item{text-decoration:none;display:flex;flex-direction:column;align-items:center;color:#555;font-size:10px;font-weight:700;gap:3px;transition:color 0.2s;position:relative;padding:4px 8px;}
+.nav-item i{font-size:20px;margin-bottom:4px;}
+.nav-item.active{color:var(--primary);}
+.nav-item:hover{color:#888;}
+.badge-nav{position:absolute;top:-5px;right:-5px;background:var(--primary);color:white;font-size:9px;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #000;font-weight:900;}
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #333; }
+        .empty-state i { font-size: 44px; display: block; margin-bottom: 12px; }
+        .empty-state p { font-size: 13px; font-weight: 700; }
+        .sending-overlay { opacity: 0.5; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="images/logo.png" class="logo-img" alt="Anon Logo" width="35" height="35">
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div class="coins-pill">
+            <span id="userCoins" style="color:var(--gold);font-size:12px;font-weight:800;">0.00</span>
+            <i class="fa-solid fa-coins" style="color:var(--gold);font-size:10px;" aria-hidden="true"></i>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="filter-tabs">
+        <button class="tab-btn active" id="btn-filterAll" onclick="setFilter('all',this)">
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+            <span id="txt-tabAll">الكل</span>
+            <span class="tab-badge" id="badge-all"></span>
+        </button>
+        <button class="tab-btn" id="btn-filterPersonal" onclick="setFilter('personal',this)">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            <span id="txt-tabPersonal">شخصي</span>
+            <span class="tab-badge" id="badge-personal"></span>
+        </button>
+        <button class="tab-btn" id="btn-filterShout" onclick="setFilter('shout',this)">
+            <i class="fa-solid fa-broadcast-tower" aria-hidden="true"></i>
+            <span id="txt-tabShout">شاوت</span>
+            <span class="tab-badge" id="badge-shout"></span>
+        </button>
+        <button class="tab-btn" id="btn-filterSada" onclick="setFilter('sada',this)">
+            <i class="fa-solid fa-wave-square" aria-hidden="true"></i>
+            <span id="txt-tabSada">صدى</span>
+        </button>
+    </div>
+    <div id="questionsList"></div>
+</div>
+
+<!-- ══ BOTTOM NAV — موحّد مع profile.html ══ -->
+<nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-house" aria-hidden="true"></i>
+        <span id="nav-home">الرئيسية</span>
+    </a>
+    <a href="questions.html" class="nav-item active" style="position:relative;" aria-current="page">
+        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+        <span id="nav-ques">الأسئلة</span>
+        <div id="qBadge" class="badge-nav" style="display:none;">0</div>
+    </a>
+    <a href="quiet-corner.html" class="nav-item">
+        <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+        <span id="nav-quiet">سكينة</span>
+    </a>
+    <a href="game.html" class="nav-item">
+        <i class="fa-solid fa-brain" aria-hidden="true"></i>
+        <span id="nav-ghost">تحدِّ</span>
+    </a>
+    <a href="profile.html" id="navProfileLink" class="nav-item">
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+        <span id="nav-profile">بروفايلي</span>
+    </a>
+</nav>
+
+<audio id="sndQuestion" src="sounds/question.wav" preload="none"></audio>
+
+<script>
+'use strict';
+
+firebase.initializeApp(APP_CONFIG.firebase);
+firebase.analytics();
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+/* ══════════ LANG ══════════ */
+let currentLang = (typeof LangManager !== 'undefined') ? LangManager.get() : 'ar';
+const t = k => {
+    if (typeof LangManager === 'undefined') return '';
+    const val = LangManager.t(k);
+    return val === k ? '' : val;
+};
+
+function applyLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
+    const ids = {
+        'txt-tabAll':      'tabAll',
+        'txt-tabPersonal': 'tabPersonal',
+        'txt-tabShout':    'tabShout',
+        'nav-home':        'nav_home',
+        'nav-ques':        'nav_qs',
+        'nav-quiet':       'nav_skina',
+        'nav-ghost':       'nav_tayf',
+        'nav-profile':     'nav_profile'
+    };
+    Object.entries(ids).forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = t(key) || el.textContent;
+    });
+}
+
+window.addEventListener('langChanged', e => {
+    const lang = e.detail?.lang || (typeof LangManager !== 'undefined' ? LangManager.get() : 'ar');
+    applyLanguage(lang);
+    renderAll();
+});
+document.addEventListener('langChanged', e => {
+    const lang = e.detail?.lang || (typeof LangManager !== 'undefined' ? LangManager.get() : 'ar');
+    applyLanguage(lang);
+    renderAll();
+});
+
+/* ══════════ STATE ══════════ */
+let currentUserId  = null;
+let currentFilter  = 'all';
+let isFirstLoad    = true;
+let prevQCount     = 0;
+let rendering      = false;
+
+const questionsMap      = new Map();
+const dismissedQIds     = new Set();
+const shoutsMap         = new Map();
+const repliedShouts     = new Set();
+const dismissedShouts   = new Set();
+const myShoutsMap       = new Map();
+const shoutRepliesCache = new Map();
+const shoutRepliesUnsubs = new Map();
+const unsubs            = [];
+const shoutReplyUnsubs  = new Map();
+
+/* ══════════ HELPERS ══════════ */
+const _esc = document.createElement('div');
+function safe(s) { _esc.textContent = String(s ?? ''); return _esc.innerHTML; }
+
+function safeImg(url, fb = 'images/user.png') {
+    if (!url) return fb;
+    try { return new URL(url).protocol === 'https:' ? url : fb; } catch { return fb; }
+}
+
+function timeAgo(ts) {
+    if (!ts) return '';
+    const m = Math.floor((Date.now() - ts.seconds * 1000) / 60000);
+    if (m < 1)  return currentLang === 'ar' ? 'الآن' : 'Now';
+    if (m < 60) return currentLang === 'ar' ? m + 'د' : m + 'm';
+    const h = Math.floor(m / 60);
+    if (h < 24) return currentLang === 'ar' ? h + 'س' : h + 'h';
+    return currentLang === 'ar' ? Math.floor(h / 24) + 'ي' : Math.floor(h / 24) + 'd';
+}
+
+const forbiddenWords = ['كلمة_سيئة_1', 'كلمة_سيئة_2', 'badword1', 'badword2'];
+function clean(text) {
+    if (!text) return '';
+    let r = text;
+    forbiddenWords.forEach(w => { r = r.replace(new RegExp(w, 'gi'), '****'); });
+    return r;
+}
+
+/* ══════════ SWAL ══════════ */
+const swalBase = {
+    background: 'linear-gradient(145deg,#0d0d0d,#111)',
+    color: '#fff', fontFamily: 'Cairo, sans-serif',
+    customClass: {
+        popup: 'swal-popup', title: 'swal-title',
+        htmlContainer: 'swal-html', confirmButton: 'swal-confirm',
+        cancelButton: 'swal-cancel', input: 'swal-input-field'
+    }
+};
+
+function toast(icon, text, timer = 2500) {
+    if (typeof Swal === 'undefined') return;
+    Swal.fire({
+        ...swalBase, icon, text, timer,
+        toast: true, position: 'bottom', showConfirmButton: false, timerProgressBar: true,
+        iconColor: icon === 'success' ? '#00e676' : icon === 'error' ? '#f80566' : icon === 'warning' ? '#ffcc00' : '#fff'
+    });
+}
+
+function confirmSwal(title, text, confirmTxt, danger = false) {
+    if (typeof Swal === 'undefined') return Promise.resolve({ isConfirmed: confirm(text) });
+    return Swal.fire({
+        ...swalBase,
+        icon: danger ? 'warning' : 'question',
+        iconColor: danger ? '#ff4b4b' : '#f80566',
+        title, text, showCancelButton: true,
+        confirmButtonText: confirmTxt,
+        cancelButtonText: t('cancelBtn') || 'إلغاء',
+        customClass: { ...swalBase.customClass, confirmButton: danger ? 'swal-confirm-danger' : 'swal-confirm' }
+    });
+}
+
+/* ══════════ AUTH ══════════ */
+auth.onAuthStateChanged(user => {
+    if (!user) { location.href = 'signin.html'; return; }
+    currentUserId = user.uid;
+    document.getElementById('navProfileLink').href = 'profile.html?id=' + user.uid;
+
+    unsubs.push(
+        db.collection('users').doc(user.uid).onSnapshot(doc => {
+            if (doc.exists) document.getElementById('userCoins').textContent =
+                (doc.data().anonCoins || 0).toFixed(2);
+        })
+    );
+
+    applyLanguage(currentLang);
+    startListeners(user.uid);
+});
+
+/* ══════════════════════════════════════
+   LISTENERS
+══════════════════════════════════════ */
+function startListeners(uid) {
+
+    /* 1) الأسئلة الشخصية pending فقط */
+    unsubs.push(
+        db.collection('questions')
+            .where('receiverId', '==', uid)
+            .where('status', '==', 'pending')
+            .orderBy('createdAt', 'desc')
+            .onSnapshot(snap => {
+                snap.docChanges().forEach(ch => {
+                    if (ch.type === 'removed') {
+                        questionsMap.delete(ch.doc.id);
+                    } else {
+                        const data = ch.doc.data();
+                        if (data.status !== 'pending') questionsMap.delete(ch.doc.id);
+                        else questionsMap.set(ch.doc.id, { id: ch.doc.id, ...data });
+                    }
+                });
+                notifyAndRender();
+            }, err => console.error('questions:', err))
+    );
+
+    /* 2) الأسئلة المتجاهلة */
+    unsubs.push(
+        db.collection('users').doc(uid).collection('dismissed_questions')
+            .onSnapshot(snap => {
+                snap.docChanges().forEach(ch => {
+                    if (ch.type === 'removed') dismissedQIds.delete(ch.doc.id);
+                    else dismissedQIds.add(ch.doc.id);
+                });
+                renderAll();
+            }, err => console.error('dismissed_questions:', err))
+    );
+
+    /* 3) الشاوتات الواردة */
+    unsubs.push(
+        db.collection('shouts')
+            .orderBy('createdAt', 'desc')
+            .limit(200)
+            .onSnapshot(async snap => {
+                try {
+                    const visible = snap.docs.filter(d => {
+    const data = d.data();
+    // اظهر الشاوت لو مش أنت اللي بعتته (مش owner ومش sender)
+    return data.ownerId !== uid && data.senderId !== uid;
+});
+                    const senderIds = [...new Set(
+                        visible.map(d => d.data().senderId || d.data().ownerId).filter(Boolean)
+                    )];
+                    const userCache = {};
+                    await Promise.all(senderIds.map(sid =>
+                        db.collection('users').doc(sid).get()
+                            .then(s => { userCache[sid] = s.exists ? s.data() : {}; })
+                            .catch(() => { userCache[sid] = {}; })
+                    ));
+                    shoutsMap.clear();
+                    visible.forEach(d => {
+                        const data = d.data();
+                        const sid  = data.senderId || data.ownerId;
+                        const u    = userCache[sid] || {};
+                        shoutsMap.set(d.id, {
+                            id: d.id, ...data,
+                            senderAvatar:     u.avatarUrl    || data.senderAvatar   || data.ownerAvatar   || '',
+                            senderName:       u.name         || data.senderName     || data.ownerName     || '',
+                            senderUsername:   u.username     || data.senderUsername || data.ownerUsername || '',
+                            senderIsVerified: !!(u.isVerified || u.isPremium),
+                            senderIsPremium:  !!(u.isPremium),
+                        });
+                    });
+                    subscribeShoutReplies(uid);
+                    renderAll();
+                } catch (err) { console.error('shouts snap:', err); }
+            }, err => console.error('shouts:', err))
+    );
+
+    /* 4) الشاوتات المتجاهلة */
+    unsubs.push(
+        db.collection('users').doc(uid).collection('dismissed_shouts')
+            .onSnapshot(snap => {
+                snap.docChanges().forEach(ch => {
+                    if (ch.type === 'removed') dismissedShouts.delete(ch.doc.id);
+                    else dismissedShouts.add(ch.doc.id);
+                });
+                renderAll();
+            }, err => console.error('dismissed_shouts:', err))
+    );
+
+    /* ══════════════════════════════════════════════════════════
+       5) ✅ صدى — شاوتاتي اللي بعتها
+       بنجيب عن طريق ownerId (الشاوتات من البروفايل)
+       + senderId (لو في حالات تانية) ونـ merge الاتنين
+    ══════════════════════════════════════════════════════════ */
+
+    // 5a) شاوتات بعتها كـ owner (من صفحة البروفايل بتاعي)
+    unsubs.push(
+        db.collection('shouts')
+            .where('ownerId', '==', uid)
+            .orderBy('createdAt', 'desc')
+            .limit(50)
+            .onSnapshot(snap => {
+                snap.docChanges().forEach(ch => {
+                    if (ch.type === 'removed') {
+                        myShoutsMap.delete(ch.doc.id);
+                        if (shoutRepliesUnsubs.has(ch.doc.id)) {
+                            shoutRepliesUnsubs.get(ch.doc.id)();
+                            shoutRepliesUnsubs.delete(ch.doc.id);
+                            shoutRepliesCache.delete(ch.doc.id);
+                        }
+                    } else {
+                        myShoutsMap.set(ch.doc.id, { id: ch.doc.id, ...ch.doc.data() });
+                        subscribeMyShoutReplies(ch.doc.id);
+                    }
+                });
+                renderAll();
+            }, err => console.error('myShouts_owner:', err))
+    );
+
+    // 5b) شاوتات بعتها كـ sender (حالات أخرى)
+    unsubs.push(
+        db.collection('shouts')
+            .where('senderId', '==', uid)
+            .orderBy('createdAt', 'desc')
+            .limit(50)
+            .onSnapshot(snap => {
+                snap.docChanges().forEach(ch => {
+                    if (ch.type === 'removed') {
+                        // نحذفه من الـ map بس لو مش موجود في ownerId listener
+                        // نتحقق: لو الـ doc موجود في myShoutsMap وجاي من senderId بس
+                        const existing = myShoutsMap.get(ch.doc.id);
+                        if (existing && existing.ownerId !== uid) {
+                            myShoutsMap.delete(ch.doc.id);
+                            if (shoutRepliesUnsubs.has(ch.doc.id)) {
+                                shoutRepliesUnsubs.get(ch.doc.id)();
+                                shoutRepliesUnsubs.delete(ch.doc.id);
+                                shoutRepliesCache.delete(ch.doc.id);
+                            }
+                        }
+                    } else {
+                        // نضيفه بس لو مش موجود بالفعل (تجنب التكرار مع ownerId)
+                        if (!myShoutsMap.has(ch.doc.id)) {
+                            myShoutsMap.set(ch.doc.id, { id: ch.doc.id, ...ch.doc.data() });
+                            subscribeMyShoutReplies(ch.doc.id);
+                        }
+                    }
+                });
+                renderAll();
+            }, err => console.error('myShouts_sender:', err))
+    );
+}
+
+/* ══════════ Subscribe ردود شاوتاتي ══════════ */
+function subscribeMyShoutReplies(shoutId) {
+    if (shoutRepliesUnsubs.has(shoutId)) return;
+    const unsub = db.collection('shouts').doc(shoutId)
+        .collection('replies')
+        .orderBy('createdAt', 'desc')
+        .limit(20)
+        .onSnapshot(snap => {
+            shoutRepliesCache.set(shoutId, snap.docs.map(d => ({ id: d.id, ...d.data() })));
+            if (currentFilter === 'sada') renderAll();
+        }, err => console.error('myShoutReplies ' + shoutId + ':', err));
+    shoutRepliesUnsubs.set(shoutId, unsub);
+}
+
+/* ══════════════════════════════════════
+   SHOUT REPLIES SUBSCRIPTION (الواردة)
+══════════════════════════════════════ */
+function subscribeShoutReplies(uid) {
+    const currentIds = new Set(shoutsMap.keys());
+    shoutReplyUnsubs.forEach((unsub, shoutId) => {
+        if (!currentIds.has(shoutId)) {
+            unsub();
+            shoutReplyUnsubs.delete(shoutId);
+            repliedShouts.delete(shoutId);
+        }
+    });
+    currentIds.forEach(shoutId => {
+        if (shoutReplyUnsubs.has(shoutId)) return;
+        const unsub = db.collection('shouts').doc(shoutId)
+            .collection('replies')
+            .where('senderId', '==', uid)
+            .onSnapshot(snap => {
+                if (snap.empty) repliedShouts.delete(shoutId);
+                else            repliedShouts.add(shoutId);
+                renderAll();
+            }, err => console.error('reply snap ' + shoutId + ':', err));
+        shoutReplyUnsubs.set(shoutId, unsub);
+    });
+}
+
+/* ══════════ NOTIFY ══════════ */
+function notifyAndRender() {
+    const pendingNow = [...questionsMap.values()]
+        .filter(q => !dismissedQIds.has(q.id)).length;
+    if (!isFirstLoad && pendingNow > prevQCount) {
+        document.getElementById('sndQuestion')?.play().catch(() => {});
+        toast('success', t('newMsg') || 'وصلك سؤال جديد!');
+    }
+    prevQCount  = pendingNow;
+    isFirstLoad = false;
+    renderAll();
+}
+
+/* ══════════ VISIBLE ITEMS ══════════ */
+function getVisibleItems() {
+    const items = [];
+    questionsMap.forEach(q => {
+        if (dismissedQIds.has(q.id)) return;
+        items.push({ type: 'question', id: q.id, data: q, displayText: q.text || q.question || '', ts: q.createdAt?.seconds || 0 });
+    });
+    shoutsMap.forEach(s => {
+        if (repliedShouts.has(s.id))   return;
+        if (dismissedShouts.has(s.id)) return;
+        items.push({ type: 'shout', id: s.id, data: s, displayText: s.text || '', ts: s.createdAt?.seconds || 0 });
+    });
+    items.sort((a, b) => b.ts - a.ts);
+    return items;
+}
+
+/* ══════════ BADGES ══════════ */
+function updateBadges(items) {
+    const qCount = items.filter(i => i.type === 'question').length;
+    const sCount = items.filter(i => i.type === 'shout').length;
+    const total  = qCount + sCount;
+    const nav    = document.getElementById('qBadge');
+    nav.textContent   = total;
+    nav.style.display = total > 0 ? 'flex' : 'none';
+    [['badge-all', total], ['badge-personal', qCount], ['badge-shout', sCount]].forEach(([id, c]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = c;
+        el.classList.toggle('show', c > 0);
+    });
+}
+
+/* ══════════ RENDER ══════════ */
+function renderAll() {
+    if (rendering) return;
+    rendering = true;
+    requestAnimationFrame(() => {
+        rendering = false;
+        const list = document.getElementById('questionsList');
+        if (!list) return;
+
+        /* ✅ تاب صدى */
+        if (currentFilter === 'sada') {
+            const myShouts = [...myShoutsMap.values()].sort((a, b) =>
+                (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
+            );
+            if (myShouts.length === 0) {
+                list.innerHTML = `<div class="empty-state">
+                    <i class="fa-solid fa-wave-square" aria-hidden="true"></i>
+                    <p>لم ترسل أي شاوت بعد</p>
+                </div>`;
+                return;
+            }
+            const frag = document.createDocumentFragment();
+            myShouts.forEach(s => {
+                const el = buildSadaCard(s);
+                if (el) frag.appendChild(el);
+            });
+            list.innerHTML = '';
+            list.appendChild(frag);
+            return;
+        }
+
+        let items = getVisibleItems();
+        updateBadges(items);
+        if (currentFilter === 'personal') items = items.filter(i => i.type === 'question');
+        if (currentFilter === 'shout')    items = items.filter(i => i.type === 'shout');
+
+        if (items.length === 0) {
+            const icons = { personal: 'fa-envelope', shout: 'fa-broadcast-tower', all: 'fa-inbox' };
+            const k = currentFilter === 'personal' ? 'personal' : currentFilter === 'shout' ? 'shout' : 'all';
+            const emptyKey = k === 'personal' ? 'emptyPersonal' : k === 'shout' ? 'emptyShout' : 'emptyAll';
+            list.innerHTML = `<div class="empty-state">
+                <i class="fa-solid ${icons[k]}" aria-hidden="true"></i>
+                <p>${safe(t(emptyKey) || (k === 'personal' ? 'لا توجد أسئلة شخصية' : k === 'shout' ? 'لا يوجد شاوت جديد' : 'لا توجد رسائل جديدة'))}</p>
+            </div>`;
+            return;
+        }
+
+        const frag = document.createDocumentFragment();
+        items.forEach(item => {
+            const el = item.type === 'question' ? buildQuestionCard(item) : buildShoutCard(item);
+            if (el) frag.appendChild(el);
+        });
+        list.innerHTML = '';
+        list.appendChild(frag);
+    });
+}
+
+/* ══════════ SENDER ELEMENTS ══════════ */
+function buildSenderEl({ avatarUrl, name, username, isAdmin, isVerified, imgClass, wrapClass }) {
+    const wrap = document.createElement('div');
+    wrap.className = wrapClass + (isAdmin ? ' admin-glow' : isVerified ? ' verify-glow' : '');
+    const img = document.createElement('img');
+    img.src = safeImg(avatarUrl); img.className = imgClass; img.alt = ''; img.loading = 'lazy';
+    img.onerror = () => { img.src = 'images/user.png'; };
+    wrap.appendChild(img);
+    const nameRow = document.createElement('div');
+    nameRow.className = 'sender-name-row';
+    const nameSpan = document.createElement('span');
+    nameSpan.style.cssText = 'font-size:12px;font-weight:800;color:#fff;';
+    nameSpan.textContent = name || '';
+    nameRow.appendChild(nameSpan);
+    if (isAdmin) {
+        const b = document.createElement('img');
+        b.src = 'images/admin-verified-logo.png';
+        b.className = 'badge-icon-sm admin-badge-sm'; b.alt = '';
+        nameRow.appendChild(b);
+    } else if (isVerified) {
+        const b = document.createElement('img');
+        b.src = 'images/verified-logo.png';
+        b.className = 'badge-icon-sm verify-badge-sm'; b.alt = '';
+        nameRow.appendChild(b);
+    }
+    const userLine = document.createElement('div');
+    userLine.style.cssText = 'font-size:9px;color:var(--dim);margin-top:1px;';
+    userLine.textContent = username ? '@' + username : '';
+    return { wrap, nameRow, userLine };
+}
+
+/* ══════════ QUESTION CARD ══════════ */
+function buildQuestionCard(item) {
+    const q       = item.data;
+    const isAnon  = q.isAnonymous !== false;
+    const isAdmin = (q.senderUsername || '').toUpperCase() === 'HT';
+    const isVerif = !!(q.senderIsVerified || q.senderIsPremium || q.isVerified || q.isPremium);
+
+    const div = document.createElement('div');
+    div.className = 'ask-card'; div.id = 'card-q-' + item.id;
+
+    const body = document.createElement('div'); body.className = 'ask-body';
+    const label = document.createElement('span');
+    label.className = 'ask-label label-personal';
+    label.textContent = t('personalLabel') || 'شخصي';
+    const txt = document.createElement('p');
+    txt.className = 'ask-text'; txt.textContent = clean(item.displayText);
+    body.appendChild(label); body.appendChild(txt);
+
+    if (!isAnon) {
+        const row = document.createElement('div');
+        row.className = 'sender-info'; row.style.cursor = 'pointer';
+        row.onclick = () => { if (q.senderId) location.href = 'profile.html?id=' + q.senderId; };
+        const { wrap, nameRow, userLine } = buildSenderEl({
+            avatarUrl: q.senderAvatar || q.senderAvatarUrl || '',
+            name:      q.senderName   || q.name            || '',
+            username:  q.senderUsername || q.username      || '',
+            isAdmin, isVerified: isVerif,
+            imgClass: 'sender-img', wrapClass: 'sender-avatar-wrap'
+        });
+        const col = document.createElement('div'); col.className = 'sender-text-col';
+        col.appendChild(nameRow); col.appendChild(userLine);
+        row.appendChild(wrap); row.appendChild(col); body.appendChild(row);
+    } else {
+        const anon = document.createElement('div'); anon.className = 'anon-shout-badge';
+        anon.innerHTML = '<i class="fa-solid fa-mask" aria-hidden="true"></i> ' + safe(t('anonLabel') || 'مجهول');
+        body.appendChild(anon);
+    }
+
+    const footer = document.createElement('div'); footer.className = 'ask-footer';
+    const replyBtn = document.createElement('button');
+    replyBtn.className = 'ask-btn reply';
+    replyBtn.innerHTML = '<i class="fa-solid fa-feather-pointed" aria-hidden="true"></i> ' + safe(t('replyPublish') || 'رد وانشر');
+    replyBtn.onclick = () => toggleBox('qbox-' + item.id);
+    const delBtn = document.createElement('button');
+    delBtn.className = 'ask-btn icon-only'; delBtn.setAttribute('aria-label', 'حذف');
+    delBtn.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+    delBtn.onclick = () => handleDeleteQuestion(item.id);
+    const repBtn = document.createElement('button');
+    repBtn.className = 'ask-btn icon-only report-btn'; repBtn.setAttribute('aria-label', 'إبلاغ');
+    repBtn.innerHTML = '<i class="fa-solid fa-flag" aria-hidden="true"></i>';
+    repBtn.onclick = () => handleReport(item.id, 'question', q.senderId || null);
+    footer.appendChild(replyBtn); footer.appendChild(delBtn); footer.appendChild(repBtn);
+
+    const box = document.createElement('div'); box.className = 'reply-box'; box.id = 'qbox-' + item.id;
+    const ta  = document.createElement('textarea');
+    ta.className = 'reply-textarea'; ta.id = 'qin-' + item.id;
+    ta.placeholder = t('replyPlaceholder') || 'اكتب ردك هنا...'; ta.maxLength = 500;
+    const send = document.createElement('button');
+    send.className = 'reply-send-btn';
+    send.textContent = t('publishAnswer') || 'انشر الإجابة';
+    send.onclick = () => sendQuestionReply(item.id, q);
+    box.appendChild(ta); box.appendChild(send);
+
+    div.appendChild(body); div.appendChild(footer); div.appendChild(box);
+    return div;
+}
+
+/* ══════════ SADA CARD ══════════ */
+function buildSadaCard(shout) {
+    const replies = shoutRepliesCache.get(shout.id) || [];
+
+    const div = document.createElement('div');
+    div.className = 'sada-card';
+
+    const body = document.createElement('div');
+    body.className = 'sada-body';
+
+    const header = document.createElement('div');
+    header.className = 'sada-header';
+
+    const meta = document.createElement('div');
+    meta.className = 'sada-meta';
+
+    const lbl = document.createElement('span');
+    lbl.className = 'sada-lbl';
+    lbl.textContent = t('shoutLabel') || 'شاوت';
+
+    const cnt = document.createElement('span');
+    cnt.className = 'sada-count';
+    cnt.textContent = replies.length > 0
+        ? replies.length + (currentLang === 'ar' ? ' رد' : ' replies')
+        : (currentLang === 'ar' ? 'لا يوجد ردود بعد' : 'No replies yet');
+
+    meta.appendChild(lbl);
+    meta.appendChild(cnt);
+
+    const tm = document.createElement('span');
+    tm.className = 'sada-time';
+    tm.textContent = timeAgo(shout.createdAt);
+
+    header.appendChild(meta);
+    header.appendChild(tm);
+
+    const txt = document.createElement('p');
+    txt.className = 'sada-text';
+    txt.textContent = clean(shout.text || '');
+
+    body.appendChild(header);
+    body.appendChild(txt);
+
+    if (replies.length > 0) {
+        const wrap = document.createElement('div');
+        wrap.className = 'sada-replies';
+
+        replies.forEach(r => {
+            const item = document.createElement('div');
+            item.className = 'sada-reply-item';
+            item.onclick = () => { if (r.senderId) location.href = 'profile.html?id=' + r.senderId; };
+
+            const av = document.createElement('img');
+            av.className = 'sada-reply-av';
+            av.src = safeImg(r.senderAvatar);
+            av.alt = ''; av.loading = 'lazy';
+            av.onerror = () => { av.src = 'images/user.png'; };
+
+            const col = document.createElement('div');
+            col.className = 'sada-reply-col';
+
+            const top = document.createElement('div');
+            top.className = 'sada-reply-top';
+
+            const name = document.createElement('span');
+            name.className = 'sada-reply-name';
+            name.textContent = r.senderName || (currentLang === 'ar' ? 'مجهول' : 'Anonymous');
+
+            const rTime = document.createElement('span');
+            rTime.className = 'sada-reply-time';
+            rTime.textContent = timeAgo(r.createdAt);
+
+            top.appendChild(name);
+            top.appendChild(rTime);
+
+            const rTxt = document.createElement('p');
+            rTxt.className = 'sada-reply-txt';
+            rTxt.textContent = clean(r.text || '');
+
+            col.appendChild(top);
+            col.appendChild(rTxt);
+
+            item.appendChild(av);
+            item.appendChild(col);
+            wrap.appendChild(item);
+        });
+
+        body.appendChild(wrap);
+    } else {
+        const empty = document.createElement('p');
+        empty.className = 'sada-empty';
+        empty.textContent = currentLang === 'ar' ? 'لم يرد أحد بعد...' : 'No replies yet...';
+        body.appendChild(empty);
+    }
+
+    div.appendChild(body);
+    return div;
+}
+
+/* ══════════ SHOUT CARD ══════════ */
+function buildShoutCard(item) {
+    const s        = item.data;
+    const isAnon   = s.isAnonymous === true;
+    const senderId = s.senderId || s.ownerId || null;
+    const isAdmin  = (s.senderUsername || '').toUpperCase() === 'HT';
+    const isVerif  = !!(s.senderIsVerified || s.senderIsPremium);
+
+    const div = document.createElement('div');
+    div.className = 'shout-inbox-card'; div.id = 'card-s-' + item.id;
+
+    const body = document.createElement('div'); body.className = 'shout-inbox-body';
+
+    const topRow = document.createElement('div');
+    topRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;';
+    const lbl = document.createElement('span'); lbl.className = 'shout-label';
+    lbl.textContent = t('shoutLabel') || 'شاوت';
+    const tm = document.createElement('span'); tm.style.cssText = 'font-size:10px;color:var(--dim);';
+    tm.textContent = timeAgo(s.createdAt);
+    topRow.appendChild(lbl); topRow.appendChild(tm); body.appendChild(topRow);
+
+    if (!isAnon) {
+        const row = document.createElement('div');
+        row.className = 'shout-sender-row'; row.style.cursor = 'pointer';
+        row.onclick = () => { if (senderId) location.href = 'profile.html?id=' + senderId; };
+        const { wrap, nameRow, userLine } = buildSenderEl({
+            avatarUrl: s.senderAvatar || '', name: s.senderName || '', username: s.senderUsername || '',
+            isAdmin, isVerified: isVerif,
+            imgClass: 'shout-sender-img', wrapClass: 'shout-avatar-wrap'
+        });
+        const col = document.createElement('div'); col.className = 'shout-sender-text';
+        col.appendChild(nameRow);
+        const meta = document.createElement('div');
+        meta.style.cssText = 'font-size:9px;color:var(--dim);margin-top:1px;';
+        meta.textContent = (s.senderUsername ? '@' + s.senderUsername + ' · ' : '') + (t('sentToAll') || 'أرسل للجميع');
+        col.appendChild(meta); row.appendChild(wrap); row.appendChild(col); body.appendChild(row);
+    }
+
+    const txt = document.createElement('p'); txt.className = 'shout-inbox-text';
+    txt.textContent = clean(item.displayText); body.appendChild(txt);
+
+    const footer = document.createElement('div'); footer.className = 'shout-inbox-footer';
+    const replyBtn = document.createElement('button');
+    replyBtn.className = 'shout-reply-btn';
+    replyBtn.innerHTML = '<i class="fa-solid fa-reply" aria-hidden="true"></i> ' + safe(t('shoutReplyBtn') || 'رد على الشاوت');
+    replyBtn.onclick = () => toggleBox('sbox-' + item.id);
+    const delBtn = document.createElement('button');
+    delBtn.className = 'shout-icon-btn'; delBtn.setAttribute('aria-label', 'تجاهل');
+    delBtn.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+    delBtn.onclick = () => handleDismissShout(item.id);
+    const repBtn = document.createElement('button');
+    repBtn.className = 'shout-icon-btn report-btn'; repBtn.setAttribute('aria-label', 'إبلاغ');
+    repBtn.innerHTML = '<i class="fa-solid fa-flag" aria-hidden="true"></i>';
+    repBtn.onclick = () => handleReport(item.id, 'shout', senderId);
+    footer.appendChild(replyBtn); footer.appendChild(delBtn); footer.appendChild(repBtn);
+
+    const box = document.createElement('div'); box.className = 'shout-reply-box'; box.id = 'sbox-' + item.id;
+    const ta  = document.createElement('textarea');
+    ta.className = 'shout-reply-textarea'; ta.id = 'sin-' + item.id;
+    ta.placeholder = t('shoutReplyPlaceholder') || 'اكتب ردك على الشاوت...'; ta.maxLength = 300;
+    const send = document.createElement('button');
+    send.className = 'shout-reply-send';
+    send.textContent = t('sendShoutReply') || 'أرسل الرد';
+    send.onclick = () => sendShoutReply(item.id, s);
+    box.appendChild(ta); box.appendChild(send);
+
+    div.appendChild(body); div.appendChild(footer); div.appendChild(box);
+    return div;
+}
+
+/* ══════════ TOGGLE BOX ══════════ */
+function toggleBox(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    if (el.style.display === 'block') {
+        const ta = el.querySelector('textarea');
+        if (ta) setTimeout(() => ta.focus(), 100);
+    }
+}
+
+/* ══════════ ANIMATE OUT ══════════ */
+function animateOut(cardEl, cb) {
+    if (!cardEl) { if (cb) cb(); return; }
+    cardEl.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+    cardEl.style.opacity    = '0';
+    cardEl.style.transform  = 'translateY(-6px)';
+    setTimeout(() => { if (cardEl.parentNode) cardEl.remove(); if (cb) cb(); }, 280);
+}
+
+/* ══════════ SEND QUESTION REPLY ══════════ */
+async function sendQuestionReply(questionId, qData) {
+    const input   = document.getElementById('qin-' + questionId);
+    const rawText = input?.value?.trim();
+    if (!rawText) { toast('warning', t('replyEmpty') || 'اكتب ردك أولاً'); return; }
+    const text = clean(rawText);
+
+    const card = document.getElementById('card-q-' + questionId);
+
+    questionsMap.delete(questionId);
+    animateOut(card);
+    renderAll();
+
+    try {
+        const uDoc  = await db.collection('users').doc(currentUserId).get();
+        const uData = uDoc.exists ? uDoc.data() : {};
+        const isDev = (uData.username || '').toUpperCase() === 'HT';
+
+        await db.collection('answers').add({
+            questionId,
+            questionText: qData.text || qData.question || '',
+            reply:        text,
+            userId:       currentUserId,
+            username:     uData.username || '',
+            name:         uData.name     || '',
+            isVerified:   !!(isDev || uData.isVerified || uData.isPremium),
+            avatar:       uData.avatarUrl || '',
+            answeredAt:   firebase.firestore.FieldValue.serverTimestamp(),
+            likesCount:   0,
+            likedBy:      [],
+            likes:        [],
+            type:         'question_reply'
+        });
+
+        await db.collection('questions').doc(questionId).update({
+            status:     'answered',
+            answeredAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        await db.collection('users').doc(currentUserId).update({
+            answersCount: firebase.firestore.FieldValue.increment(1),
+            anonCoins:    firebase.firestore.FieldValue.increment(0.1)
+        });
+
+        toast('success', t('replySuccess') || 'تم نشر إجابتك ✓');
+    } catch (e) {
+        console.error('sendQuestionReply:', e);
+        toast('error', t('connError') || 'حدث خطأ، حاول مرة أخرى');
+    }
+}
+
+/* ══════════ SEND SHOUT REPLY ══════════ */
+async function sendShoutReply(shoutId, sData) {
+    const input   = document.getElementById('sin-' + shoutId);
+    const rawText = input?.value?.trim();
+    if (!rawText) { toast('warning', t('replyEmpty') || 'اكتب ردك أولاً'); return; }
+    const text = clean(rawText);
+
+    const card = document.getElementById('card-s-' + shoutId);
+    if (card) card.classList.add('sending-overlay');
+
+    try {
+        const uDoc  = await db.collection('users').doc(currentUserId).get();
+        const uData = uDoc.exists ? uDoc.data() : {};
+        const isDev = (uData.username || '').toUpperCase() === 'HT';
+
+        await db.collection('shouts').doc(shoutId).collection('replies').add({
+            senderId:     currentUserId,
+            senderName:   uData.name     || uData.username || '',
+            senderAvatar: uData.avatarUrl || '',
+            text,
+            isAnswer:   true,
+            likesCount: 0,
+            likedBy:    [],
+            createdAt:  firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        await db.collection('answers').add({
+            questionId:   shoutId,
+            questionText: sData.text || '',
+            reply:        text,
+            userId:       currentUserId,
+            username:     uData.username || '',
+            name:         uData.name     || '',
+            isVerified:   !!(isDev || uData.isVerified || uData.isPremium),
+            avatar:       uData.avatarUrl || '',
+            answeredAt:   firebase.firestore.FieldValue.serverTimestamp(),
+            likesCount:   0,
+            likedBy:      [],
+            likes:        [],
+            type:         'shout_reply'
+        });
+
+        await db.collection('shouts').doc(shoutId).update({
+            repliesCount: firebase.firestore.FieldValue.increment(1)
+        });
+
+        await db.collection('users').doc(currentUserId).update({
+            answersCount: firebase.firestore.FieldValue.increment(1),
+            anonCoins:    firebase.firestore.FieldValue.increment(0.1)
+        });
+
+        toast('success', t('replySuccess') || 'تم إرسال ردك ✓');
+    } catch (e) {
+        console.error('sendShoutReply:', e);
+        if (card) card.classList.remove('sending-overlay');
+        toast('error', t('connError') || 'حدث خطأ، حاول مرة أخرى');
+    }
+}
+
+/* ══════════ DELETE QUESTION ══════════ */
+async function handleDeleteQuestion(questionId) {
+    const res = await confirmSwal(
+        t('deleteTitle') || 'حذف السؤال',
+        t('deleteDesc')  || 'هيتحذف نهائياً ومش هيرجع',
+        t('deleteBtn')   || 'احذف', true
+    );
+    if (!res.isConfirmed) return;
+
+    const card = document.getElementById('card-q-' + questionId);
+    animateOut(card);
+    questionsMap.delete(questionId);
+    dismissedQIds.add(questionId);
+    updateBadges(getVisibleItems());
+
+    try {
+        await db.collection('questions').doc(questionId).delete();
+    } catch (e) {
+        console.error('deleteQuestion:', e);
+        try {
+            await db.collection('users').doc(currentUserId)
+                .collection('dismissed_questions').doc(questionId)
+                .set({ dismissedAt: firebase.firestore.FieldValue.serverTimestamp() });
+        } catch (_) {}
+        toast('error', t('connError') || 'تعذر الحذف');
+    }
+}
+
+/* ══════════ DISMISS SHOUT ══════════ */
+async function handleDismissShout(shoutId) {
+    const res = await confirmSwal(
+        t('deleteTitle') || 'تجاهل الشاوت',
+        t('deleteDesc')  || 'هيختفي من صفحتك نهائياً',
+        t('deleteBtn')   || 'تجاهل', false
+    );
+    if (!res.isConfirmed) return;
+
+    const card = document.getElementById('card-s-' + shoutId);
+    animateOut(card);
+    dismissedShouts.add(shoutId);
+    updateBadges(getVisibleItems());
+
+    try {
+        await db.collection('users').doc(currentUserId)
+            .collection('dismissed_shouts').doc(shoutId)
+            .set({ dismissedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    } catch (e) {
+        console.error('dismissShout:', e);
+        toast('error', t('connError') || 'حدث خطأ');
+    }
+}
+
+/* ══════════ REPORT ══════════ */
+async function handleReport(contentId, type, senderId) {
+    if (!senderId) { toast('warning', t('cantReportAnon') || 'لا يمكن الإبلاغ عن رسالة مجهولة'); return; }
+    if (typeof Swal === 'undefined') return;
+
+    const { value: reason } = await Swal.fire({
+        ...swalBase,
+        title: t('reportTitle') || 'إبلاغ عن محتوى',
+        input: 'textarea',
+        inputPlaceholder: t('reportPlaceholder') || 'اكتب سبب الإبلاغ...',
+        showCancelButton: true,
+        confirmButtonText: t('reportSend') || 'أرسل البلاغ',
+        cancelButtonText:  t('cancelBtn')  || 'إلغاء'
+    });
+    if (!reason || !reason.trim()) return;
+
+    try {
+        await db.collection('reports').add({
+            reportedBy:   currentUserId,
+            contentId,
+            contentType:  type,
+            reportedUser: senderId,
+            reason:       reason.trim().slice(0, 500),
+            createdAt:    firebase.firestore.FieldValue.serverTimestamp()
+        });
+        toast('success', t('reportSuccess') || 'تم إرسال البلاغ، شكراً');
+    } catch (e) {
+        console.error('report:', e);
+        toast('error', t('connError') || 'حدث خطأ');
+    }
+}
+
+/* ══════════ FILTER ══════════ */
+function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderAll();
+}
+
+/* ══════════ CLEANUP ══════════ */
+window.addEventListener('beforeunload', () => {
+    unsubs.forEach(fn => { try { fn(); } catch (_) {} });
+    shoutReplyUnsubs.forEach(fn => { try { fn(); } catch (_) {} });
+    shoutRepliesUnsubs.forEach(fn => { try { fn(); } catch (_) {} });
+});
+</script>
+</body>
+</html>

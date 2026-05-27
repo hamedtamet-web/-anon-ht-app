@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الرئيسية | Anon</title>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Anon HT",
+      "alternateName": "انون اتش تي",
+      "url": "https://anon-ht.firebaseapp.com/"
+    }
+    </script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f80566">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Anon HT">
+    <link rel="apple-touch-icon" href="images/logo.png">
+
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="google-site-verification" content="q28FVITNlApCco6bXZ8p3NZt3TtmYq0rsEZK3YfaKEI" />
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="ads.js"></script>
+
+    <style>
+        :root { 
+            --primary: #f80566; --bg: #050505; --card: #0d0d0d; 
+            --border: rgba(255,255,255,0.06); --admin-red: #ff002b; 
+            --verify-blue: #00bfff; --text-gray: #888;
+            --max-width: 700px;
+        }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { background: var(--bg); color: white; font-family: 'Cairo', sans-serif; margin: 0; padding-bottom: 100px; overflow-x: hidden; position: relative; }
+
+        /* نافذة المودال المخصصة */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 20px; }
+        .custom-modal { background: var(--card); border: 1px solid var(--border); border-radius: 24px; width: 100%; max-width: 380px; padding: 30px; text-align: center; animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-title { font-size: 15px; font-weight: 800; margin-bottom: 20px; color: #fff; }
+        .modal-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 12px; color: white; font-family: 'Cairo'; margin-bottom: 20px; text-align: center; }
+        .modal-btns { display: flex; gap: 12px; }
+        .m-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-family: 'Cairo'; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .m-confirm { background: var(--primary); color: white; }
+        .m-cancel { background: rgba(255,255,255,0.08); color: #888; }
+
+        /* ===== بانر تثبيت PWA ===== */
+        #pwa-install-banner {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 30px); max-width: 420px;
+            background: linear-gradient(135deg, #1a1a1a, #111);
+            border: 1px solid rgba(248,5,102,0.4);
+            border-radius: 22px; padding: 16px 18px;
+            display: none; align-items: center; gap: 14px;
+            z-index: 9998; box-shadow: 0 8px 30px rgba(248,5,102,0.2);
+            animation: slideUpBanner 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #pwa-install-banner .pwa-logo {
+            width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+            border: 2px solid rgba(248,5,102,0.3);
+        }
+        #pwa-install-banner .pwa-text { flex: 1; }
+        #pwa-install-banner .pwa-text strong { display: block; font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+        #pwa-install-banner .pwa-text span { font-size: 11px; color: #888; }
+        #pwa-install-banner .pwa-actions { display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; }
+        #pwa-install-btn {
+            background: var(--primary); color: white; border: none;
+            border-radius: 12px; padding: 9px 16px; font-family: 'Cairo';
+            font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap;
+        }
+        #pwa-dismiss-btn {
+            background: rgba(255,255,255,0.06); color: #666; border: none;
+            border-radius: 10px; padding: 7px 12px; font-family: 'Cairo';
+            font-size: 11px; font-weight: 700; cursor: pointer;
+        }
+        /* بانر iOS منفصل */
+        #ios-install-banner {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 30px); max-width: 420px;
+            background: linear-gradient(135deg, #1a1a1a, #111);
+            border: 1px solid rgba(248,5,102,0.4);
+            border-radius: 22px; padding: 18px;
+            display: none; flex-direction: column; gap: 10px;
+            z-index: 9998; box-shadow: 0 8px 30px rgba(248,5,102,0.2);
+            animation: slideUpBanner 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+        #ios-install-banner .ios-title { font-size: 13px; font-weight: 800; color: #fff; }
+        #ios-install-banner .ios-steps { font-size: 12px; color: #aaa; line-height: 1.8; }
+        #ios-install-banner .ios-steps i { color: var(--primary); }
+        #ios-dismiss-btn {
+            background: rgba(255,255,255,0.06); color: #666; border: none;
+            border-radius: 10px; padding: 8px; font-family: 'Cairo';
+            font-size: 12px; font-weight: 700; cursor: pointer; width: 100%;
+        }
+        @keyframes slideUpBanner { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        /* ========================= */
+
+        header { 
+            padding: 12px 4%; display: flex; align-items: center; gap: 12px; 
+            position: sticky; top: 0; z-index: 1000; 
+            background: rgba(5,5,5,0.85); backdrop-filter: blur(25px); 
+            border-bottom: 1px solid var(--border); 
+        }
+        .header-content { max-width: var(--max-width); margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 12px; position: relative; }
+
+        .search-container { flex: 1; position: relative; display: flex; align-items: center; }
+        .search-input { 
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); 
+            border-radius: 15px; padding: 10px 35px 10px 12px; color: white; 
+            font-family: 'Cairo'; font-size: 13px; transition: 0.3s;
+        }
+        .search-input:focus { border-color: var(--primary); background: rgba(255,255,255,0.08); }
+        .search-icon { position: absolute; right: 12px; color: var(--text-gray); font-size: 13px; }
+
+        .notif-dropdown {
+            position: absolute; top: 55px; left: 0; width: 280px; 
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 20px; display: none; flex-direction: column;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); z-index: 2000;
+            overflow: hidden; animation: modalPop 0.2s ease;
+        }
+        .notif-item {
+            padding: 12px 15px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s;
+        }
+        .notif-item:hover { background: rgba(255,255,255,0.03); }
+        .notif-item .n-icon { width: 35px; height: 35px; border-radius: 50%; background: rgba(248, 5, 102, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .notif-item .n-icon.follow-icon { background: rgba(0,191,255,0.1); color: var(--verify-blue); }
+        .notif-text { font-size: 11px; color: #ccc; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .notif-more { padding: 12px; text-align: center; font-size: 12px; font-weight: 700; color: var(--primary); background: rgba(255,255,255,0.02); text-decoration: none; display: block; }
+
+        .feed-container { max-width: var(--max-width); margin: 20px auto; padding: 0 15px; position: relative; z-index: 5; }
+        
+        .ans-card { 
+            background: var(--card); border-radius: 24px; padding: 22px; margin-bottom: 20px; 
+            border: 1px solid var(--border); animation: slideIn 0.4s ease; 
+            position: relative; overflow: visible; 
+        }
+        
+        .ans-card.dev-glow { border-color: rgba(255, 0, 43, 0.3); box-shadow: 0 0 20px rgba(255, 0, 43, 0.15); }
+        .ans-card.user-glow { border-color: rgba(0, 191, 255, 0.3); box-shadow: 0 0 20px rgba(0, 191, 255, 0.15); }
+
+        .ans-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+        .user-info-text { display: flex; flex-direction: column; flex: 1; cursor: pointer; }
+        .ans-display-name { font-weight: 800; font-size: 14px; color: #fff; line-height: 1.2; }
+        .ans-user-name { font-weight: 400; font-size: 11px; color: var(--text-gray); }
+
+        .avatar-frame { width: 45px; height: 45px; border-radius: 50%; position: relative; cursor: pointer; }
+        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg); }
+        .avatar-frame.admin-glow::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: var(--admin-red); filter: blur(6px); opacity: 0.5; z-index: -1; }
+        .avatar-frame.verify-glow::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; background: var(--verify-blue); filter: blur(6px); opacity: 0.5; z-index: -1; }
+
+        .ans-q { font-size: 13px; color: #aaa; margin-bottom: 12px; line-height: 1.6; }
+        .ans-a { font-size: 15px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 15px; border-right: 4px solid var(--primary); word-break: break-word; }
+        
+        .ans-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
+        .ans-actions { display: flex; gap: 20px; }
+        .action-btn { background: none; border: none; color: #666; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: 0.2s; }
+        .action-btn.liked { color: var(--primary); }
+        
+        .report-btn, .delete-btn { color: #333; font-size: 13px; cursor: pointer; transition: 0.3s; }
+
+        .ans-time-container { text-align: left; }
+        .ans-time { display: block; font-size: 10px; color: var(--primary); font-weight: 900; }
+        .ans-date { display: block; font-size: 9px; color: #666; font-weight: 600; }
+
+        #searchResultContainer { 
+            position: absolute; top: 55px; left: 0; width: 100%; 
+            background: var(--card); border: 1px solid var(--border); 
+            border-radius: 20px; display: none; flex-direction: column; 
+            z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden;
+        }
+        .search-res-title { padding: 12px 15px; font-size: 11px; color: var(--primary); font-weight: 800; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+        .user-res-item { padding: 10px 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); transition: 0.2s; }
+        .user-res-item:hover { background: rgba(255,255,255,0.03); }
+
+        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: rgba(248, 5, 102, 0.9); color: white; padding: 8px 18px; border-radius: 12px; font-size: 11px; font-weight: 700; z-index: 9999; display: none; backdrop-filter: blur(10px); }
+
+        /* --- تصميم الفراشات الواقعي --- */
+        .butterfly {
+            position: fixed; pointer-events: none; z-index: 1;
+            width: 25px; height: 25px; transform-style: preserve-3d;
+            transition: transform 0.5s ease-out;
+        }
+        .butterfly .wing {
+            position: absolute; width: 16px; height: 24px;
+            top: 0; border-radius: 50% 50% 40% 60%;
+            background: linear-gradient(135deg, var(--primary), #ff99bb);
+            opacity: 0.8; box-shadow: 0 0 12px rgba(248, 5, 102, 0.2);
+        }
+        .butterfly .left-wing {
+            right: 12px; transform-origin: right center;
+            animation: flap-left 0.2s infinite ease-in-out alternate;
+        }
+        .butterfly .right-wing {
+            left: 12px; transform-origin: left center;
+            animation: flap-right 0.2s infinite ease-in-out alternate;
+        }
+
+        @keyframes flap-left { from { transform: rotateY(0deg); } to { transform: rotateY(65deg); } }
+        @keyframes flap-right { from { transform: rotateY(0deg); } to { transform: rotateY(-65deg); } }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10,10,10,0.95); backdrop-filter: blur(25px); display: flex; justify-content: center; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        .nav-content { max-width: var(--max-width); width: 100%; display: flex; justify-content: space-around; }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #444; font-size: 10px; font-weight: 700; position: relative; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); }
+        .badge-nav { position: absolute; top: -5px; right: -5px; background: var(--primary); color: white; font-size: 9px; min-width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; }
+
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .feed-container { padding: 0 10px; margin: 10px auto; }
+            .ans-card { padding: 15px; border-radius: 20px; }
+            .ans-a { font-size: 14px; padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="custom-modal">
+            <div class="modal-title" id="modalTitle">تنبيه</div>
+            <input type="text" class="modal-input" id="modalInput" placeholder="اكتب هنا...">
+            <div class="modal-btns">
+                <button class="m-btn m-confirm" id="modalConfirmBtn">تأكيد</button>
+                <button class="m-btn m-cancel" id="modalCancelBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- بانر تثبيت PWA لأندرويد وسطح المكتب -->
+    <div id="pwa-install-banner">
+        <img src="images/logo.png" class="pwa-logo" onerror="this.src='images/logo.png'">
+        <div class="pwa-text">
+            <strong>ثبّت التطبيق على هاتفك 📲</strong>
+            <span>استخدمه بدون متصفح وبشكل أسرع</span>
+        </div>
+        <div class="pwa-actions">
+            <button id="pwa-install-btn">تثبيت</button>
+            <button id="pwa-dismiss-btn">لاحقاً</button>
+        </div>
+    </div>
+
+    <!-- بانر تثبيت iOS -->
+    <div id="ios-install-banner">
+        <div class="ios-title">📲 ثبّت التطبيق على iPhone</div>
+        <div class="ios-steps">
+            اضغط على <i class="fa-solid fa-arrow-up-from-bracket"></i> <strong>مشاركة</strong><br>
+            ثم اختر <strong>"إضافة إلى الشاشة الرئيسية"</strong>
+        </div>
+        <button id="ios-dismiss-btn">فهمت ✓</button>
+    </div>
+
+    <div id="toast"></div>
+
+    <header>
+        <div class="header-content">
+            <img src="images/logo.png" style="width:28px; cursor:pointer;" onclick="location.reload()">
+            
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" class="search-input" id="userSearch" placeholder="ابحث عن مستخدم..." autocomplete="off">
+                
+                <div id="searchResultContainer">
+                    <div class="search-res-title">
+                        <span>نتائج البحث</span>
+                        <i class="fa-solid fa-times" onclick="clearSearch()" style="cursor:pointer"></i>
+                    </div>
+                    <div id="usersResultList"></div>
+                </div>
+            </div>
+            
+            <div id="notifContainer" style="position:relative;">
+                <div id="notifTrigger" style="background:rgba(255,255,255,0.03); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid var(--border); position:relative;">
+                    <i class="fa-regular fa-bell" style="font-size: 16px; color: #666;"></i>
+                    <div id="notifBadge" style="position:absolute; top:-2px; left:-2px; background:var(--primary); min-width:16px; height:16px; border-radius:10px; border:2px solid var(--bg); display:none; align-items:center; justify-content:center; font-size:8px; font-weight:900;">0</div>
+                </div>
+                
+                <div class="notif-dropdown" id="notifDropdown">
+                    <div id="notifList">
+                        <div style="padding:20px; text-align:center; color:#555; font-size:12px;">لا توجد إشعارات حالياً</div>
+                    </div>
+                    <a href="notifications.html" class="notif-more">عرض المزيد من الإشعارات</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="feed-container">
+        <div id="askFeed"></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-item active"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+            <a href="questions.html" class="nav-item">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>الأسئلة</span>
+                <div id="qBadgeNav" class="badge-nav" style="display:none;">0</div>
+            </a>
+            <a href="quiet-corner.html" class="nav-item"><i class="fa-solid fa-leaf"></i><span>سكينة</span></a>
+            <a href="game.html" class="nav-item"><i class="fa-solid fa-ghost"></i><span>طيف</span></a>
+            <a href="profile.html" id="myProfileLink" class="nav-item"><i class="fa-solid fa-user"></i><span>بروفايلي</span></a>
+        </div>
+    </nav>
+
+    <script>
+        firebase.initializeApp(APP_CONFIG.firebase);
+        const db = firebase.firestore(), auth = firebase.auth();
+        let currentUser = null;
+        
+        const sndQuestion = new Audio('sounds/question.wav');
+        const sndNotif = new Audio('sounds/notification.wav');
+
+        // ===== دالة الحماية من XSS =====
+        const safe = (t) => { 
+            if(t === null || t === undefined) return ""; 
+            const d = document.createElement('div'); 
+            d.textContent = String(t); 
+            return d.innerHTML; 
+        };
+
+        // ===== نافذة المودال =====
+        const customPrompt = (title, showInput = true) => {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('modalOverlay');
+                const input = document.getElementById('modalInput');
+                document.getElementById('modalTitle').innerText = title;
+                overlay.style.display = 'flex';
+                input.style.display = showInput ? 'block' : 'none';
+                input.value = "";
+                
+                const confirmBtn = document.getElementById('modalConfirmBtn');
+                const cancelBtn = document.getElementById('modalCancelBtn');
+                const newConfirm = confirmBtn.cloneNode(true);
+                const newCancel = cancelBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+                cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+
+                newConfirm.onclick = () => { overlay.style.display = 'none'; resolve(showInput ? input.value.trim() : true); };
+                newCancel.onclick = () => { overlay.style.display = 'none'; resolve(null); };
+            });
+        };
+
+        let initialQuestionsLoaded = false;
+        let initialNotificationsLoaded = false;
+        let notifUnsubscribe = null;
+        let questionsUnsubscribe = null;
+
+        function startListening(uid) {
+            if(questionsUnsubscribe) questionsUnsubscribe();
+            if(notifUnsubscribe) notifUnsubscribe();
+
+            questionsUnsubscribe = db.collection("questions")
+                .where("receiverId", "==", uid)
+                .where("status", "==", "pending")
+                .onSnapshot(snap => {
+                    const b = document.getElementById('qBadgeNav');
+                    if(!snap.empty) {
+                        b.style.display = 'flex'; b.innerText = snap.size;
+                        if(initialQuestionsLoaded && !snap.metadata.hasPendingWrites) {
+                            snap.docChanges().forEach(change => {
+                                if (change.type === "added") sndQuestion.play().catch(e => {});
+                            });
+                        }
+                    } else b.style.display = 'none';
+                    initialQuestionsLoaded = true;
+                });
+
+            notifUnsubscribe = db.collection("notifications")
+                .where("receiverId", "==", uid)
+                .where("isRead", "==", false)
+                .onSnapshot(snap => {
+                    const nb = document.getElementById('notifBadge');
+                    if(!snap.empty) {
+                        nb.style.display = 'flex'; nb.innerText = snap.size;
+                        if(initialNotificationsLoaded) {
+                            snap.docChanges().forEach(change => {
+                                if (change.type === "added") sndNotif.play().catch(e => {});
+                            });
+                        }
+                    } else nb.style.display = 'none';
+                    initialNotificationsLoaded = true;
+                    loadRecentNotifs(uid);
+                });
+        }
+
+        let notifsUnsubscribeRecent = null;
+        function loadRecentNotifs(uid) {
+            if(notifsUnsubscribeRecent) notifsUnsubscribeRecent();
+            
+            notifsUnsubscribeRecent = db.collection("notifications")
+                .where("receiverId", "==", uid)
+                .orderBy("timestamp", "desc")
+                .limit(5)
+                .onSnapshot(snap => {
+                    const list = document.getElementById('notifList');
+                    if(snap.empty) {
+                        list.innerHTML = `<div style="padding:20px; text-align:center; color:#555; font-size:12px;">لا توجد إشعارات حالياً</div>`;
+                        return;
+                    }
+
+                    list.innerHTML = "";
+                    snap.forEach(doc => {
+                        const n = doc.data();
+                        const item = document.createElement('div');
+                        item.className = 'notif-item';
+                        
+                        let iconClass = 'fa-solid fa-heart';
+                        let iconContainerClass = 'n-icon';
+                        let msg = '';
+
+                        switch(n.type) {
+                            case 'like':
+                                iconClass = 'fa-solid fa-heart';
+                                msg = n.senderName ? `${safe(n.senderName)} أعجب بإجابتك ❤️` : "شخص ما أعجب بإجابتك";
+                                break;
+                            case 'follow':
+                                iconClass = 'fa-solid fa-user-plus';
+                                iconContainerClass = 'n-icon follow-icon';
+                                msg = n.senderName ? `${safe(n.senderName)} بدأ متابعتك 💙` : "شخص ما بدأ متابعتك";
+                                break;
+                            case 'comment':
+                                iconClass = 'fa-solid fa-comment';
+                                msg = n.senderName ? `${safe(n.senderName)} علّق على إجابتك 💬` : "رد أحدهم على إجابتك";
+                                break;
+                            default:
+                                iconClass = 'fa-solid fa-bell';
+                                msg = n.message || "إشعار جديد";
+                        }
+
+                        const avatarSection = n.senderAvatar
+                            ? `<img src="${safe(n.senderAvatar)}" onerror="this.onerror=null;this.src='images/user.png'" style="width:35px;height:35px;border-radius:50%;object-fit:cover;flex-shrink:0;" loading="lazy">`
+                            : `<div class="${iconContainerClass}"><i class="${iconClass}"></i></div>`;
+
+                        item.innerHTML = avatarSection + `<div class="notif-text">${msg}</div>`;
+
+                        item.onclick = () => {
+                            if(n.type === 'follow' && n.senderId) {
+                                window.location.href = `profile.html?id=${n.senderId}`;
+                            } else if(n.contentId) {
+                                window.location.href = `thread.html?id=${n.contentId}`;
+                            }
+                        };
+
+                        list.appendChild(item);
+                    });
+                });
+        }
+
+        document.getElementById('notifTrigger').onclick = (e) => {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifDropdown');
+            const isVisible = dropdown.style.display === 'flex';
+            dropdown.style.display = isVisible ? 'none' : 'flex';
+            
+            if(!isVisible && currentUser) {
+                db.collection("notifications")
+                    .where("receiverId", "==", currentUser.uid)
+                    .where("isRead", "==", false)
+                    .get()
+                    .then(s => {
+                        const batch = db.batch();
+                        s.forEach(d => batch.update(d.ref, {isRead: true}));
+                        return batch.commit();
+                    })
+                    .catch(e => console.log("Error marking notifs read:", e));
+            }
+        };
+
+        document.addEventListener('click', (e) => {
+            document.getElementById('notifDropdown').style.display = 'none';
+            if(!e.target.closest('.search-container')) clearSearch();
+        });
+
+        async function createNotification(receiverId, type, contentId) {
+            if(!receiverId || !currentUser) return;
+            if(receiverId === currentUser.uid) return;
+            
+            try {
+                const senderSnap = await db.collection("users").doc(currentUser.uid).get();
+                const senderData = senderSnap.exists ? senderSnap.data() : {};
+
+                const notifData = {
+                    receiverId:      receiverId,
+                    senderId:        currentUser.uid,
+                    senderName:      senderData.name       || "شخص ما",
+                    senderUsername:  senderData.username   || "",
+                    senderAvatar:    senderData.avatarUrl  || "",
+                    isSenderVerified: senderData.isVerified || senderData.isPremium || false,
+                    type:            type,
+                    isRead:          false,
+                    timestamp:       firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if(contentId) notifData.contentId = contentId;
+
+                await db.collection("notifications").add(notifData);
+            } catch(e) {
+                console.log("Notification error:", e);
+            }
+        }
+
+        let feedUnsubscribe = null;
+        const renderFeed = () => {
+            if(feedUnsubscribe) feedUnsubscribe();
+
+            feedUnsubscribe = db.collection("answers")
+                .orderBy("answeredAt", "desc")
+                .limit(35)
+                .onSnapshot(async (snap) => {
+                    const feedEl = document.getElementById('askFeed');
+                    const fragment = document.createDocumentFragment();
+                    
+                    const userIds = [...new Set(snap.docs.map(d => d.data().userId).filter(Boolean))];
+                    const userCache = {};
+                    await Promise.all(userIds.map(async uid => {
+                        try {
+                            const snap = await db.collection("users").doc(uid).get();
+                            userCache[uid] = snap.exists ? snap.data() : {};
+                        } catch(e) { userCache[uid] = {}; }
+                    }));
+
+                    for (const doc of snap.docs) {
+                        const d = doc.data();
+                        if(!d.userId || !d.reply) continue;
+
+                        const isLiked = Array.isArray(d.likes) && d.likes.includes(currentUser?.uid);
+                        const isMyPost = d.userId === currentUser?.uid;
+
+                        const u = userCache[d.userId] || {};
+                        const username = ((u.username || d.username || "anon") + "").toLowerCase();
+                        
+                        const isDev = username === 'ht';
+                        const isVerified = u.isVerified === true;
+                        
+                        let cardGlowClass = isDev ? "dev-glow" : (isVerified ? "user-glow" : "");
+                        let avatarGlowClass = isDev ? "admin-glow" : (isVerified ? "verify-glow" : "");
+
+                        // ===== علامة التوثيق: حجم يلائم الاسم وقريبة منه =====
+                        let badgeImg = isDev
+                            ? `<img src="images/admin-verified-logo.png" style="height:16px; width:auto; vertical-align:middle; position:relative; top:-1px; flex-shrink:0;">`
+                            : (isVerified
+                                ? `<img src="images/verified-logo.png" style="height:16px; width:auto; vertical-align:middle; position:relative; top:-1px; flex-shrink:0;">`
+                                : "");
+
+                        const dateObj = d.answeredAt?.toDate();
+                        const timeStr = dateObj ? dateObj.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : '';
+                        const dateStr = dateObj ? dateObj.toLocaleDateString('ar-EG', {month:'long', day:'numeric'}) : '';
+
+                        const card = document.createElement('div');
+                        card.className = `ans-card ${cardGlowClass}`;
+                        card.dataset.id = doc.id;
+
+                        card.innerHTML = `
+                            <div class="ans-header">
+                                <div class="avatar-frame ${avatarGlowClass}" onclick="location.href='profile.html?id=${safe(d.userId)}'">
+                                    <img src="${safe(u.avatarUrl || 'images/user.png')}" class="avatar-img" onerror="this.src='images/user.png'" loading="lazy">
+                                </div>
+                                <div class="user-info-text" onclick="location.href='profile.html?id=${safe(d.userId)}'">
+                                    <div style="display:flex; align-items:center; gap:3px; flex-wrap:wrap;">
+                                        <span class="ans-display-name">${safe(u.name || d.name || "غريب")}</span>
+                                        ${badgeImg}
+                                        ${isDev ? '<span class="dev-badge" style="font-size:9px; background:var(--admin-red); padding:1px 5px; border-radius:4px;"><i class="fa-solid fa-code"></i> المطور</span>' : ''}
+                                    </div>
+                                    <span class="ans-user-name">@${safe(username)}</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    ${!isMyPost ? `<i class="fa-solid fa-flag report-btn" onclick="reportContent('${safe(doc.id)}', '${safe(d.userId)}')"></i>` : ''}
+                                    ${isMyPost ? `<i class="fa-solid fa-trash-can delete-btn" onclick="deleteAnswer('${safe(doc.id)}', '${safe(d.questionId || '')}')"></i>` : ''}
+                                </div>
+                            </div>
+                            <div class="ans-q">${safe(d.questionText)}</div>
+                            <div class="ans-a">${safe(d.reply)}</div>
+                            <div class="ans-footer">
+                                <div class="ans-actions">
+                                    <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${safe(doc.id)}', '${safe(d.userId)}')">
+                                        <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                                        <span>${Array.isArray(d.likes) ? d.likes.length : 0}</span>
+                                    </button>
+                                    <button class="action-btn" onclick="window.location.href='thread.html?id=${safe(doc.id)}'">
+                                        <i class="fa-regular fa-comment"></i> <span>الردود</span>
+                                    </button>
+                                </div>
+                                <div class="ans-time-container">
+                                    <span class="ans-time">${timeStr}</span>
+                                    <span class="ans-date">${dateStr}</span>
+                                </div>
+                            </div>`;
+                        fragment.appendChild(card);
+                    }
+                    feedEl.innerHTML = "";
+                    feedEl.appendChild(fragment);
+                }, err => console.log("Feed error:", err));
+        };
+
+        // ===== البحث عن المستخدمين =====
+        const searchInput = document.getElementById('userSearch');
+        const searchResBox = document.getElementById('searchResultContainer');
+        const searchList = document.getElementById('usersResultList');
+        let searchTimeout = null;
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim().toLowerCase();
+            if (query.length < 1) { searchResBox.style.display = 'none'; return; }
+            
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const snap = await db.collection("users")
+                        .where("username", ">=", query)
+                        .where("username", "<=", query + "\uf8ff")
+                        .limit(5).get();
+
+                    searchList.innerHTML = "";
+                    if (snap.empty) {
+                        searchList.innerHTML = `<div style="padding:15px; text-align:center; font-size:12px; color:#555;">لا توجد نتائج</div>`;
+                    } else {
+                        snap.forEach(doc => {
+                            const u = doc.data();
+                            const div = document.createElement('div');
+                            div.className = 'user-res-item';
+                            div.onclick = () => location.href = `profile.html?id=${doc.id}`;
+                            div.innerHTML = `
+                                <img src="${safe(u.avatarUrl || 'images/user.png')}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;" onerror="this.src='images/user.png'">
+                                <div>
+                                    <div style="font-size:12px; font-weight:700;">${safe(u.name || "غريب")}</div>
+                                    <div style="font-size:10px; color:#555;">@${safe(u.username)}</div>
+                                </div>`;
+                            searchList.appendChild(div);
+                        });
+                    }
+                    searchResBox.style.display = 'flex';
+                } catch(e) { console.log("Search error:", e); }
+            }, 300);
+        });
+
+        function clearSearch() { searchInput.value = ""; searchResBox.style.display = 'none'; }
+
+        async function reportContent(id, uid) {
+            if(!currentUser) return;
+            const reason = await customPrompt("سبب الإبلاغ؟", true);
+            if(reason && reason.length > 0) {
+                try {
+                    await db.collection("reports").add({ 
+                        targetId: id, type: 'answer', targetUser: uid, 
+                        reporter: currentUser.uid, reason: reason.substring(0, 300),
+                        time: firebase.firestore.FieldValue.serverTimestamp() 
+                    });
+                    showToast("تم إرسال بلاغك ✨");
+                } catch(e) { showToast("حدث خطأ، حاول مرة أخرى"); }
+            }
+        }
+
+        let likeLock = false;
+        async function toggleLike(id, ownerId) {
+            if(!currentUser || likeLock) return;
+            likeLock = true;
+            try {
+                const ref = db.collection("answers").doc(id);
+                const docSnap = await ref.get();
+                if(!docSnap.exists) return;
+                
+                let likes = docSnap.data().likes || [];
+                if(likes.includes(currentUser.uid)) {
+                    await ref.update({ likes: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) });
+                } else {
+                    await ref.update({ likes: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
+                    await createNotification(ownerId, 'like', id);
+                }
+            } catch(e) { console.log("Like error:", e); }
+            finally { setTimeout(() => likeLock = false, 500); }
+        }
+
+        async function deleteAnswer(aid, qid) {
+            if(!currentUser) return;
+            const confirmed = await customPrompt("هل تود الحذف؟", false);
+            if(confirmed) {
+                try {
+                    await db.collection("answers").doc(aid).delete();
+                    if(qid) await db.collection("questions").doc(qid).update({status:"pending"});
+                    await db.collection("users").doc(currentUser.uid).update({ 
+                        answersCount: firebase.firestore.FieldValue.increment(-1) 
+                    });
+                    showToast("تم الحذف بنجاح");
+                } catch(e) { showToast("حدث خطأ أثناء الحذف"); }
+            }
+        }
+
+        function showToast(m) {
+            const t = document.getElementById('toast');
+            t.innerText = m; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2500);
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('myProfileLink').href = `profile.html?id=${user.uid}`;
+                renderFeed();
+                startListening(user.uid);
+            } else { window.location.href = "signin.html"; }
+        });
+
+        /* ===== وظيفة الفراشات ===== */
+        function createButterfly() {
+            if(document.querySelectorAll('.butterfly').length > 6) return;
+            
+            const bf = document.createElement('div');
+            bf.className = 'butterfly';
+            bf.innerHTML = '<div class="wing left-wing"></div><div class="wing right-wing"></div>';
+            document.body.appendChild(bf);
+
+            let x = Math.random() * window.innerWidth;
+            let y = Math.random() * window.innerHeight;
+            let vX = (Math.random() - 0.5) * 0.8;
+            let vY = (Math.random() - 0.5) * 0.8;
+            let animFrame;
+
+            function move() {
+                vX += (Math.random() - 0.5) * 0.15; 
+                vY += (Math.random() - 0.5) * 0.15;
+
+                const speedLimit = 1.2;
+                const currentSpeed = Math.sqrt(vX**2 + vY**2);
+                if(currentSpeed > speedLimit) {
+                    vX = (vX/currentSpeed) * speedLimit;
+                    vY = (vY/currentSpeed) * speedLimit;
+                }
+
+                x += vX; y += vY;
+                if (x <= 10 || x >= window.innerWidth - 40) vX *= -1;
+                if (y <= 10 || y >= window.innerHeight - 40) vY *= -1;
+
+                const angle = Math.atan2(vY, vX) + Math.PI / 2;
+                bf.style.left = x + 'px';
+                bf.style.top = y + 'px';
+                bf.style.transform = `rotateZ(${angle}rad) rotateX(20deg)`;
+
+                if (document.body.contains(bf)) animFrame = requestAnimationFrame(move);
+            }
+            move();
+
+            setTimeout(() => {
+                cancelAnimationFrame(animFrame);
+                bf.style.opacity = '0';
+                bf.style.transition = 'opacity 4s';
+                setTimeout(() => { if(bf.parentNode) bf.remove(); }, 4000);
+            }, 18000);
+        }
+        
+        setInterval(createButterfly, 6000);
+
+        /* ===== نظام تثبيت PWA ===== */
+        let deferredPrompt = null;
+        const installBanner = document.getElementById('pwa-install-banner');
+        const iosBanner = document.getElementById('ios-install-banner');
+        const PWA_DISMISSED_KEY = 'pwa_install_dismissed';
+        const PWA_DISMISS_DAYS = 7;
+
+        function isPWAInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches 
+                || window.navigator.standalone === true;
+        }
+
+        function wasDismissedRecently() {
+            const dismissed = localStorage.getItem(PWA_DISMISSED_KEY);
+            if(!dismissed) return false;
+            const daysPassed = (Date.now() - parseInt(dismissed)) / (1000 * 60 * 60 * 24);
+            return daysPassed < PWA_DISMISS_DAYS;
+        }
+
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            if(isPWAInstalled() || wasDismissedRecently()) return;
+
+            setTimeout(() => {
+                installBanner.style.display = 'flex';
+            }, 3000);
+        });
+
+        document.getElementById('pwa-install-btn').onclick = async () => {
+            if(!deferredPrompt) return;
+            installBanner.style.display = 'none';
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            if(outcome === 'accepted') showToast("تم تثبيت التطبيق بنجاح 🎉");
+        };
+
+        document.getElementById('pwa-dismiss-btn').onclick = () => {
+            installBanner.style.display = 'none';
+            localStorage.setItem(PWA_DISMISSED_KEY, Date.now().toString());
+        };
+
+        document.getElementById('ios-dismiss-btn').onclick = () => {
+            iosBanner.style.display = 'none';
+            localStorage.setItem(PWA_DISMISSED_KEY, Date.now().toString());
+        };
+
+        window.addEventListener('load', () => {
+            if(isIOS() && !isPWAInstalled() && !wasDismissedRecently()) {
+                setTimeout(() => {
+                    iosBanner.style.display = 'flex';
+                }, 3000);
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBanner.style.display = 'none';
+            iosBanner.style.display = 'none';
+            showToast("تم تثبيت التطبيق بنجاح 🎉");
+        });
+
+        /* ===== تسجيل Service Worker ===== */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('Service Worker Registered!', reg))
+                    .catch(err => console.log('Registration failed!', err));
+            });
+        }
+    </script>
+</body>
+</html>

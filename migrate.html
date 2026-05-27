@@ -1,0 +1,93 @@
+const admin = require("firebase-admin");
+const serviceAccount = require("./serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
+
+const defaultNewFields = {
+  isVerified:         false,
+  isBanned:           false,
+  banReason:          "",
+  banUntil:           null,
+  isDeleted:          false,
+  deletedAt:          null,
+  questionsReceived:  0,
+  questionsAnswered:  0,
+  questionsIgnored:   0,
+  profileViews:       0,
+  shareCount:         0,
+  premiumUntil:       null,
+  premiumPlan:        "",
+  totalSpent:         0.00,
+  notifNewQuestion:   true,
+  notifNewFollower:   true,
+  notifAnswers:       true,
+  fcmToken:           "",
+  allowAnonQuestions: true,
+  allowLinks:         false,
+  profileIsPublic:    true,
+  sensitiveFilter:    true,
+  followingCount:     0,
+  following:          [],
+  mutedUsers:         [],
+  reportCount:        0,
+  lastDevice:         "",
+  lastIP:             "",
+  country:            "",
+  timezone:           "",
+  themeColor:         "#f80566",
+  profileLink:        "",
+  socialLinks:        {},
+  badge:              "",
+  badgeLabel:         "",
+  xp:                 0,
+  level:              1,
+  streak:             0,
+  lastStreakDate:      null,
+  achievements:       [],
+};
+
+async function migrateUsers() {
+  const snapshot = await db.collection("users").get();
+  console.log(`🔍 لقينا ${snapshot.size} يوزر`);
+
+  const BATCH_SIZE = 400;
+  let batch = db.batch();
+  let count = 0;
+  let totalUpdated = 0;
+
+  for (const doc of snapshot.docs) {
+    const data = doc.data();
+    const updates = {};
+
+    for (const [key, defaultValue] of Object.entries(defaultNewFields)) {
+      if (!(key in data)) {
+        updates[key] = defaultValue;
+      }
+    }
+
+    if (Object.keys(updates).length > 0) {
+      batch.update(doc.ref, updates);
+      count++;
+      totalUpdated++;
+    }
+
+    if (count === BATCH_SIZE) {
+      await batch.commit();
+      console.log(`✅ اتحدث ${totalUpdated} يوزر...`);
+      batch = db.batch();
+      count = 0;
+    }
+  }
+
+  if (count > 0) {
+    await batch.commit();
+  }
+
+  console.log(`🎉 خلصنا! اتحدث ${totalUpdated} يوزر من أصل ${snapshot.size}`);
+}
+
+migrateUsers().catch(console.error);

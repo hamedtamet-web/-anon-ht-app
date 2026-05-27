@@ -1,0 +1,9 @@
+.env
+firebase-debug.log
+serviceAccountKey.json
+config.js
+*.bak
+*.zip
+admin.html
+admin2.html
+admin3.html

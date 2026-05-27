@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>اشتراك VIP | Anon</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
+<style>
+:root{--primary:#f80566;--bg:#050505;--card:#0d0d0d;--border:rgba(255,255,255,0.06);--verify-blue:#00bfff;--gold:#ffd700;--purple:#c084fc;--indigo:#818cf8;--max-width:700px;}
+*{box-sizing:border-box;outline:none;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:white;font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:120px;}
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.10;animation:orb-float 10s ease-in-out infinite;}
+.orb-1{width:400px;height:400px;background:var(--purple);top:-100px;right:-100px;}
+.orb-2{width:300px;height:300px;background:var(--primary);bottom:100px;left:-80px;animation-delay:3s;}
+.orb-3{width:200px;height:200px;background:var(--gold);top:40%;left:50%;animation-delay:6s;}
+@keyframes orb-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-25px)}}
+
+header{position:sticky;top:0;z-index:100;background:rgba(5,5,5,.85);backdrop-filter:blur(25px);border-bottom:1px solid var(--border);padding:12px 16px;}
+.header-inner{max-width:var(--max-width);margin:0 auto;display:flex;align-items:center;gap:12px;}
+.back-btn{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:#aaa;display:flex;align-items:center;justify-content:center;font-size:15px;text-decoration:none;}
+.header-title{font-size:15px;font-weight:900;color:white;flex:1;}
+.currency-switcher{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:50px;padding:4px 5px;}
+.cur-btn{padding:5px 11px;border-radius:50px;border:none;background:transparent;color:#555;font-family:'Cairo';font-size:11px;font-weight:800;cursor:pointer;touch-action:manipulation;user-select:none;transition:.2s;pointer-events:all;position:relative;z-index:10;}
+.cur-btn.active{background:linear-gradient(135deg,var(--purple),var(--indigo));color:white;}
+
+.container{max-width:var(--max-width);margin:0 auto;padding:16px 15px;position:relative;z-index:1;}
+
+/* ========== TASK TRACKER ========== */
+.task-tracker{background:linear-gradient(145deg,rgba(192,132,252,.09),rgba(129,140,248,.05));border:1px solid rgba(192,132,252,.25);border-radius:24px;padding:18px;margin-bottom:18px;position:relative;overflow:hidden;}
+.task-tracker::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(192,132,252,.12),transparent 60%);pointer-events:none;}
+.task-tracker-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.task-tracker-title{font-size:13px;font-weight:900;color:white;display:flex;align-items:center;gap:7px;}
+.task-tracker-title i{color:var(--purple);}
+.task-reset-badge{font-size:10px;color:#555;font-weight:700;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:50px;padding:3px 10px;}
+.task-reward-chip{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,140,0,.08));border:1px solid rgba(255,215,0,.25);border-radius:50px;padding:5px 13px;font-size:11px;font-weight:900;color:var(--gold);margin-bottom:14px;}
+.task-row{margin-bottom:12px;}
+.task-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.task-row-label{font-size:11px;font-weight:800;color:#aaa;display:flex;align-items:center;gap:6px;}
+.task-row-label i{color:var(--purple);font-size:10px;}
+.task-row-count{font-size:11px;font-weight:900;color:white;}
+.task-row-count span{color:var(--purple);}
+.prog-bar-bg{height:7px;background:rgba(255,255,255,.05);border-radius:50px;overflow:hidden;}
+.prog-bar-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--purple),var(--indigo));transition:width .6s cubic-bezier(.4,0,.2,1);}
+.prog-bar-fill.gold{background:linear-gradient(90deg,var(--gold),#ff8c00);}
+.prog-bar-fill.pink{background:linear-gradient(90deg,var(--primary),#ff6b9d);}
+.prog-bar-fill.done{background:linear-gradient(90deg,#00e676,#00c853);}
+
+/* ========== HERO ========== */
+.hero{position:relative;text-align:center;padding:22px 20px 18px;border-radius:24px;overflow:hidden;margin-bottom:18px;border:1px solid rgba(192,132,252,.2);background:linear-gradient(145deg,rgba(192,132,252,.07),rgba(129,140,248,.04));}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(192,132,252,.18),transparent 65%);pointer-events:none;}
+.hero-crown{font-size:38px;display:block;margin-bottom:8px;filter:drop-shadow(0 0 16px rgba(255,215,0,.5));animation:crown-float 3s ease-in-out infinite;}
+@keyframes crown-float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+.hero h1{font-size:18px;font-weight:900;margin-bottom:5px;}
+.hero p{font-size:11px;color:#777;line-height:1.6;max-width:280px;margin:0 auto;}
+
+.vip-already{background:linear-gradient(135deg,rgba(255,215,0,.07),rgba(192,132,252,.07));border:1px solid rgba(255,215,0,.25);border-radius:24px;padding:24px 20px;text-align:center;display:none;margin-bottom:18px;}
+.vip-already-crown{font-size:40px;display:block;margin-bottom:10px;animation:crown-float 3s ease-in-out infinite;}
+.vip-already h2{font-size:17px;font-weight:900;margin-bottom:6px;}
+.vip-already p{font-size:12px;color:#777;margin-bottom:14px;line-height:1.6;}
+.vip-expires{display:inline-flex;align-items:center;gap:7px;background:rgba(0,191,255,.08);border:1px solid rgba(0,191,255,.2);border-radius:50px;padding:7px 18px;font-size:12px;font-weight:900;color:var(--verify-blue);}
+.renew-btn{margin-top:12px;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--purple),var(--indigo));border:none;border-radius:14px;padding:11px 22px;color:white;font-family:'Cairo';font-size:13px;font-weight:800;cursor:pointer;touch-action:manipulation;}
+
+.pending-banner{background:linear-gradient(135deg,rgba(255,165,0,.08),rgba(255,100,0,.05));border:1px solid rgba(255,165,0,.25);border-radius:18px;padding:16px;text-align:center;display:none;margin-bottom:16px;}
+.pending-banner i{font-size:26px;color:#ffaa00;margin-bottom:7px;display:block;}
+.pending-banner h3{font-size:13px;font-weight:900;margin-bottom:4px;}
+.pending-banner p{font-size:11px;color:#777;line-height:1.6;}
+
+.section-title{font-size:11px;font-weight:800;color:#444;letter-spacing:1.5px;text-transform:uppercase;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.section-title i{color:var(--purple);}
+
+.plans-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px;}
+.plan-card{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:16px;cursor:pointer;transition:.25s;position:relative;overflow:hidden;touch-action:manipulation;user-select:none;}
+.plan-card.selected{border-color:var(--purple);background:rgba(192,132,252,.06);}
+.plan-card.popular-plan{border-color:rgba(255,215,0,.25);}
+.plan-card.popular-plan.selected{border-color:var(--gold);}
+.popular-tag{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,var(--gold),#ff8c00);color:#000;font-size:6px;font-weight:900;padding:3px 10px;border-radius:20px;}
+.plan-top{display:flex;align-items:center;gap:12px;}
+.plan-radio{width:20px;height:20px;border-radius:50%;border:2px solid #333;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.plan-card.selected .plan-radio{border-color:var(--purple);background:var(--purple);}
+.plan-card.popular-plan.selected .plan-radio{border-color:var(--gold);background:var(--gold);}
+.plan-radio-dot{width:8px;height:8px;border-radius:50%;background:white;display:none;}
+.plan-card.selected .plan-radio-dot{display:block;}
+.plan-info{flex:1;}
+.plan-name{font-size:14px;font-weight:900;color:white;margin-bottom:2px;}
+.plan-duration{font-size:11px;color:#555;font-weight:700;}
+.plan-price-col{text-align:left;}
+.plan-price{font-size:19px;font-weight:900;color:white;display:flex;align-items:baseline;gap:4px;flex-direction:row-reverse;justify-content:flex-end;}
+.plan-price .price-num{font-size:19px;font-weight:900;}
+.plan-price .price-sym{font-size:12px;color:#888;font-weight:700;}
+.plan-save{font-size:10px;color:#00e676;font-weight:800;margin-top:2px;text-align:left;}
+.plan-features{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.04);}
+.plan-feat{display:flex;align-items:center;gap:5px;font-size:10px;color:#666;font-weight:700;}
+.plan-feat i{color:var(--purple);font-size:10px;}
+.plan-card.popular-plan .plan-feat i{color:var(--gold);}
+
+.benefits-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;}
+.benefit-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 12px;text-align:center;}
+.benefit-icon{font-size:22px;margin-bottom:7px;display:block;}
+.benefit-title{font-size:12px;font-weight:800;color:#fff;margin-bottom:3px;}
+.benefit-desc{font-size:10px;color:#555;line-height:1.5;}
+
+.payment-methods{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.pay-method{display:flex;align-items:center;gap:12px;padding:13px 15px;background:var(--card);border:2px solid var(--border);border-radius:16px;cursor:pointer;transition:.2s;touch-action:manipulation;user-select:none;}
+.pay-method.selected{border-color:var(--purple);background:rgba(192,132,252,.05);}
+.pay-method-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.pm-vf .pay-method-icon{background:rgba(255,0,0,.1);color:#ff3333;}
+.pm-ip .pay-method-icon{background:rgba(248,5,102,.1);color:var(--primary);}
+.pm-manual .pay-method-icon{background:rgba(192,132,252,.1);color:var(--purple);}
+.pay-method-info{flex:1;}
+.pay-method-name{font-size:13px;font-weight:800;color:white;}
+.pay-method-sub{font-size:10px;color:#555;margin-top:2px;}
+.pay-method-radio{width:18px;height:18px;border-radius:50%;border:2px solid #333;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.pay-method.selected .pay-method-radio{border-color:var(--purple);background:var(--purple);}
+.pay-method-radio-dot{width:7px;height:7px;border-radius:50%;background:white;display:none;}
+.pay-method.selected .pay-method-radio-dot{display:block;}
+
+.pay-info-box{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px;display:none;}
+.pay-info-box.show{display:block;}
+.pay-info-title{font-size:12px;font-weight:800;color:#888;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.pay-info-title i{color:var(--purple);}
+.pay-number-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.pay-number{font-size:16px;font-weight:900;letter-spacing:1px;color:white;}
+.copy-btn{background:rgba(192,132,252,.15);border:none;color:var(--purple);padding:6px 12px;border-radius:8px;font-family:'Cairo';font-size:11px;font-weight:800;cursor:pointer;touch-action:manipulation;}
+.pay-amount-note{font-size:12px;color:#888;text-align:center;font-weight:700;}
+.pay-amount-note span{color:var(--gold);font-size:15px;font-weight:900;}
+.receipt-section{margin-top:12px;}
+.receipt-label{font-size:12px;font-weight:800;color:#888;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.receipt-label i{color:var(--purple);}
+.receipt-upload{border:2px dashed rgba(192,132,252,.25);border-radius:16px;padding:18px;text-align:center;cursor:pointer;transition:.2s;position:relative;}
+.receipt-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.receipt-upload-icon{font-size:26px;color:#333;margin-bottom:7px;display:block;}
+.receipt-upload-text{font-size:12px;color:#555;font-weight:700;}
+.receipt-preview{display:none;position:relative;}
+.receipt-preview img{width:100%;border-radius:12px;max-height:150px;object-fit:cover;}
+.receipt-remove{position:absolute;top:8px;left:8px;background:rgba(255,0,43,.8);border:none;color:white;width:26px;height:26px;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.order-note-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:12px 14px;color:white;font-family:'Cairo';font-size:12px;resize:none;margin-top:10px;height:65px;}
+.order-note-input:focus{border-color:var(--purple);}
+
+.submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--purple),var(--indigo));border:none;border-radius:18px;color:white;font-family:'Cairo';font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(192,132,252,.3);transition:.2s;position:relative;overflow:hidden;margin-top:4px;touch-action:manipulation;}
+.submit-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);transform:translateX(-100%);animation:btn-shine 3s infinite;}
+@keyframes btn-shine{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+.submit-btn:active{transform:scale(.97);}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+.order-summary{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:14px;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12px;}
+.summary-row:not(:last-child){border-bottom:1px solid rgba(255,255,255,.03);}
+.summary-label{color:#666;font-weight:700;}
+.summary-value{color:white;font-weight:800;}
+.summary-total .summary-label{color:#aaa;font-size:13px;}
+.summary-total .summary-value{color:var(--gold);font-size:15px;font-weight:900;}
+
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:8px;overflow:hidden;}
+.faq-q{padding:13px 15px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;touch-action:manipulation;}
+.faq-q i{color:var(--purple);font-size:11px;transition:transform .3s;flex-shrink:0;}
+.faq-q.open i{transform:rotate(90deg);}
+.faq-a{font-size:12px;color:#777;line-height:1.7;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;padding:0 15px;}
+.faq-a.open{max-height:200px;padding:0 15px 13px;}
+
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(248,5,102,.9);color:white;padding:9px 20px;border-radius:12px;font-size:12px;font-weight:700;z-index:9999;display:none;backdrop-filter:blur(10px);white-space:nowrap;}
+#toast.success{background:rgba(0,200,100,.9);}
+
+/* ========== BOTTOM NAV موحّد ========== */
+.bottom-nav{position:fixed;bottom:0;left:0;width:100%;background:rgba(10,10,10,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid var(--border);z-index:1000;}
+.nav-item{text-decoration:none;display:flex;flex-direction:column;align-items:center;color:#555;font-size:10px;font-weight:700;gap:3px;transition:color .2s;position:relative;padding:4px 8px;}
+.nav-item i{font-size:20px;margin-bottom:4px;}
+.nav-item.active{color:var(--primary);}
+.nav-item:hover{color:#888;}
+.badge-nav{position:absolute;top:-5px;right:-5px;background:var(--primary);color:white;font-size:9px;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #000;font-weight:900;}
+</style>
+</head>
+<body>
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div id="toast"></div>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="back-btn"><i class="fa-solid fa-chevron-right"></i></a>
+    <span class="header-title">اشتراك VIP 👑</span>
+    <div class="currency-switcher" id="currencySwitcher">
+      <button class="cur-btn active" data-cur="EGP">EGP</button>
+      <button class="cur-btn"        data-cur="USD">USD</button>
+      <button class="cur-btn"        data-cur="SAR">SAR</button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ========== TASK TRACKER ========== -->
+  <div class="task-tracker" id="taskTracker">
+    <div class="task-tracker-head">
+      <div class="task-tracker-title"><i class="fa-solid fa-list-check"></i> مهام الأسبوع</div>
+      <div class="task-reset-badge" id="taskResetBadge">يتجدد الأحد</div>
+    </div>
+    <div class="task-reward-chip">
+      <i class="fa-solid fa-coins"></i>
+      أكمل الكل واحصل على <strong style="margin:0 3px;">4,000</strong> عملة 🎉
+    </div>
+
+    <div class="task-row">
+      <div class="task-row-head">
+        <div class="task-row-label"><i class="fa-solid fa-circle-question"></i> الإجابة على الأسئلة</div>
+        <div class="task-row-count"><span id="q-done">0</span> / 50</div>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="q-bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="task-row">
+      <div class="task-row-head">
+        <div class="task-row-label"><i class="fa-solid fa-user-plus"></i> متابعين جدد</div>
+        <div class="task-row-count"><span id="f-done">0</span> / 15</div>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill gold" id="f-bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="task-row">
+      <div class="task-row-head">
+        <div class="task-row-label"><i class="fa-solid fa-bullhorn"></i> الشاوت هذا الأسبوع</div>
+        <div class="task-row-count"><span id="s-done">0</span> / 10</div>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill pink" id="s-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- ========== VIP ALREADY ========== -->
+  <div class="vip-already" id="vipAlreadySection">
+    <span class="vip-already-crown">👑</span>
+    <h2>أنت بالفعل VIP!</h2>
+    <p>اشتراكك ساري — استمتع بجميع مزايا VIP</p>
+    <div class="vip-expires">
+      <i class="fa-solid fa-calendar-check"></i>
+      <span id="vipExpiresDate">...</span>
+    </div>
+    <br>
+    <button class="renew-btn" id="renewBtn"><i class="fa-solid fa-rotate"></i> تجديد الاشتراك</button>
+  </div>
+
+  <div class="pending-banner" id="pendingBanner">
+    <i class="fa-solid fa-clock-rotate-left"></i>
+    <h3>طلبك قيد المراجعة ⏳</h3>
+    <p>فريقنا بيراجع طلبك وهيفعّل اشتراكك في أقرب وقت.<br>عادةً خلال 1-6 ساعات.</p>
+  </div>
+
+  <div id="mainContent">
+
+    <div class="hero">
+      <span class="hero-crown">👑</span>
+      <h1>اشترك في VIP</h1>
+      <p>شارة التوثيق + كوينز مضاعفة + مزايا حصرية داخل Anon</p>
+    </div>
+
+    <div class="section-title"><i class="fa-solid fa-tags"></i> اختار الباقة</div>
+    <div class="plans-list">
+
+      <div class="plan-card" data-plan="week">
+        <div class="plan-top">
+          <div class="plan-radio"><div class="plan-radio-dot"></div></div>
+          <div class="plan-info">
+            <div class="plan-name">أسبوعي</div>
+            <div class="plan-duration">7 أيام توثيق كامل</div>
+          </div>
+          <div class="plan-price-col">
+            <div class="plan-price">
+              <span class="price-sym" id="sym-week">جنيه</span>
+              <span class="price-num" id="price-week">80</span>
+            </div>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> شارة التوثيق</div>
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> كوينز ×2</div>
+        </div>
+      </div>
+
+      <div class="plan-card popular-plan selected" data-plan="month">
+        <div class="popular-tag">⭐ الأشهر</div>
+        <div class="plan-top">
+          <div class="plan-radio"><div class="plan-radio-dot"></div></div>
+          <div class="plan-info">
+            <div class="plan-name">شهري</div>
+            <div class="plan-duration">30 يوم توثيق كامل</div>
+          </div>
+          <div class="plan-price-col">
+            <div class="plan-price">
+              <span class="price-sym" id="sym-month">جنيه</span>
+              <span class="price-num" id="price-month">300</span>
+            </div>
+            <div class="plan-save">وفّر 25% عن الأسبوعي</div>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> شارة التوثيق</div>
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> كوينز ×2</div>
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> أولوية في الفيد</div>
+        </div>
+      </div>
+
+      <div class="plan-card" data-plan="quarter">
+        <div class="plan-top">
+          <div class="plan-radio"><div class="plan-radio-dot"></div></div>
+          <div class="plan-info">
+            <div class="plan-name">3 شهور</div>
+            <div class="plan-duration">90 يوم توثيق كامل</div>
+          </div>
+          <div class="plan-price-col">
+            <div class="plan-price">
+              <span class="price-sym" id="sym-quarter">جنيه</span>
+              <span class="price-num" id="price-quarter">900</span>
+            </div>
+            <div class="plan-save">وفّر 33% عن الشهري</div>
+          </div>
+        </div>
+        <div class="plan-features">
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> شارة التوثيق</div>
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> كوينز ×2</div>
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> أولوية في الفيد</div>
+          <div class="plan-feat"><i class="fa-solid fa-check"></i> مكافآت شهرية</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-title" style="margin-top:20px;"><i class="fa-solid fa-stars"></i> مزايا VIP</div>
+    <div class="benefits-grid">
+      <div class="benefit-card"><span class="benefit-icon">✅</span><div class="benefit-title">شارة التوثيق</div><div class="benefit-desc">شارة زرقاء على بروفايلك وإجاباتك</div></div>
+      <div class="benefit-card"><span class="benefit-icon">🪙</span><div class="benefit-title">كوينز ×2</div><div class="benefit-desc">ضعف الكوينز على كل المهام</div></div>
+      <div class="benefit-card"><span class="benefit-icon">🚀</span><div class="benefit-title">أولوية الفيد</div><div class="benefit-desc">إجاباتك تظهر أول للجميع</div></div>
+      <div class="benefit-card"><span class="benefit-icon">🎁</span><div class="benefit-title">مكافآت شهرية</div><div class="benefit-desc">مكافآت حصرية كل شهر</div></div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px;"><i class="fa-solid fa-wallet"></i> طريقة الدفع</div>
+    <div class="payment-methods">
+      <div class="pay-method pm-vf selected" data-method="vodafone">
+        <div class="pay-method-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+        <div class="pay-method-info">
+          <div class="pay-method-name">فودافون كاش</div>
+          <div class="pay-method-sub">تحويل فوري على رقم فودافون كاش</div>
+        </div>
+        <div class="pay-method-radio"><div class="pay-method-radio-dot"></div></div>
+      </div>
+      <div class="pay-method pm-ip" data-method="instapay">
+        <div class="pay-method-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div class="pay-method-info">
+          <div class="pay-method-name">انستا باي</div>
+          <div class="pay-method-sub">تحويل عبر تطبيق انستا باي</div>
+        </div>
+        <div class="pay-method-radio"><div class="pay-method-radio-dot"></div></div>
+      </div>
+      <div class="pay-method pm-manual" data-method="manual">
+        <div class="pay-method-icon"><i class="fa-solid fa-envelope"></i></div>
+        <div class="pay-method-info">
+          <div class="pay-method-name">تواصل مع الأدمن</div>
+          <div class="pay-method-sub">تواصل مباشر عبر تيليجرام</div>
+        </div>
+        <div class="pay-method-radio"><div class="pay-method-radio-dot"></div></div>
+      </div>
+    </div>
+
+    <div class="pay-info-box show" id="payInfoBox">
+      <div class="pay-info-title"><i class="fa-solid fa-circle-info"></i> <span id="payInfoTitle">بيانات فودافون كاش</span></div>
+      <div class="pay-number-row">
+        <span class="pay-number" id="payNumber">+201022752353</span>
+        <button class="copy-btn" id="copyBtn">نسخ <i class="fa-solid fa-copy"></i></button>
+      </div>
+      <div class="pay-amount-note">المبلغ المطلوب: <span id="payAmountDisplay">300 جنيه</span></div>
+      <div class="receipt-section">
+        <div class="receipt-label"><i class="fa-solid fa-image"></i> ارفع إيصال التحويل</div>
+        <div class="receipt-upload" id="receiptUploadArea">
+          <input type="file" accept="image/*" id="receiptInput">
+          <span class="receipt-upload-icon">📷</span>
+          <div class="receipt-upload-text">اضغط لرفع صورة الإيصال</div>
+        </div>
+        <div class="receipt-preview" id="receiptPreview">
+          <img id="receiptImg" src="" alt="إيصال">
+          <button class="receipt-remove" id="removeReceiptBtn"><i class="fa-solid fa-times"></i></button>
+        </div>
+      </div>
+      <textarea class="order-note-input" id="orderNote" placeholder="رقم العملية أو أي ملاحظة إضافية (اختياري)"></textarea>
+    </div>
+
+    <div class="pay-info-box" id="manualInfoBox">
+      <div class="pay-info-title"><i class="fa-brands fa-telegram"></i> تواصل مع الأدمن</div>
+      <p style="font-size:12px;color:#777;line-height:1.7;margin-bottom:14px;">ابعت رسالة للأدمن باليوزرنيم بتاعك والباقة اللي عايزها وهيفعّلها ليك يدوياً.</p>
+      <a href="https://t.me/anon_verification_bot" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(0,136,204,.15);border:1px solid rgba(0,136,204,.3);border-radius:14px;padding:13px;color:#0088cc;text-decoration:none;font-size:13px;font-weight:800;">
+        <i class="fa-brands fa-telegram" style="font-size:18px;"></i> فتح تيليجرام
+      </a>
+    </div>
+
+    <div class="order-summary" id="orderSummary">
+      <div class="summary-row"><span class="summary-label">الباقة</span><span class="summary-value" id="summaryPlan">شهري</span></div>
+      <div class="summary-row"><span class="summary-label">المدة</span><span class="summary-value" id="summaryDuration">30 يوم</span></div>
+      <div class="summary-row"><span class="summary-label">طريقة الدفع</span><span class="summary-value" id="summaryMethod">فودافون كاش</span></div>
+      <div class="summary-row summary-total"><span class="summary-label">الإجمالي</span><span class="summary-value" id="summaryTotal">300 جنيه</span></div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn">
+      <i class="fa-solid fa-paper-plane"></i>
+      <span id="submitBtnText">إرسال الطلب</span>
+    </button>
+
+    <div class="section-title" style="margin-top:26px;"><i class="fa-solid fa-circle-question"></i> أسئلة شائعة</div>
+    <div class="faq-item"><div class="faq-q">متى يُفعَّل الاشتراك؟<i class="fa-solid fa-chevron-left"></i></div><div class="faq-a">بعد مراجعة الإيصال من الفريق، عادةً خلال 1-6 ساعات.</div></div>
+    <div class="faq-item"><div class="faq-q">هل ينتهي الاشتراك تلقائياً؟<i class="fa-solid fa-chevron-left"></i></div><div class="faq-a">نعم، بعد انتهاء المدة تُشال الشارة تلقائياً وبتحتاج تجدد اشتراكك.</div></div>
+    <div class="faq-item"><div class="faq-q">هل في استرداد للمبلغ؟<i class="fa-solid fa-chevron-left"></i></div><div class="faq-a">لا يوجد استرداد بعد تفعيل الاشتراك.</div></div>
+    <div class="faq-item"><div class="faq-q">إيه الفرق بين الباقات؟<i class="fa-solid fa-chevron-left"></i></div><div class="faq-a">كل الباقات بتديك نفس المزايا، الفرق بس في مدة الاشتراك والسعر.</div></div>
+    <div class="faq-item"><div class="faq-q">إزاي بحصل على عملات المهام الأسبوعية؟<i class="fa-solid fa-chevron-left"></i></div><div class="faq-a">أجب على 50 سؤال واحصل على 15 متابع جديد خلال الأسبوع. لو أكملت الاثنين تاخد 4,000 عملة. لو أكملت جزء منهم تاخد عملات بالنسبة.</div></div>
+
+  </div>
+</div>
+
+<!-- ========== BOTTOM NAV موحّد ========== -->
+<nav class="bottom-nav">
+  <a href="/"               class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+  <a href="questions.html"  class="nav-item" style="position:relative;">
+    <i class="fa-solid fa-circle-question"></i><span>الأسئلة</span>
+    <div id="qBadgeNav" class="badge-nav" style="display:none;">0</div>
+  </a>
+  <a href="quiet-corner.html" class="nav-item"><i class="fa-solid fa-leaf"></i><span>سكينة</span></a>
+  <a href="game.html"         class="nav-item"><i class="fa-solid fa-brain"></i><span>تحدِّ</span></a>
+  <a href="profile.html"      class="nav-item"><i class="fa-solid fa-user"></i><span>بروفايلي</span></a>
+</nav>
+
+<script>
+'use strict';
+
+firebase.initializeApp(APP_CONFIG.firebase);
+const db   = firebase.firestore();
+const auth = firebase.auth();
+
+const TG_BOT_TOKEN = (APP_CONFIG.telegram || {}).botToken || '';
+const TG_CHAT_ID   = (APP_CONFIG.telegram || {}).chatId   || '';
+
+const EGP_PRICES   = { week:80, month:300, quarter:900 };
+const PLAN_DAYS    = { week:7,  month:30,  quarter:90  };
+const PLAN_NAMES   = { week:'أسبوعي', month:'شهري', quarter:'3 شهور' };
+const METHOD_NAMES = { vodafone:'فودافون كاش', instapay:'انستا باي', manual:'تواصل مع الأدمن' };
+const PAY_NUMBERS  = { vodafone:'+201022752353', instapay:'hamedtamer2222@instapay' };
+
+const MAX_QUESTIONS = 50;
+const MAX_FOLLOWERS = 15;
+const MAX_SHOUTS    = 10;
+
+let currentUser     = null;
+let selectedPlan    = 'month';
+let selectedMethod  = 'vodafone';
+let receiptBase64   = null;
+let currentCurrency = 'EGP';
+let liveRates       = { EGP:1, USD:0.0204, SAR:0.0765 };
+
+/* ---- Task Tracker ---- */
+function renderTracker(q, f, s) {
+  q = Math.min(q, MAX_QUESTIONS);
+  f = Math.min(f, MAX_FOLLOWERS);
+  s = Math.min(s, MAX_SHOUTS);
+
+  var qPct = Math.round((q / MAX_QUESTIONS) * 100);
+  var fPct = Math.round((f / MAX_FOLLOWERS) * 100);
+  var sPct = Math.round((s / MAX_SHOUTS) * 100);
+
+  document.getElementById('q-done').innerText = q;
+  document.getElementById('f-done').innerText = f;
+  document.getElementById('s-done').innerText = s;
+
+  document.getElementById('q-bar').style.width = qPct + '%';
+  document.getElementById('f-bar').style.width = fPct + '%';
+  document.getElementById('s-bar').style.width = sPct + '%';
+
+  if (qPct >= 100) document.getElementById('q-bar').classList.add('done');
+  if (fPct >= 100) document.getElementById('f-bar').classList.add('done');
+  if (sPct >= 100) document.getElementById('s-bar').classList.add('done');
+
+  // تاريخ التجديد
+  var today = new Date();
+  var daysUntilSunday = (7 - today.getDay()) % 7 || 7;
+  var nextSunday = new Date(today);
+  nextSunday.setDate(today.getDate() + daysUntilSunday);
+  document.getElementById('taskResetBadge').innerText =
+    'يتجدد ' + nextSunday.toLocaleDateString('ar-EG', { weekday:'long', day:'numeric', month:'short' });
+}
+
+async function loadTaskProgress(uid) {
+  try {
+    var now = new Date();
+    var startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+    var weekTs = firebase.firestore.Timestamp.fromDate(startOfWeek);
+
+    var answersSnap = await db.collection('answers')
+      .where('userId', '==', uid)
+      .where('answeredAt', '>=', weekTs)
+      .get();
+
+    var shoutsSnap = await db.collection('shouts')
+      .where('ownerId', '==', uid)
+      .where('createdAt', '>=', weekTs)
+      .get();
+
+    var followersSnap = await db.collection('users')
+      .doc(uid).collection('followers').get();
+
+    renderTracker(answersSnap.size, followersSnap.size, shoutsSnap.size);
+
+  } catch(e) {
+    console.error('Task progress error:', e);
+    renderTracker(0, 0, 0);
+  }
+}
+
+/* ---- قراءة عدد الأسئلة المعلقة للـ badge ---- */
+function listenPendingQuestions(uid) {
+  db.collection('questions')
+    .where('receiverId', '==', uid)
+    .where('status', '==', 'pending')
+    .onSnapshot(snap => {
+      var badge = document.getElementById('qBadgeNav');
+      if (snap.size > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = snap.size;
+      } else {
+        badge.style.display = 'none';
+      }
+    });
+}
+
+/* ---- Currency ---- */
+async function fetchRates() {
+  updateUI();
+  try {
+    var urls = [
+      'https://open.er-api.com/v6/latest/EGP',
+      'https://api.exchangerate-api.com/v4/latest/EGP'
+    ];
+    for (var i = 0; i < urls.length; i++) {
+      try {
+        var r = await fetch(urls[i]);
+        var d = await r.json();
+        if (d && d.rates && d.rates.USD) {
+          liveRates.USD = d.rates.USD;
+          liveRates.SAR = d.rates.SAR;
+          updateUI();
+          break;
+        }
+      } catch(e2) { continue; }
+    }
+  } catch(e) {}
+}
+
+function convert(egp) {
+  return currentCurrency === 'EGP' ? egp : egp * (liveRates[currentCurrency] || 1);
+}
+
+function fmt(val, cur) {
+  if (cur === 'EGP') return val.toLocaleString('ar-EG') + ' جنيه';
+  if (cur === 'USD') return '$ ' + val.toFixed(2);
+  if (cur === 'SAR') return val.toFixed(2) + ' ر.س';
+  return val;
+}
+
+function updateUI() {
+  ['week','month','quarter'].forEach(function(p) {
+    var v = convert(EGP_PRICES[p]);
+    if (currentCurrency === 'EGP') {
+      document.getElementById('price-'+p).innerText = EGP_PRICES[p].toLocaleString('ar-EG');
+      document.getElementById('sym-'+p).innerText   = 'جنيه';
+    } else {
+      document.getElementById('price-'+p).innerText = v.toFixed(2);
+      document.getElementById('sym-'+p).innerText   = currentCurrency === 'USD' ? '$' : 'ر.س';
+    }
+  });
+  var val = convert(EGP_PRICES[selectedPlan]);
+  var str = fmt(val, currentCurrency);
+  document.getElementById('payAmountDisplay').innerText = str;
+  document.getElementById('summaryPlan').innerText      = PLAN_NAMES[selectedPlan];
+  document.getElementById('summaryDuration').innerText  = PLAN_DAYS[selectedPlan] + ' يوم';
+  document.getElementById('summaryMethod').innerText    = METHOD_NAMES[selectedMethod];
+  document.getElementById('summaryTotal').innerText     = str;
+  document.getElementById('submitBtnText').innerText    = 'إرسال الطلب — ' + str;
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.innerText = msg;
+  t.className = type || '';
+  t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 3000);
+}
+
+function initListeners() {
+  document.querySelectorAll('.cur-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      currentCurrency = btn.getAttribute('data-cur');
+      document.querySelectorAll('.cur-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      updateUI();
+    });
+  });
+
+  document.querySelectorAll('.plan-card').forEach(function(card) {
+    function handlePlan(e) {
+      e.preventDefault();
+      selectedPlan = card.getAttribute('data-plan');
+      document.querySelectorAll('.plan-card').forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      updateUI();
+    }
+    card.addEventListener('click', handlePlan);
+    card.addEventListener('touchend', handlePlan);
+  });
+
+  document.querySelectorAll('.pay-method').forEach(function(el) {
+    function handleMethod(e) {
+      e.preventDefault();
+      selectedMethod = el.getAttribute('data-method');
+      document.querySelectorAll('.pay-method').forEach(function(m){ m.classList.remove('selected'); });
+      el.classList.add('selected');
+      var payBox    = document.getElementById('payInfoBox');
+      var manualBox = document.getElementById('manualInfoBox');
+      var summary   = document.getElementById('orderSummary');
+      var submitBtn = document.getElementById('submitBtn');
+      if (selectedMethod === 'manual') {
+        payBox.classList.remove('show');
+        manualBox.classList.add('show');
+        summary.style.display   = 'none';
+        submitBtn.style.display = 'none';
+      } else {
+        payBox.classList.add('show');
+        manualBox.classList.remove('show');
+        summary.style.display   = 'block';
+        submitBtn.style.display = 'flex';
+        document.getElementById('payInfoTitle').innerText =
+          selectedMethod === 'vodafone' ? 'بيانات فودافون كاش' : 'بيانات انستا باي';
+        document.getElementById('payNumber').innerText = PAY_NUMBERS[selectedMethod];
+      }
+      updateUI();
+    }
+    el.addEventListener('click', handleMethod);
+    el.addEventListener('touchend', handleMethod);
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', function() {
+    var num = document.getElementById('payNumber').innerText;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(num).then(function(){ showToast('تم النسخ ✓','success'); });
+    } else { showToast('تم النسخ ✓','success'); }
+  });
+
+  document.getElementById('receiptInput').addEventListener('change', function(e) {
+    var file = e.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      receiptBase64 = ev.target.result;
+      document.getElementById('receiptUploadArea').style.display = 'none';
+      document.getElementById('receiptPreview').style.display    = 'block';
+      document.getElementById('receiptImg').src = receiptBase64;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('removeReceiptBtn').addEventListener('click', function() {
+    receiptBase64 = null;
+    document.getElementById('receiptInput').value              = '';
+    document.getElementById('receiptUploadArea').style.display = 'block';
+    document.getElementById('receiptPreview').style.display    = 'none';
+  });
+
+  document.querySelectorAll('.faq-q').forEach(function(q) {
+    q.addEventListener('click', function() {
+      q.classList.toggle('open');
+      q.nextElementSibling.classList.toggle('open');
+    });
+  });
+
+  document.getElementById('renewBtn').addEventListener('click', function() {
+    document.getElementById('vipAlreadySection').style.display = 'none';
+    document.getElementById('mainContent').style.display       = 'block';
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', submitOrder);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initListeners);
+} else {
+  initListeners();
+}
+
+async function submitOrder() {
+  if (!currentUser)   return showToast('سجّل دخولك أولاً');
+  if (!receiptBase64) return showToast('ارفع إيصال التحويل أولاً');
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
+
+  try {
+    var egpVal       = EGP_PRICES[selectedPlan];
+    var convertedVal = convert(egpVal);
+    var note         = document.getElementById('orderNote').value.trim().substring(0,300);
+
+    await db.collection('subscriptionRequests').add({
+      userId:    currentUser.uid,
+      userEmail: currentUser.email || '',
+      plan:      selectedPlan,
+      planName:  PLAN_NAMES[selectedPlan],
+      days:      PLAN_DAYS[selectedPlan],
+      method:    selectedMethod,
+      currency:  currentCurrency,
+      amount:    convertedVal,
+      amountEGP: egpVal,
+      receipt:   receiptBase64,
+      note:      note,
+      status:    'pending',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    await db.collection('users').doc(currentUser.uid).update({ vipPending:true });
+
+    var caption =
+      '🔔 طلب VIP جديد!\n\n' +
+      '👤 User ID: ' + currentUser.uid + '\n' +
+      '📧 الإيميل: ' + (currentUser.email||'غير معروف') + '\n' +
+      '📦 الباقة: '  + PLAN_NAMES[selectedPlan] + '\n' +
+      '💳 الدفع: '   + METHOD_NAMES[selectedMethod] + '\n' +
+      '💰 المبلغ: '  + egpVal + ' جنيه' +
+      (currentCurrency!=='EGP' ? ' (' + convertedVal.toFixed(2) + ' ' + currentCurrency + ')' : '') + '\n' +
+      (note ? '📝 ملاحظة: ' + note + '\n' : '') +
+      '🕐 الوقت: ' + new Date().toLocaleString('ar-EG');
+
+    try {
+      if (receiptBase64) {
+        var b64  = receiptBase64.split(',')[1];
+        var mime = receiptBase64.split(';')[0].split(':')[1];
+        var bc   = atob(b64);
+        var ba   = new Uint8Array(bc.length);
+        for(var i=0;i<bc.length;i++) ba[i]=bc.charCodeAt(i);
+        var blob = new Blob([ba],{type:mime});
+        var fd   = new FormData();
+        fd.append('chat_id', TG_CHAT_ID);
+        fd.append('photo',   blob, 'receipt.jpg');
+        fd.append('caption', caption);
+        await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendPhoto',{method:'POST',body:fd});
+      } else {
+        await fetch('https://api.telegram.org/bot'+TG_BOT_TOKEN+'/sendMessage',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({chat_id:TG_CHAT_ID,text:caption})
+        });
+      }
+    } catch(e) {}
+
+    showToast('✅ تم إرسال طلبك! هيتفعل خلال 1-6 ساعات','success');
+    setTimeout(function(){ location.reload(); }, 2500);
+
+  } catch(e) {
+    console.error(e);
+    showToast('حدث خطأ، حاول مرة أخرى');
+    btn.disabled = false;
+    updateUI();
+  }
+}
+
+auth.onAuthStateChanged(async function(user) {
+  if (!user) return location.href = 'signin.html';
+  currentUser = user;
+
+  try {
+    var snap     = await db.collection('users').doc(user.uid).get();
+    var userData = snap.data() || {};
+    var isVip    = userData.isVerified || userData.isPremium;
+
+    if (isVip && userData.vipExpiresAt) {
+      var expDate = userData.vipExpiresAt.toDate();
+      if (expDate < new Date()) {
+        await db.collection('users').doc(user.uid).update({
+          isVerified:false, isPremium:false, vipExpiresAt:null, vipPending:false
+        });
+      } else {
+        document.getElementById('vipAlreadySection').style.display = 'block';
+        document.getElementById('mainContent').style.display        = 'none';
+        document.getElementById('vipExpiresDate').innerText =
+          'ينتهي: ' + expDate.toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
+      }
+    }
+    if (userData.vipPending) {
+      document.getElementById('pendingBanner').style.display = 'block';
+    }
+  } catch(e) { console.error(e); }
+
+  await loadTaskProgress(user.uid);
+  listenPendingQuestions(user.uid);
+  await fetchRates();
+});
+</script>
+</body>
+</html>

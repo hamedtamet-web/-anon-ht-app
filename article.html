@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Anon | قراءة المقال</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #f80566; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body, html {
+            width: 100%; min-height: 100%;
+            font-family: 'Cairo', sans-serif;
+            background: #050505 url('images/bbgg.jpg') center/cover fixed;
+            color: #fff; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.88); z-index: -1;
+        }
+
+        /* ══ TOPBAR ══ */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 18px;
+        }
+        .back-btn {
+            width: 38px; height: 38px; border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: .25s; text-decoration: none; flex-shrink: 0;
+        }
+        .back-btn:hover { background: rgba(248,5,102,0.15); border-color: var(--primary); color: var(--primary); }
+        .topbar-title {
+            flex: 1; font-size: 15px; font-weight: 800;
+            color: #fff; overflow: hidden;
+            white-space: nowrap; text-overflow: ellipsis;
+        }
+        .topbar-logo { width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 0 6px var(--primary)); }
+
+        /* ══ MAIN ══ */
+        .page-wrap {
+            max-width: 680px; margin: 0 auto;
+            padding: 24px 16px 60px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        /* ══ HERO ══ */
+        .article-hero {
+            background: rgba(15,15,15,0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 28px; overflow: hidden;
+        }
+        .hero-top {
+            background: linear-gradient(135deg, rgba(248,5,102,0.18), rgba(80,0,40,0.18));
+            border-bottom: 1px solid rgba(248,5,102,0.1);
+            padding: 28px 24px 22px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .article-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+        .badge-cat {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(248,5,102,0.15); border: 1px solid rgba(248,5,102,0.3);
+            color: var(--primary); font-size: 11px; font-weight: 800;
+            padding: 4px 12px; border-radius: 50px; letter-spacing: .5px;
+        }
+        .badge-new {
+            background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3);
+            color: #4ade80; font-size: 11px; font-weight: 800;
+            padding: 4px 10px; border-radius: 50px;
+        }
+        .article-big-title {
+            font-size: 22px; font-weight: 900; line-height: 1.55;
+            color: #fff; text-align: right;
+        }
+        .article-meta-row {
+            display: flex; gap: 16px; flex-wrap: wrap;
+            align-items: center; font-size: 12px; color: #777;
+        }
+        .meta-item { display: flex; align-items: center; gap: 5px; }
+
+        /* ══ BODY ══ */
+        .article-content-wrap { padding: 24px; }
+        .article-body-text {
+            font-size: 15px; line-height: 2;
+            color: #ccc; text-align: right;
+            white-space: pre-wrap; word-break: break-word;
+        }
+        .article-body-text p { margin-bottom: 16px; }
+        .article-body-text h2 { color: #fff; font-size: 18px; font-weight: 800; margin: 24px 0 10px; }
+        .article-body-text h3 { color: var(--primary); font-size: 15px; font-weight: 700; margin: 18px 0 8px; }
+        .article-body-text ul { padding-right: 20px; margin: 10px 0; }
+        .article-body-text ul li { margin-bottom: 8px; color: #bbb; }
+        .article-body-text strong { color: #fff; font-weight: 800; }
+
+        /* ══ DIVIDER ══ */
+        .content-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(248,5,102,0.25), transparent);
+            margin: 4px 24px 0;
+        }
+
+        /* ══ SHARE ══ */
+        .share-section {
+            background: rgba(15,15,15,0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 24px; padding: 20px;
+            display: flex; flex-direction: column; gap: 14px; align-items: center;
+        }
+        .share-title { font-size: 13px; font-weight: 700; color: #aaa; }
+        .share-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .share-btn {
+            display: flex; align-items: center; gap: 7px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px; padding: 10px 16px;
+            color: #ccc; font-family: 'Cairo', sans-serif;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: .25s; white-space: nowrap;
+        }
+        .share-btn:hover { background: rgba(248,5,102,0.12); border-color: var(--primary); color: #fff; }
+        .share-btn.copied { border-color: #4ade80; color: #4ade80; }
+
+        /* ══ BACK CARD ══ */
+        .back-card {
+            background: rgba(248,5,102,0.06);
+            border: 1px solid rgba(248,5,102,0.2);
+            border-radius: 20px; padding: 18px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            text-decoration: none; transition: .25s;
+        }
+        .back-card:hover { background: rgba(248,5,102,0.1); border-color: rgba(248,5,102,0.4); }
+        .back-card-text { color: #ccc; font-size: 13px; }
+        .back-card-text b { color: var(--primary); display: block; font-size: 15px; margin-top: 2px; }
+        .back-card-arrow { color: var(--primary); font-size: 22px; }
+
+        /* ══ LOADER ══ */
+        .page-loader {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            min-height: 60vh; gap: 16px;
+        }
+        .spin {
+            width: 44px; height: 44px;
+            border: 3px solid rgba(255,255,255,0.08);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { color: #555; font-size: 13px; }
+
+        /* ══ ERROR ══ */
+        .error-box {
+            text-align: center; padding: 60px 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 14px;
+        }
+        .error-icon { font-size: 52px; }
+        .error-title { color: #fff; font-size: 18px; font-weight: 900; }
+        .error-msg { color: #666; font-size: 13px; line-height: 1.8; }
+        .error-btn {
+            margin-top: 8px; padding: 12px 28px;
+            background: var(--primary); color: #fff; border: none;
+            border-radius: 16px; font-family: 'Cairo', sans-serif;
+            font-size: 14px; font-weight: 800; cursor: pointer; transition: .3s;
+        }
+        .error-btn:hover { box-shadow: 0 8px 20px rgba(248,5,102,.3); transform: translateY(-2px); }
+
+        /* ══ FOOTER ══ */
+        .page-footer {
+            text-align: center; color: #333; font-size: 12px;
+            padding: 0 10px 20px; line-height: 2;
+        }
+        .page-footer a { color: #555; text-decoration: none; margin: 0 6px; }
+        .page-footer a:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <a href="javascript:history.back()" class="back-btn" aria-label="رجوع">&#8250;</a>
+    <div class="topbar-title" id="topbarTitle">جاري التحميل...</div>
+    <img src="images/logo.png" alt="Anon" class="topbar-logo">
+</div>
+
+<!-- CONTENT -->
+<div class="page-wrap" id="pageWrap">
+    <div class="page-loader" id="loader">
+        <div class="spin"></div>
+        <div class="loader-text">جاري تحميل المقال...</div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+    <div>
+        <a href="signin.html">الرئيسية</a>
+        <span style="color:#222">·</span>
+        <a href="mailto:support@anon-ht.web.app">تواصل معنا</a>
+    </div>
+    <div style="margin-top:4px">© 2025 Anon Platform · جميع الحقوق محفوظة</div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+<script>
+    /* ══ Firebase ══ */
+    const firebaseConfig = {
+        apiKey: "AIzaSyDbAYctYxiv3mTUlpfdY4ZeZDNxH89nklk",
+        authDomain: "anon-ht.firebaseapp.com",
+        projectId: "anon-ht",
+        storageBucket: "anon-ht.firebasestorage.app",
+        messagingSenderId: "214497552351",
+        appId: "1:214497552351:web:9645cd0ce48b9d5466a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    /* ══ Helpers ══ */
+    function escHtml(str) {
+        return String(str || "")
+            .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function formatDate(ts) {
+        if (!ts) return "";
+        try {
+            const d = ts.toDate ? ts.toDate() : new Date(ts);
+            return d.toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
+        } catch(e) { return ""; }
+    }
+
+    function formatViews(n) {
+        if (!n) return "0";
+        return n > 999 ? (Math.floor(n / 1000)) + "k" : String(n);
+    }
+
+    /* ══ Copy Link ══ */
+    function copyLink() {
+        const btn = document.getElementById("copyBtn");
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            btn.textContent = "✅ تم النسخ";
+            btn.classList.add("copied");
+            setTimeout(() => {
+                btn.textContent = "🔗 نسخ الرابط";
+                btn.classList.remove("copied");
+            }, 2500);
+        }).catch(() => {
+            const ta = document.createElement("textarea");
+            ta.value = window.location.href;
+            document.body.appendChild(ta);
+            ta.select(); document.execCommand("copy");
+            document.body.removeChild(ta);
+            btn.textContent = "✅ تم النسخ";
+            setTimeout(() => { btn.textContent = "🔗 نسخ الرابط"; }, 2500);
+        });
+    }
+
+    /* ══ Share ══ */
+    function shareWhatsapp(title) {
+        const url = encodeURIComponent(window.location.href);
+        const txt = encodeURIComponent("📢 " + title + "\n");
+        window.open("https://wa.me/?text=" + txt + url, "_blank");
+    }
+
+    function shareTwitter(title) {
+        const url = encodeURIComponent(window.location.href);
+        const txt = encodeURIComponent("📢 " + title);
+        window.open("https://twitter.com/intent/tweet?text=" + txt + "&url=" + url, "_blank");
+    }
+
+    /* ══ Increment Views (مرة واحدة فقط لكل جهاز لكل مقال) ══ */
+    function incrementViewsOnce(docId) {
+        // مفتاح التخزين خاص بكل مقال
+        const storageKey = "viewed_article_" + docId;
+
+        // لو المستخدم شاف المقال ده قبل كده في نفس الجلسة → متعدش
+        if (sessionStorage.getItem(storageKey)) return;
+
+        // لو المستخدم شاف المقال قبل كده (حتى بعد إغلاق المتصفح) → متعدش
+        if (localStorage.getItem(storageKey)) return;
+
+        // أول مرة يشوف المقال → زوّد المشاهدات وسجّل
+        try {
+            db.collection("site_updates").doc(docId).update({
+                views: firebase.firestore.FieldValue.increment(1)
+            }).then(() => {
+                // سجّل في الاتنين عشان يبقى أمان مضاعف
+                sessionStorage.setItem(storageKey, "1");
+                localStorage.setItem(storageKey, "1");
+            }).catch((e) => {
+                console.error("incrementViews error:", e);
+            });
+        } catch(e) {
+            console.error("incrementViews error:", e);
+        }
+    }
+
+    /* ══ Render Article ══ */
+    function renderArticle(data, docId) {
+        const icons = ["🚀","✨","🔧","📢","🎉","🛡️","💎","⚡"];
+        const cats  = ["تحديث","ميزة جديدة","إصلاح","إعلان","حدث","أمان","مميز","تحسين"];
+
+        const title    = data.title   || "تحديث جديد";
+        const body     = data.body    || data.content || data.description || "";
+        const category = data.category|| cats[0];
+        const isNew    = data.isNew   === true;
+        const views    = formatViews(data.views);
+        const date     = formatDate(data.createdAt);
+        const readTime = Math.max(1, Math.ceil((body.length || 200) / 600));
+        const icon     = data.icon || icons[0];
+
+        /* update topbar */
+        document.getElementById("topbarTitle").textContent = title;
+        document.title = "Anon | " + title;
+
+        /* زوّد المشاهدات مرة واحدة بس لكل جهاز */
+        incrementViewsOnce(docId);
+
+        const html = `
+        <div class="article-hero">
+            <div class="hero-top">
+                <div class="article-badges">
+                    <span class="badge-cat">${escHtml(icon)} ${escHtml(category)}</span>
+                    ${isNew ? '<span class="badge-new">🆕 جديد</span>' : ''}
+                </div>
+                <div class="article-big-title">${escHtml(title)}</div>
+                <div class="article-meta-row">
+                    ${date ? `<span class="meta-item">📅 ${escHtml(date)}</span>` : ''}
+                    <span class="meta-item">👁️ ${escHtml(views)} مشاهدة</span>
+                    <span class="meta-item">⏱️ ${readTime} دقيقة للقراءة</span>
+                </div>
+            </div>
+            <div class="content-divider"></div>
+            <div class="article-content-wrap">
+                <div class="article-body-text" id="articleBody"></div>
+            </div>
+        </div>
+
+        <div class="share-section">
+            <div class="share-title">📤 شارك المقال مع أصدقائك</div>
+            <div class="share-btns">
+                <button class="share-btn" onclick="shareWhatsapp('${escHtml(title).replace(/'/g,"\\'")}')">💚 واتساب</button>
+                <button class="share-btn" onclick="shareTwitter('${escHtml(title).replace(/'/g,"\\'")}')">🐦 تويتر</button>
+                <button class="share-btn" id="copyBtn" onclick="copyLink()">🔗 نسخ الرابط</button>
+            </div>
+        </div>
+
+        <a href="signin.html" class="back-card">
+            <div class="back-card-text">
+                عودة إلى
+                <b>🏠 الصفحة الرئيسية</b>
+            </div>
+            <span class="back-card-arrow">‹</span>
+        </a>`;
+
+        document.getElementById("pageWrap").innerHTML = html;
+
+        /* render body safely */
+        const bodyEl = document.getElementById("articleBody");
+        if (body) {
+            const paragraphs = body.split(/\n\n+/);
+            bodyEl.innerHTML = paragraphs
+                .map(p => p.trim() ? "<p>" + escHtml(p.trim()) + "</p>" : "")
+                .join("");
+        } else {
+            bodyEl.innerHTML = '<p style="color:#555;text-align:center">لا يوجد محتوى لهذا المقال.</p>';
+        }
+    }
+
+    /* ══ Show Error ══ */
+    function showError(msg) {
+        document.getElementById("topbarTitle").textContent = "خطأ";
+        document.getElementById("pageWrap").innerHTML = `
+        <div class="error-box">
+            <div class="error-icon">😕</div>
+            <div class="error-title">تعذر تحميل المقال</div>
+            <div class="error-msg">${escHtml(msg)}</div>
+            <button class="error-btn" onclick="history.back()">← العودة للخلف</button>
+        </div>`;
+    }
+
+    /* ══ Load ══ */
+    async function loadArticle() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        if (!id) { showError("لم يتم تحديد المقال المطلوب."); return; }
+
+        try {
+            const snap = await db.collection("site_updates").doc(id).get();
+            if (!snap.exists) { showError("المقال غير موجود أو تم حذفه."); return; }
+            renderArticle(snap.data(), snap.id);
+        } catch(e) {
+            console.error("loadArticle error:", e);
+            showError("حدث خطأ في الاتصال، تحقق من الإنترنت وحاول مجدداً.");
+        }
+    }
+
+    window.addEventListener("load", loadArticle);
+</script>
+</body>
+</html>

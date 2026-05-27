@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الرئيسية | Anon</title>
+
+    <!-- SEO Meta Tags -->
+<meta name="description" content="Anon - منصة لطرح الأسئلة المجهولة والحصول على ردود صريحة">
+<meta name="keywords" content="أسئلة مجهولة, anon, اسأل بشكل مجهول, ردود صريحة">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Anon HT">
+
+<!-- Open Graph -->
+<meta property="og:title" content="الرئيسية | Anon">
+<meta property="og:description" content="اسأل بشكل مجهول واحصل على ردود صريحة">
+<meta property="og:image" content="https://anon-ht.web.app/images/logo.png">
+<meta property="og:url" content="https://anon-ht.web.app/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_EG">
+<meta property="og:site_name" content="Anon HT">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="الرئيسية | Anon">
+<meta name="twitter:description" content="اسأل بشكل مجهول واحصل على ردود صريحة">
+<meta name="twitter:image" content="https://anon-ht.web.app/images/logo.png">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Anon HT",
+  "alternateName": "انون اتش تي",
+  "url": "https://anon-ht.web.app/"
+}
+</script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f80566">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Anon HT">
+    <link rel="apple-touch-icon" href="images/logo.png">
+    <link rel="icon" type="image/png" href="images/logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="google-site-verification" content="q28FVITNlApCco6bXZ8p3NZt3TtmYq0rsEZK3YfaKEI" />
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="config.js"></script>
+    <script src="ads.js"></script>
+    <script src="lang.js"></script>
+
+    <style>
+        :root {
+            --primary:#f80566; --bg:#050505; --card:#0d0d0d;
+            --border:rgba(255,255,255,0.06); --admin-red:#ff002b;
+            --verify-blue:#00bfff; --text-gray:#888; --max-width:700px;
+        }
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;outline:none;}
+        body{background:var(--bg);color:white;font-family:'Cairo',sans-serif;margin:0;padding-bottom:100px;overflow-x:hidden;position:relative;}
+
+        /* Modal */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px;}
+        .custom-modal{background:var(--card);border:1px solid var(--border);border-radius:24px;width:100%;max-width:380px;padding:30px;text-align:center;animation:modalPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275);}
+        .modal-title{font-size:15px;font-weight:800;margin-bottom:20px;color:#fff;}
+        .modal-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;padding:12px;color:white;font-family:'Cairo';margin-bottom:20px;text-align:center;}
+        .modal-btns{display:flex;gap:12px;}
+        .m-btn{flex:1;padding:12px;border-radius:12px;border:none;font-family:'Cairo';font-weight:700;cursor:pointer;font-size:13px;}
+        .m-confirm{background:var(--primary);color:white;}
+        .m-cancel{background:rgba(255,255,255,0.08);color:#888;}
+
+        /* PWA Banner */
+        #pwa-install-banner{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:calc(100% - 30px);max-width:420px;background:linear-gradient(135deg,#1a1a1a,#111);border:1px solid rgba(248,5,102,0.4);border-radius:22px;padding:16px 18px;display:none;align-items:center;gap:14px;z-index:9998;box-shadow:0 8px 30px rgba(248,5,102,0.2);animation:slideUpBanner 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
+        #pwa-install-banner .pwa-logo{width:48px;height:48px;border-radius:14px;flex-shrink:0;border:2px solid rgba(248,5,102,0.3);}
+        #pwa-install-banner .pwa-text{flex:1;}
+        #pwa-install-banner .pwa-text strong{display:block;font-size:13px;font-weight:800;color:#fff;margin-bottom:3px;}
+        #pwa-install-banner .pwa-text span{font-size:11px;color:#888;}
+        #pwa-install-banner .pwa-actions{display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
+        #pwa-install-btn{background:var(--primary);color:white;border:none;border-radius:12px;padding:9px 16px;font-family:'Cairo';font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+        #pwa-dismiss-btn{background:rgba(255,255,255,0.06);color:#666;border:none;border-radius:10px;padding:7px 12px;font-family:'Cairo';font-size:11px;font-weight:700;cursor:pointer;}
+
+        /* iOS Banner */
+        #ios-install-banner{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:calc(100% - 30px);max-width:420px;background:linear-gradient(135deg,#1a1a1a,#111);border:1px solid rgba(248,5,102,0.4);border-radius:22px;padding:18px;display:none;flex-direction:column;gap:10px;z-index:9998;box-shadow:0 8px 30px rgba(248,5,102,0.2);animation:slideUpBanner 0.4s cubic-bezier(0.175,0.885,0.32,1.275);text-align:center;}
+        #ios-install-banner .ios-title{font-size:13px;font-weight:800;color:#fff;}
+        #ios-install-banner .ios-steps{font-size:12px;color:#aaa;line-height:1.8;}
+        #ios-install-banner .ios-steps i{color:var(--primary);}
+        #ios-dismiss-btn{background:rgba(255,255,255,0.06);color:#666;border:none;border-radius:10px;padding:8px;font-family:'Cairo';font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+
+        @keyframes slideUpBanner{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+
+        /* Header */
+        header{padding:12px 4%;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:1000;background:rgba(5,5,5,0.85);backdrop-filter:blur(25px);border-bottom:1px solid var(--border);}
+        .header-content{max-width:var(--max-width);margin:0 auto;width:100%;display:flex;align-items:center;gap:12px;position:relative;}
+
+        /* Lang Select */
+        .lang-select-global{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:white;padding:5px 10px;border-radius:50px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Cairo';}
+
+        /* Search */
+        .search-container{flex:1;position:relative;display:flex;align-items:center;}
+        .search-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:15px;padding:10px 35px 10px 12px;color:white;font-family:'Cairo';font-size:13px;transition:0.3s;}
+        .search-input:focus{border-color:var(--primary);background:rgba(255,255,255,0.08);}
+        .search-icon{position:absolute;right:12px;color:var(--text-gray);font-size:13px;}
+
+        /* Notif */
+        .notif-dropdown{position:absolute;top:55px;left:0;width:280px;background:var(--card);border:1px solid var(--border);border-radius:20px;display:none;flex-direction:column;box-shadow:0 15px 35px rgba(0,0,0,0.5);z-index:2000;overflow:hidden;animation:modalPop 0.2s ease;}
+        .notif-item{padding:12px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;transition:0.2s;}
+        .notif-item:hover{background:rgba(255,255,255,0.03);}
+        .notif-item .n-icon{width:35px;height:35px;border-radius:50%;background:rgba(248,5,102,0.1);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+        .notif-item .n-icon.follow-icon{background:rgba(0,191,255,0.1);color:var(--verify-blue);}
+        .notif-text{font-size:11px;color:#ccc;line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+        .notif-more{padding:12px;text-align:center;font-size:12px;font-weight:700;color:var(--primary);background:rgba(255,255,255,0.02);text-decoration:none;display:block;}
+
+        /* Feed */
+        .feed-container{max-width:var(--max-width);margin:20px auto;padding:0 15px;position:relative;z-index:5;}
+        .ans-card{background:var(--card);border-radius:24px;padding:22px;margin-bottom:20px;border:1px solid var(--border);animation:slideIn 0.4s ease;position:relative;overflow:visible;}
+        .ans-card.dev-glow{border-color:rgba(255,0,43,0.3);box-shadow:0 0 20px rgba(255,0,43,0.15);}
+        .ans-card.user-glow{border-color:rgba(0,191,255,0.3);box-shadow:0 0 20px rgba(0,191,255,0.15);}
+        .ans-header{display:flex;align-items:center;gap:12px;margin-bottom:15px;}
+        .user-info-text{display:flex;flex-direction:column;flex:1;cursor:pointer;}
+
+        /* ═══════════════════════════════════════
+           علامات التوثيق — أكبر وأقرب للاسم
+        ═══════════════════════════════════════ */
+        .name-badge-row{
+            display:inline-flex;
+            align-items:center;
+            gap:3px;          /* مسافة ضيقة جداً بين الاسم والشارة */
+        }
+        .ans-display-name{
+            font-weight:800;font-size:14px;color:#fff;
+            line-height:1.2;white-space:nowrap;
+        }
+        .badge-feed{
+            width:20px;height:20px;   /* أكبر: كان 16px */
+            object-fit:contain;
+            flex-shrink:0;
+            display:inline-block;
+            vertical-align:middle;
+            position:relative;top:-1px;
+        }
+        .badge-feed.admin-badge{
+            border-radius:50%;
+            filter:drop-shadow(0 0 5px rgba(255,0,43,0.7));
+            animation:admin-badge-pulse 2s infinite ease-in-out;
+        }
+        .badge-feed.user-badge{
+            border-radius:50%;
+            filter:drop-shadow(0 0 5px rgba(0,191,255,0.6));
+            animation:user-badge-pulse 2s infinite ease-in-out;
+        }
+        .dev-badge-label{
+            font-size:9px;background:var(--admin-red);
+            padding:1px 6px;border-radius:5px;
+            color:white;font-weight:800;
+            flex-shrink:0;white-space:nowrap;
+        }
+        @keyframes admin-badge-pulse{
+            0%,100%{transform:scale(1);  filter:drop-shadow(0 0 5px  rgba(255,0,43,0.7));opacity:0.9;}
+            50%    {transform:scale(1.12);filter:drop-shadow(0 0 12px rgba(255,0,43,1));  opacity:1;  }
+        }
+        @keyframes user-badge-pulse{
+            0%,100%{transform:scale(1);  filter:drop-shadow(0 0 5px  rgba(0,191,255,0.6));opacity:0.8;}
+            50%    {transform:scale(1.12);filter:drop-shadow(0 0 12px rgba(0,191,255,0.9));opacity:1;  }
+        }
+        /* ═══════════════════════════════════════ */
+
+        .ans-user-name{font-weight:400;font-size:11px;color:var(--text-gray);}
+        .avatar-frame{width:45px;height:45px;border-radius:50%;position:relative;cursor:pointer;}
+        .avatar-img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--bg);}
+        .avatar-frame.admin-glow::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--admin-red);filter:blur(6px);opacity:0.5;z-index:-1;}
+        .avatar-frame.verify-glow::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--verify-blue);filter:blur(6px);opacity:0.5;z-index:-1;}
+        .ans-q{font-size:13px;color:#aaa;margin-bottom:12px;line-height:1.6;}
+        .ans-a{font-size:15px;font-weight:700;color:#fff;background:rgba(255,255,255,0.02);padding:15px;border-radius:15px;border-right:4px solid var(--primary);word-break:break-word;}
+        .ans-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;}
+        .ans-actions{display:flex;gap:20px;}
+        .action-btn{background:none;border:none;color:#666;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:0.2s;font-family:'Cairo';}
+        .action-btn.liked{color:var(--primary);}
+        .report-btn,.delete-btn{color:#333;font-size:13px;cursor:pointer;transition:0.3s;}
+        .ans-time-container{text-align:left;line-height:1.3;}
+        .ans-time{display:block;font-size:10px;color:var(--primary);font-weight:900;}
+        .ans-date{display:block;font-size:9px;color:#666;font-weight:600;}
+
+        /* Search Result */
+        #searchResultContainer{position:absolute;top:55px;left:0;width:100%;background:var(--card);border:1px solid var(--border);border-radius:20px;display:none;flex-direction:column;z-index:2000;box-shadow:0 10px 30px rgba(0,0,0,0.5);overflow:hidden;}
+        .search-res-title{padding:12px 15px;font-size:11px;color:var(--primary);font-weight:800;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+        .user-res-item{padding:10px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.02);transition:0.2s;}
+        .user-res-item:hover{background:rgba(255,255,255,0.03);}
+
+        /* Toast */
+        #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(248,5,102,0.9);color:white;padding:8px 18px;border-radius:12px;font-size:11px;font-weight:700;z-index:9999;display:none;backdrop-filter:blur(10px);}
+
+        /* Butterflies */
+        .butterfly{position:fixed;pointer-events:none;z-index:1;width:25px;height:25px;transform-style:preserve-3d;}
+        .butterfly .wing{position:absolute;width:16px;height:24px;top:0;border-radius:50% 50% 40% 60%;background:linear-gradient(135deg,var(--primary),#ff99bb);opacity:0.8;}
+        .butterfly .left-wing{right:12px;transform-origin:right center;animation:flap-left 0.2s infinite ease-in-out alternate;}
+        .butterfly .right-wing{left:12px;transform-origin:left center;animation:flap-right 0.2s infinite ease-in-out alternate;}
+        @keyframes flap-left{from{transform:rotateY(0deg);}to{transform:rotateY(65deg);}}
+        @keyframes flap-right{from{transform:rotateY(0deg);}to{transform:rotateY(-65deg);}}
+
+        /* Bottom Nav */
+        .bottom-nav{position:fixed;bottom:0;left:0;width:100%;background:rgba(10,10,10,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:12px 0;border-top:1px solid var(--border);z-index:1000;}
+.nav-item{text-decoration:none;display:flex;flex-direction:column;align-items:center;color:#555;font-size:10px;font-weight:700;gap:3px;transition:color 0.2s;position:relative;padding:4px 8px;}
+.nav-item i{font-size:20px;margin-bottom:4px;}
+.nav-item.active{color:var(--primary);}
+.nav-item:hover{color:#888;}
+.badge-nav{position:absolute;top:-5px;right:-5px;background:var(--primary);color:white;font-size:9px;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #000;font-weight:900;}
+
+        @keyframes modalPop{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
+        @keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+        @media(max-width:600px){
+            .feed-container{padding:0 10px;margin:10px auto;}
+            .ans-card{padding:15px;border-radius:20px;}
+            .ans-a{font-size:14px;padding:12px;}
+        }
+  /* Leaderboard */
+.leader-card{
+    background:var(--card);border-radius:24px;padding:20px;
+    margin-bottom:15px;border:1px solid var(--border);
+    display:flex;align-items:center;gap:15px;
+    cursor:pointer;transition:border-color 0.2s;
+}
+.leader-card:hover{border-color:rgba(248,5,102,0.3);}
+.leader-rank{
+    font-size:22px;font-weight:900;min-width:35px;
+    text-align:center;
+}
+.rank-1{color:#FFD700;}
+.rank-2{color:#C0C0C0;}
+.rank-3{color:#CD7F32;}
+.rank-other{color:#555;}
+.leader-avatar{
+    width:52px;height:52px;border-radius:50%;
+    object-fit:cover;border:2px solid var(--border);
+    flex-shrink:0;
+}
+.leader-info{flex:1;}
+.leader-name{font-size:14px;font-weight:800;color:#fff;}
+.leader-username{font-size:11px;color:#666;margin-top:2px;}
+.leader-likes{
+    display:flex;flex-direction:column;
+    align-items:flex-end;gap:4px;
+}
+.leader-likes-count{
+    font-size:15px;font-weight:900;color:var(--primary);
+}
+.leader-likes-label{font-size:10px;color:#555;font-weight:700;}
+.leader-coins-badge{
+    background:rgba(255,204,0,0.1);border:1px solid rgba(255,204,0,0.25);
+    border-radius:20px;padding:3px 10px;
+    font-size:11px;font-weight:800;color:#ffcc00;
+    display:flex;align-items:center;gap:4px;
+}
+.week-header{
+    text-align:center;margin-bottom:20px;
+}
+.week-header h3{
+    font-size:16px;font-weight:900;color:#fff;margin:0 0 5px;
+}
+.week-header p{font-size:11px;color:#555;margin:0;}
+.my-rank-bar{
+    background:rgba(248,5,102,0.08);border:1px solid rgba(248,5,102,0.2);
+    border-radius:18px;padding:14px 18px;margin-bottom:20px;
+    display:flex;align-items:center;justify-content:space-between;
+}
+.my-rank-bar .my-rank-label{font-size:12px;font-weight:800;color:#fff;}
+.my-rank-bar .my-rank-likes{font-size:12px;color:var(--primary);font-weight:800;}
+  /* ══ TAB SWITCHER ══ */
+.tab-switcher{
+    position:relative;display:grid;
+    grid-template-columns:2fr 2fr 1fr;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border);
+    border-radius:18px;padding:5px;
+    margin-bottom:22px;gap:4px;
+}
+.tab-btn{
+    position:relative;z-index:1;
+    display:flex;align-items:center;justify-content:center;gap:5px;
+    padding:10px 6px;border-radius:13px;border:none;
+    background:transparent;color:#444;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:12px;
+    cursor:pointer;transition:color 0.3s;white-space:nowrap;user-select:none;
+}
+.tab-btn.active{color:#fff;}
+  .tab-btn#tabFeed.active{
+    background:linear-gradient(135deg,#f80566,#b8003f);
+    box-shadow:0 4px 18px rgba(248,5,102,0.35);
+}
+.tab-btn#tabLeader.active{
+    background:linear-gradient(135deg,#ffcc00,#ff8800);
+    box-shadow:0 4px 18px rgba(255,180,0,0.35);
+}
+.tab-btn#tabVip.active{
+    background:linear-gradient(135deg,#c084fc,#818cf8);
+    box-shadow:0 4px 18px rgba(192,132,252,0.35);
+}
+.tab-btn i{font-size:12px;transition:transform 0.3s;}
+.tab-btn.active i{transform:scale(1.2);}
+.live-dot{
+    width:5px;height:5px;border-radius:50%;
+    background:#fff;opacity:0;
+}
+.tab-btn.active .live-dot{
+    opacity:1;animation:blink-dot 1.4s infinite;
+}
+@keyframes blink-dot{
+    0%,100%{opacity:1;transform:scale(1);}
+    50%{opacity:0.4;transform:scale(0.6);}
+}
+
+/* ══ VIP SECTION ══ */
+.vip-hero{
+    position:relative;
+    background:linear-gradient(135deg,rgba(192,132,252,0.1),rgba(129,140,248,0.07));
+    border:1px solid rgba(192,132,252,0.2);
+    border-radius:22px;padding:22px 18px;
+    margin-bottom:18px;text-align:center;overflow:hidden;
+}
+.vip-hero::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse at 50% -20%,rgba(192,132,252,0.15),transparent 70%);
+    pointer-events:none;
+}
+.vip-crown-icon{
+    font-size:38px;display:block;margin-bottom:10px;
+    filter:drop-shadow(0 0 14px rgba(192,132,252,0.7));
+    animation:float-crown 3s ease-in-out infinite;
+}
+@keyframes float-crown{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-7px);}
+}
+.vip-hero h2{font-size:15px;font-weight:900;color:#fff;margin-bottom:5px;}
+.vip-hero p{font-size:11px;color:#888;line-height:1.6;}
+.vip-reward{
+    display:inline-flex;align-items:center;gap:7px;
+    background:rgba(255,204,0,0.1);border:1px solid rgba(255,204,0,0.25);
+    border-radius:50px;padding:7px 18px;margin-top:12px;
+    font-size:13px;font-weight:900;color:var(--gold);
+}
+.vip-reward img{width:18px;height:18px;border-radius:50%;}
+
+/* مهام */
+.mission-card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:18px;padding:16px 18px;margin-bottom:12px;
+    display:flex;align-items:center;gap:14px;
+    transition:border-color 0.2s;
+}
+.mission-card.done{border-color:rgba(0,230,118,0.3);background:rgba(0,230,118,0.03);}
+.mission-icon{
+    width:44px;height:44px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex-shrink:0;
+}
+.mission-info{flex:1;}
+.mission-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:4px;}
+.mission-progress-bar{
+    height:5px;background:rgba(255,255,255,0.07);
+    border-radius:10px;overflow:hidden;margin-top:6px;
+}
+.mission-progress-fill{
+    height:100%;border-radius:10px;
+    background:linear-gradient(90deg,#c084fc,#818cf8);
+    transition:width 0.5s ease;
+}
+.mission-card.done .mission-progress-fill{background:linear-gradient(90deg,#00e676,#00b8d9);}
+.mission-reward{
+    display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;
+}
+.mission-coins{
+    display:flex;align-items:center;gap:4px;
+    font-size:12px;font-weight:900;color:var(--gold);
+}
+.mission-coins img{width:14px;height:14px;border-radius:50%;}
+.mission-done-badge{
+    font-size:10px;font-weight:800;color:#00e676;
+    background:rgba(0,230,118,0.1);border-radius:20px;
+    padding:2px 8px;
+}
+  /* ══ VIP WEEKLY TRACKER ══ */
+.weekly-tracker-card {
+    background: linear-gradient(135deg, rgba(192,132,252,0.08), rgba(129,140,248,0.05));
+    border: 1px solid rgba(192,132,252,0.25);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+.weekly-tracker-card.vip-member {
+    border-color: rgba(255,204,0,0.35);
+    background: linear-gradient(135deg, rgba(255,204,0,0.06), rgba(192,132,252,0.06));
+}
+.tracker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.tracker-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.tracker-count {
+    font-size: 12px;
+    font-weight: 900;
+    color: #c084fc;
+}
+.tracker-count.done { color: #00e676; }
+.tracker-bar-bg {
+    height: 8px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.tracker-bar-fill {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #c084fc, #818cf8);
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+}
+.tracker-bar-fill.done {
+    background: linear-gradient(90deg, #00e676, #00b8d9);
+}
+.tracker-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25));
+    border-radius: 20px;
+    animation: shimmer-bar 2s infinite;
+}
+@keyframes shimmer-bar {
+    0%   { opacity: 0; transform: translateX(100%); }
+    50%  { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-200%); }
+}
+.tracker-dots {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.tracker-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+.tracker-dot.filled {
+    background: linear-gradient(135deg, #c084fc, #818cf8);
+    border-color: transparent;
+    box-shadow: 0 0 6px rgba(192,132,252,0.5);
+}
+.tracker-dot.filled.done-dot {
+    background: linear-gradient(135deg, #00e676, #00b8d9);
+    box-shadow: 0 0 6px rgba(0,230,118,0.5);
+}
+.tracker-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #555;
+    font-weight: 700;
+}
+
+/* ══ VIP BADGE BANNER ══ */
+.vip-coins-banner {
+    background: linear-gradient(135deg, rgba(255,204,0,0.08), rgba(192,132,252,0.08));
+    border: 1px solid rgba(255,204,0,0.3);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+.vip-coins-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,204,0,0.04) 50%, transparent 100%);
+    animation: sweep-banner 3s infinite;
+}
+@keyframes sweep-banner {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+.vip-coins-banner .banner-icon {
+    font-size: 26px;
+    filter: drop-shadow(0 0 10px rgba(255,204,0,0.6));
+    animation: float-crown 3s ease-in-out infinite;
+    flex-shrink: 0;
+}
+.vip-coins-banner .banner-text { flex: 1; }
+.vip-coins-banner .banner-text strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 3px;
+}
+.vip-coins-banner .banner-text span {
+    font-size: 11px;
+    color: #888;
+    line-height: 1.4;
+}
+.vip-badge-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(0,191,255,0.1);
+    border: 1px solid rgba(0,191,255,0.3);
+    border-radius: 50px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--verify-blue);
+    animation: badge-glow-inline 2s infinite;
+}
+.vip-badge-inline img {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 3px rgba(0,191,255,0.8));
+}
+@keyframes badge-glow-inline {
+    0%,100% { box-shadow: 0 0 5px rgba(0,191,255,0.2); }
+    50%      { box-shadow: 0 0 12px rgba(0,191,255,0.5); }
+}
+.vip-multiplier-tag {
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #000;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 50px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(255,204,0,0.4);
+    animation: pulse-tag 2s infinite;
+}
+@keyframes pulse-tag {
+    0%,100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+}
+
+/* ══ VIP CTA BUTTON ══ */
+.vip-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px;
+    margin-top: 18px;
+    background: linear-gradient(135deg, #c084fc, #818cf8);
+    border: none;
+    border-radius: 18px;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(192,132,252,0.35);
+    position: relative;
+    overflow: hidden;
+}
+.vip-cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    animation: cta-shine 3s infinite;
+}
+@keyframes cta-shine {
+    0%   { transform: translateX(-100%); }
+    60%  { transform: translateX(100%); }
+    100% { transform: translateX(100%); }
+}
+.vip-cta-btn:active { transform: scale(0.97); }
+.vip-cta-btn .cta-arrow {
+    font-size: 16px;
+    animation: arrow-bounce 1.5s infinite;
+}
+@keyframes arrow-bounce {
+    0%,100% { transform: translateX(0); }
+    50%      { transform: translateX(-5px); }
+}
+.vip-future-features {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-top: 14px;
+}
+.vip-future-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #555;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.future-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 12px;
+    color: #555;
+    font-weight: 700;
+}
+.future-feature-item:last-child { border-bottom: none; }
+.future-feature-item .ff-icon {
+    font-size: 16px;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.future-feature-item .ff-soon {
+    margin-right: auto;
+    font-size: 9px;
+    background: rgba(192,132,252,0.1);
+    color: #c084fc;
+    border-radius: 50px;
+    padding: 2px 7px;
+    font-weight: 800;
+}
+
+/* ══ TOP COINS ══ */
+.coins-section-title{
+    font-size:11px;font-weight:800;color:#555;
+    letter-spacing:1.5px;text-transform:uppercase;
+    margin:22px 0 14px;padding-bottom:10px;
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:8px;
+}
+.coins-section-title img{width:16px;height:16px;border-radius:50%;}
+.coins-card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:18px;padding:14px 16px;margin-bottom:10px;
+    display:flex;align-items:center;gap:12px;
+    cursor:pointer;transition:border-color 0.2s;
+}
+.coins-card:hover{border-color:rgba(255,204,0,0.2);}
+.coins-rank{font-size:18px;min-width:28px;text-align:center;}
+.coins-avatar{
+    width:40px;height:40px;border-radius:50%;
+    object-fit:cover;border:2px solid var(--border);flex-shrink:0;
+}
+.coins-info{flex:1;}
+.coins-name{font-size:13px;font-weight:800;color:#fff;}
+.coins-username{font-size:10px;color:#555;margin-top:1px;}
+.coins-amount{
+    display:flex;align-items:center;gap:5px;
+    font-size:13px;font-weight:900;color:var(--gold);
+}
+.coins-amount img{width:16px;height:16px;border-radius:50%;}
+    </style>
+</head>
+<body>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="custom-modal">
+        <div class="modal-title" id="modalTitle">تنبيه</div>
+        <input type="text" class="modal-input" id="modalInput" placeholder="اكتب هنا...">
+        <div class="modal-btns">
+            <button class="m-btn m-confirm" id="modalConfirmBtn">تأكيد</button>
+            <button class="m-btn m-cancel"  id="modalCancelBtn">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<div id="pwa-install-banner">
+    <img src="images/logo.png" class="pwa-logo">
+    <div class="pwa-text">
+        <strong data-lang-key="install_app">ثبّت التطبيق على هاتفك 📲</strong>
+        <span   data-lang-key="install_sub">استخدمه بدون متصفح وبشكل أسرع</span>
+    </div>
+    <div class="pwa-actions">
+        <button id="pwa-install-btn" data-lang-key="install_btn">تثبيت</button>
+        <button id="pwa-dismiss-btn" data-lang-key="later_btn">لاحقاً</button>
+    </div>
+</div>
+
+<div id="ios-install-banner">
+    <div class="ios-title" data-lang-key="ios_title">📲 ثبّت التطبيق على iPhone</div>
+    <div class="ios-steps">
+        <span data-lang-key="ios_step1">اضغط على</span>
+        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+        <strong data-lang-key="ios_step2">مشاركة</strong><br>
+        <span data-lang-key="ios_step3">ثم اختر</span>
+        <strong data-lang-key="ios_step4">"إضافة إلى الشاشة الرئيسية"</strong>
+    </div>
+    <button id="ios-dismiss-btn" data-lang-key="ios_ok">فهمت ✓</button>
+</div>
+
+<div id="toast"></div>
+
+<header>
+    <div class="header-content">
+        <img src="images/logo.png" style="width:28px;cursor:pointer;" onclick="location.reload()">
+
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" class="search-input" id="userSearch"
+                   data-lang-key="search_placeholder"
+                   placeholder="ابحث عن مستخدم..." autocomplete="off">
+            <div id="searchResultContainer">
+                <div class="search-res-title">
+                    <span>نتائج البحث</span>
+                    <i class="fa-solid fa-times" onclick="clearSearch()" style="cursor:pointer"></i>
+                </div>
+                <div id="usersResultList"></div>
+            </div>
+        </div>
+
+        <!-- زر اللغة المشترك -->
+        <select class="lang-select-global" aria-label="Language">
+            <option value="ar">AR</option>
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+        </select>
+
+        <div id="notifContainer" style="position:relative;">
+            <div id="notifTrigger" style="background:rgba(255,255,255,0.03);width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);position:relative;">
+                <i class="fa-regular fa-bell" style="font-size:16px;color:#666;"></i>
+                <div id="notifBadge" style="position:absolute;top:-2px;left:-2px;background:var(--primary);min-width:16px;height:16px;border-radius:10px;border:2px solid var(--bg);display:none;align-items:center;justify-content:center;font-size:8px;font-weight:900;">0</div>
+            </div>
+            <div class="notif-dropdown" id="notifDropdown">
+                <div id="notifList">
+                    <div style="padding:20px;text-align:center;color:#555;font-size:12px;"
+                         data-lang-key="no_notif">لا توجد إشعارات حالياً</div>
+                </div>
+                <a href="notifications.html" class="notif-more"
+                   data-lang-key="more_notif">عرض المزيد من الإشعارات</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="feed-container">
+    <!-- تابات -->
+    <div class="tab-switcher" id="tabSwitcher">
+    <button class="tab-btn active" id="tabFeed" onclick="switchFeedTab('feed')">
+        <i class="fa-solid fa-bolt"></i> Wall
+        <div class="live-dot"></div>
+    </button>
+    <button class="tab-btn" id="tabLeader" onclick="switchFeedTab('leader')">
+        <i class="fa-solid fa-ranking-star"></i> Legends
+    </button>
+    <button class="tab-btn" id="tabVip" onclick="switchFeedTab('vip')">
+        <i class="fa-solid fa-crown"></i>
+        <span style="font-size:11px;">VIP</span>
+    </button>
+</div>
+
+<div id="askFeed"></div>
+<div id="leaderboardTab" style="display:none;"></div>
+<div id="vipTab" style="display:none;"></div>
+
+<nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <a href="index.html" class="nav-item active">
+        <i class="fa-solid fa-house" aria-hidden="true"></i>
+        <span data-lang-key="nav_home">الرئيسية</span>
+    </a>
+    <a href="questions.html" class="nav-item" style="position:relative;">
+        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+        <span data-lang-key="nav_qs">الأسئلة</span>
+        <div id="qBadgeNav" class="badge-nav" style="display:none;">0</div>
+    </a>
+    <a href="quiet-corner.html" class="nav-item">
+        <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+        <span data-lang-key="nav_skina">سكينة</span>
+    </a>
+    <a href="game.html" class="nav-item">
+        <i class="fa-solid fa-brain" aria-hidden="true"></i>
+        <span data-lang-key="nav_tayf">تحدِّ</span>
+    </a>
+    <a href="profile.html" id="myProfileLink" class="nav-item">
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+        <span data-lang-key="nav_profile">بروفايلي</span>
+    </a>
+</nav>
+
+<script>
+'use strict';
+
+firebase.initializeApp(APP_CONFIG.firebase);
+firebase.analytics();
+const db = firebase.firestore(), auth = firebase.auth();
+let currentUser = null;
+
+const sndQuestion = new Audio('sounds/question.wav');
+const sndNotif    = new Audio('sounds/notification.wav');
+
+/* XSS protection */
+const safe = (t) => {
+    if (t === null || t === undefined) return "";
+    const d = document.createElement('div');
+    d.textContent = String(t);
+    return d.innerHTML;
+};
+
+/* ── Modal ── */
+const customPrompt = (title, showInput = true) => new Promise((resolve) => {
+    const overlay = document.getElementById('modalOverlay');
+    const input   = document.getElementById('modalInput');
+    document.getElementById('modalTitle').innerText = title;
+    overlay.style.display = 'flex';
+    input.style.display   = showInput ? 'block' : 'none';
+    input.value = "";
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    const cancelBtn  = document.getElementById('modalCancelBtn');
+    const nc = confirmBtn.cloneNode(true);
+    const nl = cancelBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(nc, confirmBtn);
+    cancelBtn.parentNode.replaceChild(nl,  cancelBtn);
+    nc.onclick = () => { overlay.style.display = 'none'; resolve(showInput ? input.value.trim() : true); };
+    nl.onclick  = () => { overlay.style.display = 'none'; resolve(null); };
+});
+
+/* ── Realtime listeners state ── */
+let initialQuestionsLoaded     = false;
+let initialNotificationsLoaded = false;
+let notifUnsubscribe           = null;
+let questionsUnsubscribe       = null;
+
+function startListening(uid) {
+    if (questionsUnsubscribe) questionsUnsubscribe();
+    if (notifUnsubscribe)     notifUnsubscribe();
+
+    questionsUnsubscribe = db.collection("questions")
+        .where("receiverId","==",uid).where("status","==","pending")
+        .onSnapshot(snap => {
+            const b = document.getElementById('qBadgeNav');
+            if (!snap.empty) {
+                b.style.display = 'flex'; b.innerText = snap.size;
+                if (initialQuestionsLoaded && !snap.metadata.hasPendingWrites)
+                    snap.docChanges().forEach(c => { if (c.type==="added") sndQuestion.play().catch(()=>{}); });
+            } else b.style.display = 'none';
+            initialQuestionsLoaded = true;
+        });
+
+    notifUnsubscribe = db.collection("notifications")
+        .where("receiverId","==",uid).where("isRead","==",false)
+        .onSnapshot(snap => {
+            const nb = document.getElementById('notifBadge');
+            if (!snap.empty) {
+                nb.style.display = 'flex'; nb.innerText = snap.size;
+                if (initialNotificationsLoaded)
+                    snap.docChanges().forEach(c => { if (c.type==="added") sndNotif.play().catch(()=>{}); });
+            } else nb.style.display = 'none';
+            initialNotificationsLoaded = true;
+            loadRecentNotifs(uid);
+        });
+}
+
+/* ── Recent Notifs ── */
+let notifsUnsubscribeRecent = null;
+function loadRecentNotifs(uid) {
+    if (notifsUnsubscribeRecent) notifsUnsubscribeRecent();
+    notifsUnsubscribeRecent = db.collection("notifications")
+        .where("receiverId","==",uid)
+        .orderBy("timestamp","desc").limit(5)
+        .onSnapshot(snap => {
+            const list = document.getElementById('notifList');
+            if (snap.empty) {
+                list.innerHTML = `<div style="padding:20px;text-align:center;color:#555;font-size:12px;">${LangManager.t('no_notif')}</div>`;
+                return;
+            }
+            list.innerHTML = "";
+            snap.forEach(doc => {
+                const n = doc.data();
+                let iconContainerClass='n-icon', iconClass='fa-solid fa-bell', msg='';
+                switch(n.type) {
+                    case 'like':    iconClass='fa-solid fa-heart';    msg=n.senderName?`${safe(n.senderName)} أعجب بإجابتك ❤️`:"شخص ما أعجب بإجابتك"; break;
+                    case 'follow':  iconClass='fa-solid fa-user-plus'; iconContainerClass='n-icon follow-icon'; msg=n.senderName?`${safe(n.senderName)} بدأ متابعتك 💙`:"شخص ما بدأ متابعتك"; break;
+                    case 'comment': iconClass='fa-solid fa-comment';   msg=n.senderName?`${safe(n.senderName)} علّق على إجابتك 💬`:"رد أحدهم على إجابتك"; break;
+                    default: msg = n.message || "إشعار جديد";
+                }
+                const avatarSection = n.senderAvatar
+                    ? `<img src="${safe(n.senderAvatar)}" onerror="this.onerror=null;this.src='images/user.png'" style="width:35px;height:35px;border-radius:50%;object-fit:cover;flex-shrink:0;" loading="lazy">`
+                    : `<div class="${iconContainerClass}"><i class="${iconClass}"></i></div>`;
+                const item = document.createElement('div');
+                item.className = 'notif-item';
+                item.innerHTML = avatarSection + `<div class="notif-text">${msg}</div>`;
+                item.onclick = () => {
+                    if (n.type==='follow' && n.senderId) location.href=`profile.html?id=${n.senderId}`;
+                    else if (n.contentId) location.href=`thread.html?id=${n.contentId}`;
+                };
+                list.appendChild(item);
+            });
+        });
+}
+
+document.getElementById('notifTrigger').onclick = (e) => {
+    e.stopPropagation();
+    const dropdown  = document.getElementById('notifDropdown');
+    const isVisible = dropdown.style.display === 'flex';
+    dropdown.style.display = isVisible ? 'none' : 'flex';
+    if (!isVisible && currentUser) {
+        db.collection("notifications").where("receiverId","==",currentUser.uid).where("isRead","==",false).get()
+            .then(s=>{ const b=db.batch(); s.forEach(d=>b.update(d.ref,{isRead:true})); return b.commit(); }).catch(()=>{});
+    }
+};
+
+document.addEventListener('click', (e) => {
+    document.getElementById('notifDropdown').style.display = 'none';
+    if (!e.target.closest('.search-container')) clearSearch();
+});
+
+/* ── Create Notification ── */
+async function createNotification(receiverId, type, contentId) {
+    if (!receiverId || !currentUser || receiverId===currentUser.uid) return;
+    try {
+        const senderSnap = await db.collection("users").doc(currentUser.uid).get();
+        const sD = senderSnap.exists ? senderSnap.data() : {};
+        const nd = {
+            receiverId, senderId:currentUser.uid,
+            senderName:sD.name||"شخص ما", senderUsername:sD.username||"",
+            senderAvatar:sD.avatarUrl||"",
+            isSenderVerified:!!(sD.isVerified||sD.isPremium),
+            type, isRead:false,
+            timestamp:firebase.firestore.FieldValue.serverTimestamp()
+        };
+        if (contentId) nd.contentId = contentId;
+        await db.collection("notifications").add(nd);
+    } catch(e) { console.log("Notification error:",e); }
+}
+
+/* ══════════════════════════════════════
+   FEED
+══════════════════════════════════════ */
+let feedUnsubscribe = null;
+
+const renderFeed = () => {
+    if (feedUnsubscribe) feedUnsubscribe();
+    const lang = LangManager.get();
+
+    feedUnsubscribe = db.collection("answers")
+        .orderBy("answeredAt","desc").limit(35)
+        .onSnapshot(async (snap) => {
+            const feedEl   = document.getElementById('askFeed');
+            const fragment = document.createDocumentFragment();
+
+            /* جلب بيانات المستخدمين دفعةً واحدة */
+            const userIds   = [...new Set(snap.docs.map(d=>d.data().userId).filter(Boolean))];
+            const userCache = {};
+            await Promise.all(userIds.map(async uid => {
+                try {
+                    const s = await db.collection("users").doc(uid).get();
+                    userCache[uid] = s.exists ? s.data() : {};
+                } catch(e) { userCache[uid]={}; }
+            }));
+
+            for (const doc of snap.docs) {
+                const d = doc.data();
+                if (!d.userId || !d.reply) continue;
+
+                const u          = userCache[d.userId] || {};
+                const username   = ((u.username||d.username||"anon")+"").toLowerCase();
+                const isDev      = username === 'ht';
+                const isVerified = u.isVerified===true || u.isPremium===true;
+                const likedBy = Array.isArray(d.likedBy) ? d.likedBy : [];
+const likes = Array.isArray(d.likes) ? d.likes : [];
+const isLiked = likedBy.includes(currentUser?.uid) || likes.includes(currentUser?.uid);
+                const isMyPost   = d.userId === currentUser?.uid;
+
+                const cardGlow   = isDev ? "dev-glow"   : (isVerified ? "user-glow"   : "");
+                const avatarGlow = isDev ? "admin-glow" : (isVerified ? "verify-glow" : "");
+
+                /* علامة التوثيق */
+                let badgeHtml = '';
+                if (isDev) {
+                    badgeHtml = `
+                        <img src="images/admin-verified-logo.png" class="badge-feed admin-badge" alt="">
+                        <span class="dev-badge-label">
+                            <i class="fa-solid fa-code"></i> ${LangManager.t('dev_label')}
+                        </span>`;
+                } else if (isVerified) {
+                    badgeHtml = `<img src="images/verified-logo.png" class="badge-feed user-badge" alt="">`;
+                }
+
+                const dateObj = d.answeredAt?.toDate();
+                const locale  = lang==='ar' ? 'ar-EG' : 'en-GB';
+                const timeStr = dateObj ? dateObj.toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit'}) : '';
+                const dateStr = dateObj ? dateObj.toLocaleDateString(locale,{month:'long',day:'numeric'}) : '';
+
+                const card = document.createElement('div');
+                card.className   = `ans-card ${cardGlow}`;
+                card.dataset.id  = doc.id;
+                card.innerHTML = `
+                    <div class="ans-header">
+                        <div class="avatar-frame ${avatarGlow}"
+                             onclick="location.href='profile.html?id=${safe(d.userId)}'">
+                            <img src="${safe(u.avatarUrl||'images/user.png')}"
+                                 class="avatar-img" onerror="this.src='images/user.png'" loading="lazy">
+                        </div>
+                        <div class="user-info-text"
+                             onclick="location.href='profile.html?id=${safe(d.userId)}'">
+                            <div class="name-badge-row">
+                                <span class="ans-display-name">${safe(u.name||d.name||"غريب")}</span>
+                                ${badgeHtml}
+                            </div>
+                            <span class="ans-user-name">@${safe(username)}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            ${!isMyPost ? `<i class="fa-solid fa-flag report-btn"
+                                onclick="reportContent('${safe(doc.id)}','${safe(d.userId)}')"></i>` : ''}
+                            ${isMyPost  ? `<i class="fa-solid fa-trash-can delete-btn"
+                                onclick="deleteAnswer('${safe(doc.id)}','${safe(d.questionId||'')}')"></i>` : ''}
+                        </div>
+                    </div>
+                    <div class="ans-q">${safe(d.questionText)}</div>
+                    <div class="ans-a">${safe(d.reply)}</div>
+                    <div class="ans-footer">
+                        <div class="ans-actions">
+                            <button class="action-btn ${isLiked?'liked':''}"
+                                    onclick="toggleLike('${safe(doc.id)}','${safe(d.userId)}')">
+                                <i class="${isLiked?'fa-solid':'fa-regular'} fa-heart"></i>
+                                <span>${d.likesCount || Math.max(likedBy.length, likes.length) || 0}</span>
+                            </button>
+                            <button class="action-btn"
+                                    onclick="window.location.href='thread.html?id=${safe(doc.id)}'">
+                                <i class="fa-regular fa-comment"></i>
+                                <span>${LangManager.t('replies_btn')}</span>
+                            </button>
+                        </div>
+                        <div class="ans-time-container">
+                            <span class="ans-time">${timeStr}</span>
+                            <span class="ans-date">${dateStr}</span>
+                        </div>
+                    </div>`;
+                fragment.appendChild(card);
+            }
+            feedEl.innerHTML = "";
+feedEl.appendChild(fragment);
+if (typeof AdsManager !== 'undefined') AdsManager.injectAds(feedEl);
+        }, err => console.log("Feed error:",err));
+};
+
+/* إعادة رسم الفيد عند تغيير اللغة */
+document.addEventListener('langChanged', () => {
+    if (currentUser) renderFeed();
+});
+
+/* ── Search ── */
+const searchInput  = document.getElementById('userSearch');
+const searchResBox = document.getElementById('searchResultContainer');
+const searchList   = document.getElementById('usersResultList');
+let searchTimeout  = null;
+
+searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim().toLowerCase();
+    if (query.length < 1) { searchResBox.style.display='none'; return; }
+    searchTimeout = setTimeout(async () => {
+        try {
+            const snap = await db.collection("users")
+                .where("username",">=",query).where("username","<=",query+"\uf8ff").limit(5).get();
+            searchList.innerHTML = "";
+            if (snap.empty) {
+                searchList.innerHTML = `<div style="padding:15px;text-align:center;font-size:12px;color:#555;">لا توجد نتائج</div>`;
+            } else {
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'user-res-item';
+                    div.onclick   = () => location.href=`profile.html?id=${doc.id}`;
+                    div.innerHTML = `
+                        <img src="${safe(u.avatarUrl||'images/user.png')}"
+                             style="width:30px;height:30px;border-radius:50%;object-fit:cover;"
+                             onerror="this.src='images/user.png'">
+                        <div>
+                            <div style="font-size:12px;font-weight:700;">${safe(u.name||"غريب")}</div>
+                            <div style="font-size:10px;color:#555;">@${safe(u.username)}</div>
+                        </div>`;
+                    searchList.appendChild(div);
+                });
+            }
+            searchResBox.style.display = 'flex';
+        } catch(e) { console.log("Search error:",e); }
+    }, 300);
+});
+
+function clearSearch() { searchInput.value=""; searchResBox.style.display='none'; }
+
+/* ── Report ── */
+async function reportContent(id, uid) {
+    if (!currentUser) return;
+    const reason = await customPrompt(LangManager.t('report_reason'), true);
+    if (reason && reason.length > 0) {
+        try {
+            await db.collection("reports").add({
+                targetId:id, type:'answer', targetUser:uid,
+                reporter:currentUser.uid, reason:reason.substring(0,300),
+                time:firebase.firestore.FieldValue.serverTimestamp()
+            });
+            showToast(LangManager.t('report_success'));
+        } catch(e) { showToast(LangManager.t('error_generic')); }
+    }
+}
+
+/* ── Like ── */
+let likeLock = false;
+async function toggleLike(id, ownerId) {
+    if (!currentUser || likeLock) return;
+    likeLock = true;
+
+    const card = document.querySelector(`.ans-card[data-id="${id}"]`);
+    const btn = card?.querySelector('.action-btn');
+    const icon = btn?.querySelector('i');
+    const countSpan = btn?.querySelector('span');
+    const isLiked = btn?.classList.contains('liked');
+    const currentCount = parseInt(countSpan?.textContent || '0');
+
+    if (isLiked) {
+        btn.classList.remove('liked');
+        if (icon) icon.className = 'fa-regular fa-heart';
+        if (countSpan) countSpan.textContent = Math.max(0, currentCount - 1);
+    } else {
+        btn.classList.add('liked');
+        if (icon) icon.className = 'fa-solid fa-heart';
+        if (countSpan) countSpan.textContent = currentCount + 1;
+    }
+
+    try {
+        const ref = db.collection("answers").doc(id);
+        if (isLiked) {
+            await ref.update({
+                likedBy: firebase.firestore.FieldValue.arrayRemove(currentUser.uid),
+                likesCount: firebase.firestore.FieldValue.increment(-1)
+            });
+            if (ownerId && ownerId !== currentUser.uid) {
+                await db.collection("users").doc(ownerId).update({
+                    totalLikes: firebase.firestore.FieldValue.increment(-1),
+                    anonCoins: firebase.firestore.FieldValue.increment(-1)
+                });
+            }
+        } else {
+            await ref.update({
+                likedBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+                likesCount: firebase.firestore.FieldValue.increment(1)
+            });
+            if (ownerId && ownerId !== currentUser.uid) {
+                await db.collection("users").doc(ownerId).update({
+                    totalLikes: firebase.firestore.FieldValue.increment(1),
+                    anonCoins: firebase.firestore.FieldValue.increment(1)
+                });
+            }
+            createNotification(ownerId, 'like', id);
+        }
+    } catch(e) {
+        console.log("Like error:", e);
+        if (isLiked) {
+            btn.classList.add('liked');
+            if (icon) icon.className = 'fa-solid fa-heart';
+            if (countSpan) countSpan.textContent = currentCount;
+        } else {
+            btn.classList.remove('liked');
+            if (icon) icon.className = 'fa-regular fa-heart';
+            if (countSpan) countSpan.textContent = currentCount;
+        }
+    } finally {
+        likeLock = false;
+    }
+}
+/* ── Delete ── */
+async function deleteAnswer(aid, qid) {
+    if (!currentUser) return;
+    const confirmed = await customPrompt(LangManager.t('delete_confirm'), false);
+    if (confirmed) {
+        try {
+            await db.collection("answers").doc(aid).delete();
+            if (qid) {
+                const qDoc = await db.collection("questions").doc(qid).get();
+                if (qDoc.exists) {
+                    await db.collection("questions").doc(qid).update({status:"pending"});
+                }
+            }
+            await db.collection("users").doc(currentUser.uid).update({
+                answersCount: firebase.firestore.FieldValue.increment(-1)
+            });
+            showToast(LangManager.t('deleted_ok'));
+        } catch(e) {
+            console.log("Delete error:", e);
+            showToast(LangManager.t('delete_error'));
+        }
+    }
+}
+
+function showToast(m) {
+    const t = document.getElementById('toast');
+    t.innerText=m; t.style.display='block';
+    setTimeout(()=>t.style.display='none',2500);
+}
+
+/* ── Auth ── */
+auth.onAuthStateChanged(user => {
+    if (user) {
+        currentUser = user;
+        document.getElementById('myProfileLink').href = `profile.html?id=${user.uid}`;
+        renderFeed();
+        startListening(user.uid);
+    } else { window.location.href="signin.html"; }
+});
+
+/* ── Butterflies ── */
+function createButterfly() {
+    if (document.querySelectorAll('.butterfly').length > 6) return;
+    const bf = document.createElement('div');
+    bf.className = 'butterfly';
+    bf.innerHTML = '<div class="wing left-wing"></div><div class="wing right-wing"></div>';
+    document.body.appendChild(bf);
+    let x=Math.random()*window.innerWidth, y=Math.random()*window.innerHeight;
+    let vX=(Math.random()-0.5)*0.8, vY=(Math.random()-0.5)*0.8, animFrame;
+    function move() {
+        vX+=(Math.random()-0.5)*0.15; vY+=(Math.random()-0.5)*0.15;
+        const spd=Math.sqrt(vX**2+vY**2);
+        if(spd>1.2){vX=vX/spd*1.2;vY=vY/spd*1.2;}
+        x+=vX; y+=vY;
+        if(x<=10||x>=window.innerWidth-40)  vX*=-1;
+        if(y<=10||y>=window.innerHeight-40) vY*=-1;
+        bf.style.left=x+'px'; bf.style.top=y+'px';
+        bf.style.transform=`rotateZ(${Math.atan2(vY,vX)+Math.PI/2}rad) rotateX(20deg)`;
+        if(document.body.contains(bf)) animFrame=requestAnimationFrame(move);
+    }
+    move();
+    setTimeout(()=>{
+        cancelAnimationFrame(animFrame);
+        bf.style.opacity='0'; bf.style.transition='opacity 4s';
+        setTimeout(()=>{ if(bf.parentNode) bf.remove(); },4000);
+    },18000);
+}
+setInterval(createButterfly,6000);
+
+/* ══════════════════════════════════════
+   PWA Install — كامل ومحسَّن
+══════════════════════════════════════ */
+let deferredPrompt  = null;
+const installBanner = document.getElementById('pwa-install-banner');
+const iosBanner     = document.getElementById('ios-install-banner');
+const PWA_KEY       = 'pwa_install_dismissed';
+const PWA_DAYS      = 7;
+
+const isPWAInstalled       = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
+const wasDismissedRecently = () => { const d=localStorage.getItem(PWA_KEY); return d&&(Date.now()-parseInt(d))/86400000<PWA_DAYS; };
+const isIOS                = () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+/* 1 — احتجاز حدث التثبيت ومنع الظهور التلقائي */
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (isPWAInstalled() || wasDismissedRecently()) return;
+    setTimeout(() => { installBanner.style.display='flex'; }, 3000);
+});
+
+/* 2 — زر التثبيت يُفعّل الحدث المحتجز */
+document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    installBanner.style.display = 'none';
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('Install outcome:', outcome);
+    deferredPrompt = null;
+    if (outcome === 'accepted') showToast(LangManager.t('installed_ok'));
+});
+
+/* 3 — لاحقاً */
+document.getElementById('pwa-dismiss-btn').addEventListener('click', () => {
+    installBanner.style.display = 'none';
+    localStorage.setItem(PWA_KEY, Date.now().toString());
+});
+
+/* 4 — إغلاق iOS */
+document.getElementById('ios-dismiss-btn').addEventListener('click', () => {
+    iosBanner.style.display = 'none';
+    localStorage.setItem(PWA_KEY, Date.now().toString());
+});
+
+/* 5 — iOS banner */
+window.addEventListener('load', () => {
+    if (isIOS() && !isPWAInstalled() && !wasDismissedRecently())
+        setTimeout(() => { iosBanner.style.display='flex'; }, 3000);
+});
+
+/* 6 — بعد التثبيت */
+window.addEventListener('appinstalled', () => {
+    installBanner.style.display = 'none';
+    iosBanner.style.display     = 'none';
+    deferredPrompt              = null;
+    showToast(LangManager.t('installed_ok'));
+});
+
+/* ── Service Worker ── */
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+            .then(r  => console.log('SW registered',r))
+            .catch(e => console.log('SW failed',e));
+    });
+}
+  /* ══════════════════════════════════════
+   FEED TABS
+══════════════════════════════════════ */
+function switchFeedTab(tab) {
+    // إخفاء كل المحتوى
+    document.getElementById('askFeed').style.display        = 'none';
+    document.getElementById('leaderboardTab').style.display = 'none';
+    document.getElementById('vipTab').style.display         = 'none';
+
+    // إزالة active من كل التابس
+    document.getElementById('tabFeed').classList.remove('active');
+    document.getElementById('tabLeader').classList.remove('active');
+    document.getElementById('tabVip').classList.remove('active');
+
+    if (tab === 'feed') {
+        document.getElementById('askFeed').style.display = 'block';
+        document.getElementById('tabFeed').classList.add('active');
+        // إعادة تحميل الفيد لو فاضي
+        if (!document.getElementById('askFeed').hasChildNodes()) renderFeed();
+
+    } else if (tab === 'leader') {
+        document.getElementById('leaderboardTab').style.display = 'block';
+        document.getElementById('tabLeader').classList.add('active');
+        // إعادة تحميل لو الفلاج اتعمل reset
+        if (!leaderLoaded) loadLeaderboard();
+
+    } else if (tab === 'vip') {
+    location.href = 'verification.html';
+}
+}
+/* ══════════════════════════════════════
+   LEADERBOARD
+══════════════════════════════════════ */
+let leaderLoaded = false;
+
+async function loadLeaderboard() {
+    if (leaderLoaded) return;
+    const el = document.getElementById('leaderboardTab');
+    el.innerHTML = `
+        <div class="skeleton" style="height:80px;border-radius:20px;margin-bottom:12px;background:rgba(255,255,255,0.04);"></div>
+        <div class="skeleton" style="height:80px;border-radius:20px;margin-bottom:12px;background:rgba(255,255,255,0.04);"></div>
+        <div class="skeleton" style="height:80px;border-radius:20px;margin-bottom:12px;background:rgba(255,255,255,0.04);"></div>`;
+
+    try {
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        const startWeek = new Date(now);
+        startWeek.setDate(now.getDate() - dayOfWeek);
+        startWeek.setHours(0,0,0,0);
+        const endWeek = new Date(startWeek);
+        endWeek.setDate(startWeek.getDate() + 7);
+
+        const startTs = firebase.firestore.Timestamp.fromDate(startWeek);
+        const endTs   = firebase.firestore.Timestamp.fromDate(endWeek);
+
+        const answersSnap = await db.collection('answers')
+            .where('answeredAt', '>=', startTs)
+            .where('answeredAt', '<',  endTs)
+            .get();
+
+        const likesMap   = {};
+        const answersMap = {};
+        const coinsMap   = {};
+
+        answersSnap.forEach(doc => {
+            const d   = doc.data();
+            const uid = d.userId;
+            if (!uid) return;
+            const likedBy = Array.isArray(d.likedBy) ? d.likedBy.length : 0;
+const likesArr = Array.isArray(d.likes) ? d.likes.length : 0;
+const likes = Math.max(likedBy, likesArr, d.likesCount || 0);
+            likesMap[uid]   = (likesMap[uid]   || 0) + likes;
+            answersMap[uid] = (answersMap[uid] || 0) + 1;
+        });
+
+        const allUids = new Set([...Object.keys(likesMap), ...Object.keys(answersMap)]);
+        allUids.forEach(uid => {
+            const likeCoins   = Math.floor((likesMap[uid]   || 0) / 100) * 10;
+            const answerCoins = (answersMap[uid] || 0) * 1;
+            coinsMap[uid]     = likeCoins + answerCoins;
+        });
+
+        // ✅ sorted مرة واحدة بس
+        const sorted = Object.entries(coinsMap)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+
+        if (sorted.length === 0) {
+            el.innerHTML = `<div style="text-align:center;padding:50px 20px;color:#444;">
+                <i class="fa-solid fa-trophy" style="font-size:40px;margin-bottom:15px;display:block;"></i>
+                <p style="font-size:13px;font-weight:700;">لا توجد بيانات هذا الأسبوع بعد</p>
+            </div>`;
+            return;
+        }
+
+        const userIds   = sorted.map(([uid]) => uid);
+        const userCache = {};
+        await Promise.all(userIds.map(async uid => {
+            try {
+                const s = await db.collection('users').doc(uid).get();
+                userCache[uid] = s.exists ? s.data() : {};
+            } catch(e) { userCache[uid] = {}; }
+        }));
+
+        const myRank  = sorted.findIndex(([uid]) => uid === currentUser?.uid);
+        const myCoins = myRank >= 0 ? sorted[myRank][1] : (coinsMap[currentUser?.uid] || 0);
+        const myLikes = likesMap[currentUser?.uid] || 0;
+
+        const rankEmojis = ['🥇','🥈','🥉'];
+        const startDate  = startWeek.toLocaleDateString('ar-EG', {month:'long', day:'numeric'});
+        const endDate    = new Date(endWeek.getTime()-1).toLocaleDateString('ar-EG', {month:'long', day:'numeric'});
+
+        let html = `
+            <div class="week-header">
+                <h3>🏆 أبطال الأسبوع</h3>
+                <p>${startDate} — ${endDate}</p>
+            </div>`;
+
+        if (currentUser) {
+            html += `
+                <div class="my-rank-bar">
+                    <span class="my-rank-label">
+                        ${myRank >= 0 ? `ترتيبك: #${myRank+1}` : 'ترتيبك: خارج القائمة'}
+                    </span>
+                    <span class="my-rank-likes">
+                        ❤️ ${myLikes} لايك · 🪙 ${myCoins} كوين
+                    </span>
+                </div>`;
+        }
+
+        // ✅ كل المتغيرات معرّفة داخل اللوب
+        sorted.forEach(([uid, coins], i) => {
+            const u           = userCache[uid] || {};
+            const rank        = i + 1;
+            const rankClass   = rank <= 3 ? `rank-${rank}` : 'rank-other';
+            const rankIcon    = rank <= 3 ? rankEmojis[i] : `#${rank}`;
+            const isMe        = uid === currentUser?.uid;
+            const likeCoins   = Math.floor((likesMap[uid] || 0) / 100) * 10;
+            const answerCoins = (answersMap[uid] || 0) * 1;
+            const answers     = answersMap[uid] || 0;
+            const likes       = likesMap[uid]   || 0;
+
+            html += `
+                <div class="leader-card"
+                     onclick="location.href='profile.html?id=${uid}'"
+                     style="${isMe ? 'border-color:rgba(248,5,102,0.5);background:rgba(248,5,102,0.04);' : ''}">
+                    <div class="leader-rank ${rankClass}">${rankIcon}</div>
+                    <img src="${safe(u.avatarUrl || 'images/user.png')}"
+                         class="leader-avatar"
+                         onerror="this.src='images/user.png'" loading="lazy">
+                    <div class="leader-info">
+                        <div class="leader-name">${safe(u.name || 'مستخدم')} ${isMe ? '(أنت)' : ''}</div>
+                        <div class="leader-username">@${safe(u.username || '')}</div>
+                    </div>
+                    <div class="leader-likes">
+                        <span style="font-size:12px;color:#aaa;font-weight:700;">
+                            ❤️ ${likes.toLocaleString()} · 💬 ${answers}
+                        </span>
+                        <span style="font-size:10px;color:#666;">لايك · إجابة</span>
+                        ${coins > 0 ? `
+                        <div class="leader-coins-badge">
+                            <i class="fa-solid fa-coins"></i> +${coins} كوين
+                        </div>
+                        <div style="font-size:9px;color:#666;margin-top:2px;">
+                            ${likeCoins > 0 ? `❤️ ${likeCoins}` : ''}
+                            ${likeCoins > 0 && answerCoins > 0 ? ' + ' : ''}
+                            ${answerCoins > 0 ? `💬 ${answerCoins}` : ''}
+                        </div>` : ''}
+                    </div>
+                </div>`;
+        });
+
+        el.innerHTML = html;
+        await distributeWeeklyCoins(sorted, likesMap, answersMap, coinsMap);
+        leaderLoaded = true;
+
+    } catch(e) {
+        console.error('Leaderboard error:', e);
+        el.innerHTML = `<div style="text-align:center;padding:40px;color:#444;">
+            <p style="font-size:13px;">حدث خطأ في تحميل البيانات</p>
+        </div>`;
+    }
+}
+
+/* ══════════════════════════════════════
+   توزيع الكوينز الأسبوعية
+══════════════════════════════════════ */
+async function distributeWeeklyCoins(sorted, likesMap, answersMap, coinsMap) {
+    if (!currentUser) return;
+
+    const now = new Date();
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - now.getDay());
+    weekStart.setHours(0,0,0,0);
+    const weekKey = `week_${weekStart.getFullYear()}_${weekStart.getMonth()}_${weekStart.getDate()}`;
+
+    const myEntry = sorted.find(([uid]) => uid === currentUser.uid);
+    if (myEntry) {
+        const [uid, coins] = myEntry;
+        if (coins > 0) {
+            try {
+                const rewardRef = db.collection('users').doc(uid)
+                    .collection('weeklyRewards').doc(weekKey);
+                const rewardDoc = await rewardRef.get();
+                if (!rewardDoc.exists) {
+                    const batch = db.batch();
+                    batch.update(db.collection('users').doc(uid), {
+                        anonCoins: firebase.firestore.FieldValue.increment(coins)
+                    });
+                    batch.set(rewardRef, {
+                        weekKey,
+                        likes:   likesMap[uid]   || 0,
+                        answers: answersMap[uid] || 0,
+                        coins,
+                        distributedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    await batch.commit();
+                    showToast(`🎉 مبروك! حصلت على ${coins} كوينز هذا الأسبوع!`);
+                }
+            } catch(e) {
+                console.error('distributeWeeklyCoins error:', e);
+            }
+        }
+    }
+}
+  /* ══════════════════════════════════════
+   VIP TAB
+══════════════════════════════════════ */
+let vipLoaded = false;
+
+async function loadVipTab() {
+    if (vipLoaded) return;
+    vipLoaded = true;
+    const el = document.getElementById('vipTab');
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:#555;">جارٍ التحميل...</div>';
+
+    try {
+        const myDoc  = await db.collection('users').doc(currentUser.uid).get();
+        const myData = myDoc.data() || {};
+        const isVip  = !!(myData.isVerified || myData.isPremium);
+
+        const weekStart = new Date();
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+        weekStart.setHours(0,0,0,0);
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 7);
+        const weekKey = `vip_week_${weekStart.getFullYear()}_${weekStart.getMonth()}_${weekStart.getDate()}`;
+
+        const weekAnswersSnap = await db.collection('answers')
+    .where('userId','==', currentUser.uid)
+    .get();
+const myAnswersCount = weekAnswersSnap.docs.filter(d => {
+    const t = d.data().answeredAt?.toDate();
+    return t && t >= weekStart && t < weekEnd;
+}).length;
+
+        const missions = [
+            { id:'answers_50', icon:'💬', iconBg:'rgba(192,132,252,0.15)', title:'أجب على 50 سؤال', target:50, current:Math.min(myAnswersCount,50), reward:2000 },
+            { id:'answers_100', icon:'🔥', iconBg:'rgba(248,5,102,0.15)', title:'أجب على 100 سؤال', target:100, current:Math.min(myAnswersCount,100), reward:5000 },
+            { id:'likes_200', icon:'❤️', iconBg:'rgba(255,80,100,0.15)', title:'احصل على 200 إعجاب', target:200, current:0, reward:3000 }
+        ];
+
+        try {
+            const answersSnap = await db.collection('answers').where('userId','==', currentUser.uid).get();
+            let totalLikes = 0;
+            answersSnap.forEach(d => {
+                const data = d.data();
+                const likedBy = Array.isArray(data.likedBy) ? data.likedBy.length : 0;
+                const likes   = Array.isArray(data.likes)   ? data.likes.length   : 0;
+                totalLikes += Math.max(likedBy, likes, data.likesCount || 0);
+            });
+            missions[2].current = Math.min(totalLikes, 200);
+        } catch(e) {}
+
+        let missionsHtml = '';
+        for (const m of missions) {
+            const pct    = Math.min(100, Math.round((m.current / m.target) * 100));
+            const isDone = m.current >= m.target;
+            let claimed = false;
+            try {
+                const claimDoc = await db.collection('users').doc(currentUser.uid)
+                    .collection('vipRewards').doc(`${m.id}_${weekKey}`).get();
+                claimed = claimDoc.exists;
+            } catch(e) {}
+
+            missionsHtml += `
+            <div class="mission-card ${isDone ? 'done' : ''}">
+                <div class="mission-icon" style="background:${m.iconBg};">${m.icon}</div>
+                <div class="mission-info">
+                    <div class="mission-title">${m.title}</div>
+                    <div style="font-size:10px;color:#666;margin-bottom:4px;">${m.current} / ${m.target}</div>
+                    <div class="mission-progress-bar">
+                        <div class="mission-progress-fill" style="width:${pct}%;"></div>
+                    </div>
+                </div>
+                <div class="mission-reward">
+                    <div class="mission-coins"><img src="images/logo.png" alt=""> +${m.reward.toLocaleString()}</div>
+                    ${claimed
+                        ? `<div class="mission-done-badge">✅ تم الاستلام</div>`
+                        : isDone
+                            ? `<button onclick="claimVipReward('${m.id}','${weekKey}',${m.reward})"
+                                  style="background:linear-gradient(135deg,#c084fc,#818cf8);border:none;
+                                         color:#fff;font-family:'Cairo';font-weight:800;font-size:11px;
+                                         padding:6px 12px;border-radius:20px;cursor:pointer;">استلام 🎁</button>`
+                            : `<span style="font-size:10px;color:#555;font-weight:700;">${pct}%</span>`
+                    }
+                </div>
+            </div>`;
+        }
+
+        let coinsHtml = '';
+        try {
+            const topSnap = await db.collection('users').orderBy('anonCoins','desc').limit(10).get();
+            topSnap.forEach((doc, i) => {
+                const u = doc.data();
+                const rank = i + 1;
+                const emojis = ['🥇','🥈','🥉'];
+                const rankIcon = rank <= 3 ? emojis[rank-1] : `#${rank}`;
+                const isMe = doc.id === currentUser?.uid;
+                const coins = (u.anonCoins || 0).toFixed(2);
+                coinsHtml += `
+                <div class="coins-card" onclick="location.href='profile.html?id=${doc.id}'"
+                     ${isMe ? 'style="border-color:rgba(255,204,0,0.35);background:rgba(255,204,0,0.03);"' : ''}>
+                    <span class="coins-rank">${rankIcon}</span>
+                    <img src="${safe(u.avatarUrl||'images/user.png')}" class="coins-avatar" onerror="this.src='images/user.png'" loading="lazy">
+                    <div class="coins-info">
+                        <div class="coins-name">${safe(u.name||'مستخدم')} ${isMe?'(أنت)':''}</div>
+                        <div class="coins-username">@${safe(u.username||'')}</div>
+                    </div>
+                    <div class="coins-amount"><img src="images/logo.png" alt="coin"> ${parseFloat(coins).toLocaleString()}</div>
+                </div>`;
+            });
+        } catch(e) { coinsHtml = '<p style="color:#555;font-size:12px;text-align:center;">تعذّر التحميل</p>'; }
+
+        const trackerPct  = Math.min(100, Math.round((myAnswersCount / 50) * 100));
+        const trackerDone = myAnswersCount >= 50;
+        const dotsHtml    = Array.from({length: 50}, (_, i) =>
+            `<div class="tracker-dot ${i < myAnswersCount ? (trackerDone ? 'filled done-dot' : 'filled') : ''}"></div>`
+        ).join('');
+
+        const vipBannerHtml = isVip ? `
+            <div class="vip-coins-banner">
+                <span class="banner-icon">⚡</span>
+                <div class="banner-text">
+                    <strong>أنت مشترك VIP — كوينزك مضاعفة!</strong>
+                    <span>تحصل على <span style="color:#ffd700;font-weight:900;">×2 كوينز</span> على كل مهمة +
+                        <span class="vip-badge-inline"><img src="images/verified-logo.png" alt=""> توثيق</span> على بروفايلك
+                    </span>
+                </div>
+                <div class="vip-multiplier-tag">×2 🪙</div>
+            </div>` : '';
+
+        const ctaHtml = `
+            <a href="verification.html" class="vip-cta-btn">
+                <span class="cta-arrow">←</span>
+                <span>احصل على توثيق VIP</span>
+                <span style="font-size:18px;">👑</span>
+            </a>
+            <div class="vip-future-features">
+                <div class="vip-future-title">✨ مميزات قادمة</div>
+                <div class="future-feature-item"><span class="ff-icon">🎨</span> إطار بروفايل حصري للـ VIP <span class="ff-soon">قريباً</span></div>
+                <div class="future-feature-item"><span class="ff-icon">📌</span> تثبيت إجابة على بروفايلك <span class="ff-soon">قريباً</span></div>
+                <div class="future-feature-item"><span class="ff-icon">🚀</span> أولوية في الـ Feed <span class="ff-soon">قريباً</span></div>
+                <div class="future-feature-item"><span class="ff-icon">🎁</span> مكافآت شهرية حصرية <span class="ff-soon">قريباً</span></div>
+            </div>`;
+
+        el.innerHTML = `
+            <div class="vip-hero">
+                <span class="vip-crown-icon">👑</span>
+                <h2>مهام VIP الأسبوعية</h2>
+                <p>أكمل المهام كل أسبوع واحصل على مكافآت ضخمة بالعملات</p>
+                <div class="vip-reward"><img src="images/logo.png" alt="coin"> حتى 10,000 عملة أسبوعياً</div>
+            </div>
+            ${vipBannerHtml}
+            <div class="weekly-tracker-card ${isVip ? 'vip-member' : ''}">
+                <div class="tracker-header">
+                    <div class="tracker-title">💬 تقدم الأسبوع
+                        ${isVip ? '<span class="vip-badge-inline"><img src="images/verified-logo.png" alt=""> VIP</span>' : ''}
+                    </div>
+                    <div class="tracker-count ${trackerDone ? 'done' : ''}">${myAnswersCount} / 50 ${trackerDone ? '✅' : ''}</div>
+                </div>
+                <div class="tracker-bar-bg">
+                    <div class="tracker-bar-fill ${trackerDone ? 'done' : ''}" style="width:${trackerPct}%;"></div>
+                </div>
+                <div class="tracker-dots">${dotsHtml}</div>
+                <div class="tracker-footer">
+                    <span>الهدف: 50 إجابة أسبوعياً</span>
+                    <span style="color:${trackerDone ? '#00e676' : '#c084fc'};">
+                        ${trackerDone ? '🎉 أكملت الهدف!' : `باقي ${50 - myAnswersCount} إجابة`}
+                    </span>
+                </div>
+            </div>
+            ${missionsHtml}
+            <div class="coins-section-title"><img src="images/logo.png" alt="coin"> أثرى المستخدمين</div>
+            ${coinsHtml}
+            ${ctaHtml}
+        `;
+
+    } catch(e) {
+        console.error('VIP tab error:', e);
+        vipLoaded = false;
+        el.innerHTML = '<div style="text-align:center;padding:40px;color:#444;">حدث خطأ في التحميل، اضغط مجدداً</div>';
+    }
+}
+/* ══════════════════════════════════════
+   CLAIM VIP REWARD
+══════════════════════════════════════ */
+async function claimVipReward(missionId, weekKey, amount) {
+    if (!currentUser) return;
+    const rewardKey = `${missionId}_${weekKey}`;
+    const rewardRef = db.collection('users').doc(currentUser.uid)
+        .collection('vipRewards').doc(rewardKey);
+
+    try {
+        const doc = await rewardRef.get();
+        if (doc.exists) return showToast('✅ تم استلام المكافأة مسبقاً');
+
+        const batch = db.batch();
+        batch.update(db.collection('users').doc(currentUser.uid), {
+            anonCoins: firebase.firestore.FieldValue.increment(amount)
+        });
+        batch.set(rewardRef, {
+            missionId, weekKey, amount,
+            claimedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        await batch.commit();
+
+        showToast(`🎉 مبروك! استلمت ${amount.toLocaleString()} عملة!`);
+        vipLoaded = false;
+        loadVipTab();
+    } catch(e) {
+        console.error('claimVipReward:', e);
+        showToast('حدث خطأ، حاول مجدداً');
+    }
+}
+</script>
+</body>
+</html>

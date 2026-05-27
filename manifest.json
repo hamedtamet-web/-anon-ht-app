@@ -1,0 +1,23 @@
+{
+  "short_name": "Anon HT",
+  "name": "إسأل وأجب وشارك كل ما تحب بحرية ..",
+  "icons": [
+    {
+      "src": "images/logo1.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/logo2.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#f80566",
+  "background_color": "#050505",
+  "orientation": "portrait",
+  "lang": "ar",
+  "dir": "rtl"
+}
