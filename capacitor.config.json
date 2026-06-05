@@ -1,0 +1,14 @@
+{
+  "appId": "com.anon.app",
+  "appName": "Anon",
+  "webDir": "www",
+  "server": {
+    "url": "https://anonht.com",
+    "cleartext": false
+  },
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}

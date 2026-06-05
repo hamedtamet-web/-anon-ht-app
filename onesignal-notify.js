@@ -1,7 +1,8 @@
 async function sendPushNotification(receiverId, title, message, url) {
     try {
         if (!receiverId) return;
-        await fetch('https://onesignal.com/api/v1/notifications', {
+
+        const response = await fetch('https://onesignal.com/api/v1/notifications', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -9,54 +10,65 @@ async function sendPushNotification(receiverId, title, message, url) {
             },
             body: JSON.stringify({
                 app_id: APP_CONFIG.oneSignal.appId,
-                filters: [{ field: 'external_user_id', value: receiverId }],
+                target_channel: 'push',
+                include_aliases: {
+                    external_id: [receiverId]
+                },
                 headings: { en: title, ar: title },
                 contents: { en: message, ar: message },
-                url: url || 'https://anon-ht.web.app',
-                chrome_web_icon: 'https://anon-ht.web.app/images/logo.png',
+                url: url || 'https://anonht.com',
+                chrome_web_icon: 'https://anonht.com/images/logo.png',
+                chrome_web_badge: 'https://anonht.com/images/logo.png',
+                firefox_icon: 'https://anonht.com/images/logo.png',
+                web_push_topic: 'anon-notification',
             })
         });
+
+        const data = await response.json();
+
+        if (data.errors) {
+            console.warn('[OneSignal] Notification errors:', data.errors);
+        } else {
+            console.log('[OneSignal] Sent to:', receiverId, '| ID:', data.id);
+        }
+
     } catch(e) {
-        console.error('OneSignal error:', e);
+        console.error('[OneSignal] sendPushNotification failed:', e);
     }
 }
 
-// سؤال جديد
 async function notifyNewQuestion(receiverId) {
     await sendPushNotification(
         receiverId,
         '❓ سؤال جديد!',
         'وصلك سؤال جديد، تفضل وشوفه!',
-        'https://anon-ht.web.app/questions.html'
+        'https://anonht.com/questions.html'
     );
 }
 
-// لايك جديد
 async function notifyNewLike(receiverId, senderName) {
     await sendPushNotification(
         receiverId,
         '❤️ إعجاب جديد!',
         `أعجب ${senderName} بإجابتك`,
-        'https://anon-ht.web.app/notifications.html'
+        'https://anonht.com/notifications.html'
     );
 }
 
-// متابع جديد
 async function notifyNewFollow(receiverId, senderName) {
     await sendPushNotification(
         receiverId,
         '💙 متابع جديد!',
         `${senderName} بدأ متابعتك`,
-        'https://anon-ht.web.app/notifications.html'
+        'https://anonht.com/notifications.html'
     );
 }
 
-// رد جديد
 async function notifyNewReply(receiverId, senderName) {
     await sendPushNotification(
         receiverId,
         '💬 رد جديد!',
         `${senderName} رد على إجابتك`,
-        'https://anon-ht.web.app/notifications.html'
+        'https://anonht.com/notifications.html'
     );
 }
