@@ -22,6 +22,17 @@
     </image:image>
   </url>
 
+  <!-- تسجيل الدخول -->
+  <url>
+    <loc>https://anonht.com/signin</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar"        href="https://anonht.com/signin"/>
+    <xhtml:link rel="alternate" hreflang="en"        href="https://anonht.com/signin?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://anonht.com/signin"/>
+  </url>
+
   <!-- أسئلة عامة -->
   <url>
     <loc>https://anonht.com/questions.html</loc>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9442350195298931"
+     crossorigin="anonymous"></script>
+    <title>سكينة | Anon</title>
+    
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="lang.js"></script>
+    <script src="100271050.js"></script> 
+    <script src="maintenance-guard.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js">
+    </script>
+
+    <style>
+        :root { 
+            --primary: #f80566; 
+            --bg: #050505; 
+            --border: rgba(255, 255, 255, 0.06);
+            --card-bg: rgba(13, 13, 13, 0.8);
+            --gold: #ffcc00;
+            --max-width: 700px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { background: var(--bg); color: white; margin: 0; font-family: 'Cairo', sans-serif; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 100px; }
+
+        /* شريط الإعلانات الإداري */
+        #adminBroadcast { display: none; background: linear-gradient(90deg, var(--primary), #ff8aba); color: white; padding: 10px; font-size: 12px; font-weight: 700; text-align: center; position: sticky; top: 0; z-index: 2000; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        header { padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; background: rgba(5,5,5,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        .logo-img { width: 35px; height: auto; }
+
+        .lang-select-global { 
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; 
+            padding: 5px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; cursor: pointer; 
+            font-family: 'Cairo'; appearance: none; -webkit-appearance: none;
+        }
+
+        /* تأثير الفراشات */
+        .butterfly-field { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; }
+        .butterfly { position: absolute; width: 22px; height: 20px; opacity: 0; transform-style: preserve-3d; transition: all 7s linear; }
+        .bf-wings { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
+        .wing { position: absolute; width: 50%; height: 100%; background: linear-gradient(135deg, var(--primary), #ff8aba); border-radius: 50% 50% 20% 50%; box-shadow: 0 0 10px var(--primary); }
+        .wing.left { left: 0; transform-origin: right center; animation: flap 0.2s infinite alternate; }
+        .wing.right { right: 0; border-radius: 50% 50% 50% 20%; transform-origin: left center; animation: flap 0.2s infinite alternate reverse; }
+        @keyframes flap { from { transform: rotateY(0deg); } to { transform: rotateY(75deg); } }
+
+        /* كارت الحكمة */
+        .quiet-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; z-index: 5; }
+        .quote-card { 
+            background: var(--card-bg); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 35px; 
+            padding: 50px 30px; text-align: center; max-width: 400px; width: 100%; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5); animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .quiet-label { font-size: 11px; color: var(--primary); letter-spacing: 5px; font-weight: 900; margin-bottom: 25px; display: block; }
+        #dailyQuote { font-size: 22px; line-height: 1.6; color: #fff; margin-bottom: 25px; font-weight: 700; transition: opacity 0.4s; }
+        #shortStory { font-size: 14px; line-height: 1.8; color: #888; font-style: italic; border-top: 1px solid var(--border); padding-top: 25px; margin-bottom: 30px; transition: opacity 0.4s; }
+        .highlight { color: var(--primary); font-weight: 900; }
+        .footer-logo { width: 35px; opacity: 0.6; filter: drop-shadow(0 0 10px var(--primary)); animation: pulseLogo 3s infinite ease-in-out; }
+        @keyframes pulseLogo { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+
+        /* القائمة السفلية */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10,10,10,0.95); backdrop-filter: blur(25px); display: flex; justify-content: center; padding: 12px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        .nav-content { max-width: var(--max-width); width: 100%; display: flex; justify-content: space-around; }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #555; font-size: 10px; font-weight: 700; position: relative; }
+        .nav-item i { font-size: 22px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); }
+        .q-badge { position: absolute; top: -5px; right: -5px; background: var(--primary); color: white; font-size: 9px; min-width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #000; font-weight: 900; }
+    </style>
+</head>
+<body>
+
+    <div id="adminBroadcast"></div>
+    <div class="butterfly-field" id="butterflyField"></div>
+
+    <header>
+        <img src="images/logo.png" class="logo-img" onclick="location.reload()" style="cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <!-- زر اللغة الموحد -->
+            <div style="background:rgba(255,204,0,0.1); padding:5px 12px; border-radius:50px; border:1px solid rgba(255,204,0,0.2); display:flex; align-items:center; gap:6px;">
+                <span id="userCoins" style="color:var(--gold); font-size:12px; font-weight:800;">0.00</span>
+                <i class="fa-solid fa-coins" style="color:var(--gold); font-size:10px;"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="quiet-wrapper">
+        <div class="quote-card">
+            <span class="quiet-label" id="quietLabel">سـكـيـنـة</span>
+            <div id="dailyQuote">...</div>
+            <div id="shortStory">...</div>
+            <img src="images/logo.png" class="footer-logo">
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-content">
+            <a href="/"        class="nav-item"><i class="fa-solid fa-house"></i><span id="nav-home">الرئيسية</span></a>
+            <a href="questions.html"    class="nav-item" style="position:relative;">
+                <i class="fa-solid fa-circle-question"></i>
+                <span id="nav-ques">الأسئلة</span>
+                <div id="qBadgeNav" class="q-badge">0</div>
+            </a>
+            <a href="quiet-corner.html" class="nav-item active"><i class="fa-solid fa-leaf"></i><span id="nav-quiet">سكينة</span></a>
+            <a href="game.html"         class="nav-item"><i class="fa-solid fa-brain"></i><span id="nav-ghost">تحدِّ</span></a>
+            <a href="profile.html" id="myProfileLink" class="nav-item"><i class="fa-solid fa-user"></i><span id="nav-profile">بروفايلي</span></a>
+        </div>
+    </nav>
+
+    <script>
+    'use strict';
+    firebase.initializeApp(APP_CONFIG.firebase);
+    const auth = firebase.auth(), db = firebase.firestore();
+
+    let isInitialLoad = true;
+    let lastQCount    = 0;
+    const questionSound = new Audio('sounds/question.wav');
+
+    /* ══ الاقتباسات اليومية ══ */
+    const quotes = [
+        {
+            ar: { q: "كل حاجة <span class='highlight'>هتعدي</span> وتكون تمام.", s: "بذرة صغيرة شقت صخرة صلبة لتشرب الضوء، الصعوبة مؤقتة والنتيجة حياة." },
+            en: { q: "Everything <span class='highlight'>will pass</span> and be okay.", s: "A small seed split a hard rock to drink light. Difficulty is temporary, the result is life." },
+            fr: { q: "Tout <span class='highlight'>passera</span> et ira bien.", s: "Une petite graine a fendu un rocher dur pour boire la lumière. La difficulté est temporaire." }
+        },
+        {
+            ar: { q: "ريّح قلبك، أنت <span class='highlight'>أقوى</span> مما تتخيل.", s: "نجم بعيد يحترق لسنوات ليهدينا نوراً، أنت أيضاً تملك بداخلك نوراً لا ينطفئ." },
+            en: { q: "Rest your heart, you are <span class='highlight'>stronger</span> than you imagine.", s: "A distant star burns for years to give us light. You too carry an unquenchable light within." },
+            fr: { q: "Repose ton cœur, tu es <span class='highlight'>plus fort</span> que tu ne l'imagines.", s: "Une étoile lointaine brûle pendant des années pour nous donner de la lumière." }
+        },
+        {
+            ar: { q: "النفَس الواحد <span class='highlight'>كافي</span> للبداية.", s: "البحر يبدأ بقطرة، والرحلة الطويلة تبدأ بخطوة. اليوم خطوتك الأولى." },
+            en: { q: "One breath is <span class='highlight'>enough</span> to begin.", s: "The sea begins with a drop, a long journey begins with a step. Today is your first step." },
+            fr: { q: "Un seul souffle suffit pour <span class='highlight'>commencer</span>.", s: "La mer commence par une goutte, le long voyage par un pas. Aujourd'hui est votre premier pas." }
+        },
+        {
+            ar: { q: "اللحظة دي <span class='highlight'>هتفوت</span>، استمتع بيها.", s: "الوقت نهر لا يعود، كل لحظة هدية لن تتكرر. كن حاضراً." },
+            en: { q: "This moment will <span class='highlight'>pass</span>, enjoy it.", s: "Time is a river that never returns. Every moment is a gift that won't repeat. Be present." },
+            fr: { q: "Ce moment <span class='highlight'>passera</span>, profitez-en.", s: "Le temps est un fleuve qui ne revient pas. Chaque moment est un cadeau qui ne se répétera pas." }
+        },
+        {
+            ar: { q: "الهدوء مش ضعف، هو <span class='highlight'>قوة</span>.", s: "الريح العاتية تكسر الأشجار القوية، لكن القصبة المرنة تبقى. الهدوء قوة خفية." },
+            en: { q: "Calm is not weakness, it is <span class='highlight'>strength</span>.", s: "The fierce wind breaks strong trees, but the flexible reed remains. Calm is a hidden power." },
+            fr: { q: "Le calme n'est pas faiblesse, c'est la <span class='highlight'>force</span>.", s: "Le vent violent brise les arbres forts, mais le roseau flexible reste. Le calme est une force cachée." }
+        }
+    ];
+
+    /* ══ تطبيق اللغة على عناصر الصفحة ══ */
+    function applyQuietLanguage(lang) {
+        const l = lang.toLowerCase();
+
+        // ملصق سكينة
+        const labelMap = { ar: 'سـكـيـنـة', en: 'SERENITY', fr: 'SÉRÉNITÉ' };
+        const quietLabel = document.getElementById('quietLabel');
+        if (quietLabel) quietLabel.textContent = labelMap[l] || labelMap.ar;
+
+        // Bottom nav
+        const navMap = {
+            ar: { home:'الرئيسية', ques:'الأسئلة', quiet:'سكينة', ghost:'تحدِّ', profile:'بروفايلي' },
+    en: { home:'Home',     ques:'Inbox',     quiet:'Quiet',  ghost:'Challenge', profile:'Profile' },
+    fr: { home:'Accueil',  ques:'Messages',  quiet:'Calme',  ghost:'Défi', profile:'Profil' }
+        };
+        const nav = navMap[l] || navMap.ar;
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        set('nav-home',    nav.home);
+        set('nav-ques',    nav.ques);
+        set('nav-quiet',   nav.quiet);
+        set('nav-ghost',   nav.ghost);
+        set('nav-profile', nav.profile);
+
+        // الاقتباس اليومي
+        const seed = new Date().getDate();
+        const quoteSet = quotes[seed % quotes.length];
+        const data = quoteSet[l] || quoteSet.ar;
+
+        const qEl = document.getElementById('dailyQuote');
+        const sEl = document.getElementById('shortStory');
+        qEl.style.opacity = 0;
+        sEl.style.opacity = 0;
+        setTimeout(() => {
+            qEl.innerHTML  = data.q;
+            sEl.textContent = data.s;
+            qEl.style.opacity = 1;
+            sEl.style.opacity = 1;
+        }, 400);
+    }
+
+    /* ══ استماع لتغيير اللغة من LangManager ══ */
+
+    /* ══ مراقبة الأسئلة الجديدة ══ */
+    function watchQuestions(uid) {
+        db.collection('questions')
+          .where('receiverId', '==', uid)
+          .where('status', '==', 'pending')
+          .onSnapshot(snap => {
+              const count  = snap.size;
+              const qBadge = document.getElementById('qBadgeNav');
+              if (count > 0) {
+                  qBadge.innerText      = count;
+                  qBadge.style.display  = 'flex';
+                  if (!isInitialLoad && count > lastQCount) {
+                      questionSound.play().catch(() => {});
+                      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                  }
+              } else qBadge.style.display = 'none';
+              lastQCount    = count;
+              isInitialLoad = false;
+          });
+    }
+
+    /* ══ إعلانات الإدارة ══ */
+    db.collection('settings').doc('announcement').onSnapshot(doc => {
+        const banner = document.getElementById('adminBroadcast');
+        if (doc.exists && doc.data().active) {
+            banner.style.display = 'block';
+            banner.innerText     = doc.data().text;
+        } else banner.style.display = 'none';
+    });
+
+    /* ══ Auth ══ */
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('myProfileLink').href = `profile.html?id=${user.uid}`;
+            watchQuestions(user.uid);
+            db.collection('users').doc(user.uid).onSnapshot(doc => {
+                const data = doc.data();
+                if (data) {
+                    if (data.isBanned) window.location.href = 'signin.html';
+                    document.getElementById('userCoins').innerText = (data.anonCoins || 0).toFixed(2);
+                }
+            });
+        } else window.location.href = 'signin.html';
+    });
+
+    /* ══ الفراشات ══ */
+    function createButterflies() {
+        const container = document.getElementById('butterflyField');
+        for (let i = 0; i < 8; i++) {
+            const b = document.createElement('div');
+            b.className = 'butterfly';
+            b.innerHTML = `<div class="bf-wings"><div class="wing left"></div><div class="wing right"></div></div>`;
+            container.appendChild(b);
+            animateButterfly(b);
+        }
+    }
+    function animateButterfly(b) {
+        b.style.left      = Math.random() * 90 + 'vw';
+        b.style.top       = Math.random() * 90 + 'vh';
+        b.style.opacity   = (Math.random() * 0.3).toString();
+        b.style.transform = `scale(${0.3 + Math.random()})`;
+        setTimeout(() => animateButterfly(b), 7000 + Math.random() * 3000);
+    }
+
+    /* ══ Init ══ */
+    window.addEventListener('DOMContentLoaded', () => {
+    createButterflies();
+    applyQuietLanguage(LangManager.get());
+});
+
+document.addEventListener('langChanged', (e) => {
+    applyQuietLanguage(e.detail?.lang || LangManager.get());
+});
+    </script>
+</body>
+</html>

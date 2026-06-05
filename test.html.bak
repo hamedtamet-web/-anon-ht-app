@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlTag">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f80566">
+<meta name="color-scheme" content="dark">
+<title>Anon HT — اسأل مجهول واكتشف من يراقبك</title>
+<meta name="description" content="Anon HT — منصة الأسئلة المجهولة الأولى عربياً.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   ROOT & RESET
+══════════════════════════════════════ */
+:root {
+  --primary: #f80566;
+  --primary-dim: rgba(248,5,102,0.10);
+  --primary-glow: rgba(248,5,102,0.28);
+  --primary-border: rgba(248,5,102,0.30);
+  --overlay: rgba(0,0,0,0.88);
+  --card-bg: rgba(10,10,16,0.85);
+  --card-bg2: rgba(14,14,22,0.92);
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(248,5,102,0.35);
+  --input-bg: rgba(255,255,255,0.05);
+  --input-focus: rgba(255,255,255,0.08);
+  --text-main: #f0f0f0;
+  --text-sub: #999;
+  --text-muted: #444;
+  --teal: #06D6A0;
+  --gold: #FFD166;
+  --radius-card: 26px;
+  --radius-input: 16px;
+  --radius-btn: 50px;
+  --max-w: 440px;
+  --header-h: 56px;
+  --tr: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+html { scroll-behavior: smooth; font-size: 16px; }
+body, html {
+  width: 100%; min-height: 100%;
+  font-family: 'Cairo', sans-serif;
+  overflow-x: hidden;
+  background: #050508;
+  color: var(--text-main);
+}
+
+/* BG */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(248,5,102,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(100,0,200,0.06) 0%, transparent 55%),
+    #050508;
+}
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: 0.5;
+}
+
+/* ══════════════════════════════════════
+   LAYOUT WRAPPER
+══════════════════════════════════════ */
+.page-wrap {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  width: 100%; min-height: 100vh;
+  padding: 14px 14px 36px;
+  gap: 16px;
+}
+
+/* ══════════════════════════════════════
+   TOP BAR
+══════════════════════════════════════ */
+.top-bar {
+  width: 100%; max-width: var(--max-w);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+}
+.logo-mark {
+  display: flex; align-items: center; gap: 9px;
+  text-decoration: none;
+}
+.logo-mark img {
+  width: 36px; height: 36px;
+  filter: drop-shadow(0 0 10px var(--primary));
+}
+.logo-mark span {
+  font-size: 18px; font-weight: 900; color: #fff;
+  letter-spacing: -0.5px;
+}
+.top-bar-right { display: flex; align-items: center; gap: 8px; }
+
+/* Online Pill */
+.online-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(6,214,160,0.07);
+  border: 1px solid rgba(6,214,160,0.18);
+  border-radius: 50px; padding: 5px 11px;
+}
+.pulse-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal); box-shadow: 0 0 6px var(--teal);
+  animation: pulse 2s infinite;
+}
+.online-pill span { font-size: 11px; color: var(--teal); font-weight: 700; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+/* Lang Switcher */
+.lang-switcher { position: relative; }
+.lang-active-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: #fff; padding: 6px 12px;
+  border-radius: 50px; font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: 'Cairo', sans-serif;
+  transition: var(--tr); backdrop-filter: blur(10px);
+  letter-spacing: 0.5px;
+}
+.lang-active-btn:hover, .lang-active-btn.open {
+  border-color: var(--primary); background: var(--primary-dim);
+}
+.lang-chevron { font-size: 9px; color: #666; transition: transform 0.3s; }
+.lang-active-btn.open .lang-chevron { transform: rotate(180deg); }
+.lang-menu {
+  position: absolute; top: calc(100% + 7px); left: 0;
+  background: rgba(12,12,18,0.98); border: 1px solid var(--border);
+  border-radius: 16px; overflow-y: auto; min-width: 155px;
+  z-index: 9999; max-height: 300px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.7);
+  opacity: 0; pointer-events: none;
+  transform: translateY(-6px) scale(0.97);
+  transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1);
+  backdrop-filter: blur(20px);
+  scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+}
+html[dir="rtl"] .lang-menu { left: auto; right: 0; }
+.lang-menu.open { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+.lang-option {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 14px; cursor: pointer; transition: background 0.15s;
+  color: #aaa; font-size: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.lang-option:last-child { border-bottom: none; }
+.lang-option:hover { background: var(--primary-dim); color: #fff; }
+.lang-opt-flag { font-size: 16px; }
+.lang-opt-name { flex: 1; font-weight: 600; }
+.lang-opt-check { color: var(--primary); font-size: 12px; font-weight: 900; min-width: 14px; text-align: center; }
+
+/* ══════════════════════════════════════
+   AUTH CARD
+══════════════════════════════════════ */
+.auth-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 32px 26px 28px;
+  text-align: center;
+  width: 100%; max-width: var(--max-w);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.025);
+  position: relative; overflow: hidden;
+}
+.auth-card::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(248,5,102,0.09), transparent 70%);
+  pointer-events: none;
+}
+.auth-card::after {
+  content: ''; position: absolute; bottom: -40px; left: -40px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(100,0,200,0.06), transparent 70%);
+  pointer-events: none;
+}
+
+.logo-box { margin-bottom: 16px; }
+.logo-box img {
+  width: 54px; height: 54px;
+  filter: drop-shadow(0 0 14px var(--primary));
+}
+
+.card-title {
+  color: #fff; font-size: clamp(18px,5vw,24px);
+  font-weight: 900; line-height: 1.3; margin-bottom: 5px;
+  letter-spacing: -0.3px;
+}
+.card-subtitle {
+  color: var(--text-sub); font-size: 12.5px;
+  margin-bottom: 20px; line-height: 1.7;
+}
+
+/* ══════════════════════════════════════
+   INPUTS
+══════════════════════════════════════ */
+.input-group {
+  width: 100%; margin-bottom: 10px; position: relative;
+}
+.field-input {
+  width: 100%; padding: 13px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  color: #fff; outline: none;
+  font-family: 'Cairo', sans-serif;
+  font-size: 13.5px; transition: var(--tr);
+}
+html[dir="rtl"] .field-input { text-align: right; }
+html[dir="ltr"] .field-input { text-align: left; }
+.field-input::placeholder { color: #3a3a4a; }
+.field-input:focus {
+  border-color: var(--primary);
+  background: var(--input-focus);
+  box-shadow: 0 0 0 3px var(--primary-dim);
+}
+
+/* SELECT */
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '▾'; position: absolute; top: 50%;
+  transform: translateY(-50%); color: #555; font-size: 12px; pointer-events: none;
+}
+html[dir="rtl"] .select-wrap::after { left: 16px; }
+html[dir="ltr"] .select-wrap::after { right: 16px; }
+.field-select {
+  width: 100%; padding: 13px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  color: #fff; outline: none;
+  font-family: 'Cairo', sans-serif; font-size: 13.5px;
+  cursor: pointer; appearance: none; -webkit-appearance: none;
+  transition: var(--tr);
+}
+.field-select option { background: #111; color: #fff; }
+.field-select option:disabled { color: #555; }
+.field-select:focus {
+  border-color: var(--primary); background: var(--input-focus);
+  box-shadow: 0 0 0 3px var(--primary-dim);
+}
+
+/* PASSWORD STRENGTH */
+.strength-bar { display: flex; gap: 3px; margin-top: 5px; padding: 0 2px; }
+.strength-bar span {
+  flex: 1; height: 3px; border-radius: 3px;
+  background: rgba(255,255,255,0.07); transition: background 0.3s;
+}
+.strength-label {
+  font-size: 10px; color: #555; margin-top: 3px; padding: 0 2px;
+}
+html[dir="rtl"] .strength-label { text-align: right; }
+html[dir="ltr"] .strength-label { text-align: left; }
+
+/* PHONE GROUP */
+.phone-group { display: flex; gap: 7px; align-items: stretch; }
+.phone-group .field-input { flex: 1; }
+.country-selector { position: relative; flex-shrink: 0; }
+.country-btn {
+  display: flex; align-items: center; gap: 5px;
+  cursor: pointer; height: 100%;
+  padding: 0 11px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  color: #fff; font-family: 'Cairo', sans-serif;
+  font-size: 12px; white-space: nowrap;
+  transition: var(--tr); user-select: none; min-height: 46px;
+}
+.country-btn:hover { border-color: var(--primary); background: var(--input-focus); }
+.country-btn .cflag { font-size: 16px; }
+.country-btn .ccode { font-size: 11px; color: #bbb; }
+.country-btn .carrow { font-size: 8px; color: #555; transition: 0.3s; }
+.country-btn.open .carrow { transform: rotate(180deg); }
+.country-dropdown {
+  position: absolute; top: calc(100% + 5px);
+  width: 250px; max-height: 185px; overflow-y: auto;
+  background: rgba(14,14,20,0.99);
+  border: 1px solid var(--border);
+  border-radius: 16px; z-index: 9999;
+  display: none;
+  box-shadow: 0 20px 48px rgba(0,0,0,0.8);
+  scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+}
+html[dir="rtl"] .country-dropdown { right: 0; }
+html[dir="ltr"] .country-dropdown { left: 0; }
+.country-dropdown.open { display: block; animation: dropIn 0.16s ease; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-5px);} to{opacity:1;transform:translateY(0);} }
+.country-search {
+  width: 100%; padding: 10px 13px;
+  background: rgba(255,255,255,0.04); border: none;
+  border-bottom: 1px solid var(--border);
+  color: #fff; font-family: 'Cairo', sans-serif;
+  font-size: 12px; outline: none;
+  border-radius: 16px 16px 0 0;
+}
+html[dir="rtl"] .country-search { text-align: right; }
+html[dir="ltr"] .country-search { text-align: left; }
+.country-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 13px; cursor: pointer;
+  transition: background 0.13s; font-size: 12px; color: #bbb;
+}
+.country-item:hover { background: var(--primary-dim); color: #fff; }
+.ci-flag { font-size: 16px; }
+.ci-name { flex: 1; }
+html[dir="rtl"] .ci-name { text-align: right; }
+html[dir="ltr"] .ci-name { text-align: left; }
+.ci-dial { color: #444; font-size: 11px; direction: ltr; }
+
+/* BIRTHDATE PICKER */
+.birthdate-picker {
+  width: 100%;
+  background: var(--input-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-input); padding: 9px 14px;
+  transition: var(--tr); display: flex; align-items: center; gap: 7px;
+}
+.birthdate-picker:focus-within {
+  border-color: var(--primary); background: var(--input-focus);
+  box-shadow: 0 0 0 3px var(--primary-dim);
+}
+.bd-col { display: flex; flex-direction: column; align-items: center; gap: 1px; flex: 1; }
+.bd-col.year-col { flex: 1.4; }
+.bd-arrow {
+  width: 100%; height: 22px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 7px; color: #888; font-size: 10px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.18s; user-select: none;
+}
+.bd-arrow:hover { background: var(--primary-dim); border-color: var(--primary); color: var(--primary); }
+.bd-arrow:active { transform: scale(0.92); }
+.bd-val {
+  font-size: 15px; font-weight: 800; color: #fff;
+  font-family: 'Cairo', sans-serif; min-width: 28px;
+  text-align: center; padding: 2px 0; line-height: 1.4;
+}
+.bd-val.year-val { min-width: 42px; font-size: 14px; }
+.bd-sep { color: #333; font-size: 18px; font-weight: 300; align-self: center; }
+.bd-age-label {
+  font-size: 10.5px; margin-top: 4px; padding: 0 2px;
+  font-family: 'Cairo', sans-serif;
+}
+html[dir="rtl"] .bd-age-label { text-align: right; }
+html[dir="ltr"] .bd-age-label { text-align: left; }
+
+/* PRIVACY CHECKBOX */
+.privacy-wrap {
+  display: flex; align-items: flex-start; gap: 9px;
+  background: rgba(248,5,102,0.05);
+  border: 1px solid rgba(248,5,102,0.14);
+  border-radius: 14px; padding: 11px 13px;
+  margin-bottom: 12px; cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+}
+html[dir="rtl"] .privacy-wrap { text-align: right; }
+html[dir="ltr"] .privacy-wrap { text-align: left; }
+.privacy-wrap:hover { border-color: var(--border-hover); }
+.privacy-wrap.checked { border-color: rgba(248,5,102,0.4); background: rgba(248,5,102,0.08); }
+.custom-cb {
+  width: 20px; height: 20px; min-width: 20px;
+  border-radius: 7px; border: 1.5px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  margin-top: 2px; cursor: pointer; flex-shrink: 0;
+}
+.custom-cb.checked { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 12px var(--primary-glow); }
+.custom-cb .cb-check {
+  opacity: 0; transform: scale(0) rotate(-45deg);
+  transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  color: #fff; font-size: 11px; font-weight: 900;
+}
+.custom-cb.checked .cb-check { opacity: 1; transform: scale(1) rotate(0deg); }
+.privacy-text { flex: 1; font-size: 11.5px; color: #888; line-height: 1.75; }
+.privacy-text a {
+  color: var(--primary); text-decoration: none; font-weight: 700;
+  border-bottom: 1px dashed rgba(248,5,102,0.3); transition: border-color 0.2s;
+}
+.privacy-text a:hover { border-color: var(--primary); }
+
+/* MISSING NOTICE */
+.missing-notice {
+  background: var(--primary-dim); border: 1px solid rgba(248,5,102,0.25);
+  border-radius: 14px; padding: 12px 14px; margin-bottom: 14px;
+}
+html[dir="rtl"] .missing-notice { text-align: right; }
+html[dir="ltr"] .missing-notice { text-align: left; }
+.missing-notice .mn-title { color: var(--primary); font-size: 12px; font-weight: 800; margin-bottom: 7px; }
+.missing-notice ul { list-style: none; }
+.missing-notice ul li {
+  color: #bbb; font-size: 12px; padding: 2px 0;
+  display: flex; align-items: center; gap: 6px;
+}
+.missing-notice ul li::before { content: '⚠️'; font-size: 11px; }
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+.btn-primary {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--primary), #c4024e);
+  color: #fff; border: none;
+  border-radius: var(--radius-btn);
+  font-weight: 800; font-size: 15px;
+  cursor: pointer; transition: var(--tr);
+  font-family: 'Cairo', sans-serif;
+  box-shadow: 0 6px 20px var(--primary-glow);
+  position: relative; overflow: hidden;
+  letter-spacing: 0.2px;
+}
+.btn-primary::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  pointer-events: none;
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(248,5,102,0.42);
+}
+.btn-primary:active:not(:disabled) { transform: scale(0.98); }
+.btn-primary:disabled {
+  opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none;
+}
+
+.btn-ghost {
+  width: 100%; padding: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text-sub); border-radius: var(--radius-btn);
+  font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: var(--tr);
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,0.14); color: #fff; }
+
+.forgot-link {
+  display: block; margin-top: 10px;
+  color: #555; font-size: 11.5px; cursor: pointer; transition: color 0.2s;
+  text-align: center;
+}
+.forgot-link:hover { color: var(--primary); }
+
+.switch-area { margin-top: 18px; color: #666; font-size: 12.5px; text-align: center; }
+.switch-area b { color: var(--primary); cursor: pointer; transition: opacity 0.2s; }
+.switch-area b:hover { opacity: 0.8; }
+html[dir="rtl"] .switch-area b { margin-right: 4px; }
+html[dir="ltr"] .switch-area b { margin-left: 4px; }
+
+/* LOADER */
+.loader {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.1);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.75s linear infinite; margin: 0 auto;
+}
+@keyframes spin { 100%{transform:rotate(360deg);} }
+
+/* ══════════════════════════════════════
+   ABOUT SECTION
+══════════════════════════════════════ */
+.about-section {
+  width: 100%; max-width: var(--max-w);
+  background: var(--card-bg);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card); overflow: hidden;
+}
+.about-banner {
+  background: linear-gradient(135deg, rgba(248,5,102,0.10), rgba(100,0,50,0.07));
+  border-bottom: 1px solid rgba(248,5,102,0.08);
+  padding: 18px; display: flex; align-items: center; gap: 13px;
+}
+html[dir="rtl"] .about-banner { text-align: right; }
+html[dir="ltr"] .about-banner { text-align: left; }
+.about-icon {
+  width: 46px; height: 46px; min-width: 46px;
+  background: var(--primary-dim); border: 1px solid rgba(248,5,102,0.18);
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.about-title { color: #fff; font-size: 14px; font-weight: 900; margin-bottom: 2px; }
+.about-sub { color: var(--text-sub); font-size: 11.5px; line-height: 1.6; }
+.about-stats { display: flex; border-bottom: 1px solid var(--border); }
+.stat-item {
+  flex: 1; padding: 14px 8px; text-align: center;
+  border-inline-start: 1px solid var(--border); transition: background 0.2s;
+}
+.stat-item:first-child { border-inline-start: none; }
+.stat-item:hover { background: var(--primary-dim); }
+.stat-num { color: var(--primary); font-size: 15px; font-weight: 900; display: block; line-height: 1; margin-bottom: 4px; }
+.stat-label { color: #444; font-size: 9.5px; }
+.about-features { display: flex; flex-wrap: wrap; gap: 6px; padding: 13px 15px; }
+.feat-pill {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: 50px; padding: 5px 11px;
+  font-size: 10.5px; color: #999; white-space: nowrap; transition: border-color 0.2s;
+}
+.feat-pill:hover { border-color: rgba(248,5,102,0.25); }
+
+/* ══════════════════════════════════════
+   LIVE ANSWERS SECTION
+══════════════════════════════════════ */
+.answers-section {
+  width: 100%; max-width: var(--max-w);
+  background: var(--card-bg);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 20px 18px 16px; overflow: hidden;
+}
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; gap: 8px;
+}
+.section-title { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 13.5px; font-weight: 800; }
+.section-icon {
+  width: 28px; height: 28px; background: var(--primary-dim);
+  border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.live-badge {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(248,5,102,0.09); border: 1px solid rgba(248,5,102,0.22);
+  border-radius: 50px; padding: 4px 10px;
+  font-size: 9.5px; font-weight: 800; color: var(--primary);
+}
+.live-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--primary);
+  animation: livePulse 1.2s ease-in-out infinite;
+}
+@keyframes livePulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.7);} }
+.answer-feed { display: flex; flex-direction: column; gap: 9px; }
+.answer-card {
+  background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+  border-radius: 16px; padding: 12px 14px;
+  cursor: pointer; transition: border-color 0.22s, background 0.22s;
+  position: relative; overflow: hidden;
+}
+.answer-card:hover { border-color: rgba(248,5,102,0.28); background: var(--primary-dim); }
+.answer-top { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+.answer-rank {
+  display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 7px;
+  font-size: 11px; font-weight: 900; flex-shrink: 0;
+  background: rgba(255,255,255,0.05); color: #555;
+}
+.answer-rank.r1 { background: rgba(255,215,0,0.12); color: #FFD700; }
+.answer-rank.r2 { background: rgba(192,192,192,0.12); color: #C0C0C0; }
+.answer-rank.r3 { background: rgba(205,127,50,0.12); color: #CD7F32; }
+.answer-avatar {
+  width: 32px; height: 32px; min-width: 32px; border-radius: 50%;
+  background: var(--primary-dim); border: 1.5px solid rgba(248,5,102,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; overflow: hidden; flex-shrink: 0;
+}
+.answer-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.answer-user-info { flex: 1; min-width: 0; }
+html[dir="rtl"] .answer-user-info { text-align: right; }
+html[dir="ltr"] .answer-user-info { text-align: left; }
+.answer-username { color: #ddd; font-size: 12.5px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.answer-time { color: #444; font-size: 10px; margin-top: 1px; }
+.answer-likes-big { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 900; color: var(--primary); flex-shrink: 0; }
+.answer-likes-big span { font-size: 9.5px; color: #444; font-weight: 700; }
+.answer-question {
+  background: rgba(248,5,102,0.05); border: 1px solid rgba(248,5,102,0.10);
+  border-radius: 10px; padding: 8px 11px; margin-bottom: 7px;
+  color: #888; font-size: 11.5px; line-height: 1.65;
+}
+html[dir="rtl"] .answer-question { text-align: right; }
+html[dir="ltr"] .answer-question { text-align: left; }
+.answer-question::before { content: '❓'; font-size: 10px; margin-inline-end: 4px; }
+.answer-text {
+  color: #ccc; font-size: 12.5px; line-height: 1.7;
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+html[dir="rtl"] .answer-text { text-align: right; }
+html[dir="ltr"] .answer-text { text-align: left; }
+.answer-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 9px; padding-top: 9px;
+  border-top: 1px solid rgba(255,255,255,0.03);
+}
+.answer-join {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--primary-dim); border: 1px solid rgba(248,5,102,0.18);
+  border-radius: 50px; padding: 4px 11px;
+  font-size: 10.5px; font-weight: 700; color: var(--primary);
+}
+.no-answers { text-align: center; color: #444; font-size: 12px; padding: 16px 0; }
+
+/* ══════════════════════════════════════
+   UPDATES SECTION
+══════════════════════════════════════ */
+.updates-section {
+  width: 100%; max-width: var(--max-w);
+  background: var(--card-bg);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 20px 18px 16px;
+}
+.updates-badge {
+  background: var(--primary); color: #fff;
+  font-size: 9.5px; font-weight: 800;
+  padding: 3px 9px; border-radius: 50px;
+}
+.article-list { display: flex; flex-direction: column; gap: 8px; }
+.article-card {
+  background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+  border-radius: 15px; padding: 11px 13px;
+  display: flex; align-items: flex-start; gap: 11px;
+  transition: border-color 0.22s, background 0.22s;
+  cursor: pointer; text-decoration: none;
+}
+.article-card:hover { border-color: rgba(248,5,102,0.26); background: var(--primary-dim); }
+.article-icon {
+  width: 35px; height: 35px; min-width: 35px;
+  border-radius: 11px; background: var(--primary-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.article-body { flex: 1; min-width: 0; }
+html[dir="rtl"] .article-body { text-align: right; }
+html[dir="ltr"] .article-body { text-align: left; }
+.article-cat { font-size: 9.5px; color: var(--primary); font-weight: 700; letter-spacing: 0.6px; margin-bottom: 2px; }
+.article-title { color: #ddd; font-size: 12.5px; font-weight: 700; line-height: 1.5; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.article-meta { color: #444; font-size: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.article-arrow { color: #333; font-size: 13px; margin-top: 1px; flex-shrink: 0; transition: color 0.18s; }
+.article-card:hover .article-arrow { color: var(--primary); }
+
+/* ══════════════════════════════════════
+   MAINTENANCE
+══════════════════════════════════════ */
+.maintenance-banner {
+  width: 100%; max-width: var(--max-w);
+  background: rgba(244,63,94,0.06); border: 1px solid rgba(244,63,94,0.24);
+  border-radius: var(--radius-card); padding: 26px 20px; text-align: center;
+  animation: maintPulse 3s ease-in-out infinite;
+}
+@keyframes maintPulse { 0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,0);} 50%{box-shadow:0 0 28px rgba(244,63,94,0.12);} }
+.maint-icon { font-size: 44px; margin-bottom: 12px; display: block; animation: maintRock 4s linear infinite; }
+@keyframes maintRock { 0%,100%{transform:rotate(-5deg);} 50%{transform:rotate(5deg);} }
+.maint-title { color: #f43f5e; font-size: 18px; font-weight: 900; margin-bottom: 8px; }
+.maint-msg { color: #bbb; font-size: 12.5px; line-height: 1.8; margin-bottom: 16px; }
+.maint-timer-label { color: #555; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 7px; }
+.maint-timer { font-size: clamp(32px,9vw,48px); font-weight: 900; color: #fff; letter-spacing: 2px; line-height: 1; margin-bottom: 5px; text-shadow: 0 0 28px rgba(244,63,94,0.35); }
+.maint-timer span { color: #f43f5e; }
+.maint-timer-sub { color: #444; font-size: 10px; margin-bottom: 16px; }
+.maint-progress { width: 100%; height: 3px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
+.maint-progress-fill { height: 100%; background: linear-gradient(90deg,#f43f5e,var(--primary)); border-radius: 3px; transition: width 1s linear; }
+.maint-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(244,63,94,0.09); border: 1px solid rgba(244,63,94,0.22);
+  border-radius: 50px; padding: 5px 13px;
+  font-size: 11px; font-weight: 700; color: #f43f5e;
+}
+.maint-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #f43f5e; animation: pulse 1s infinite; }
+.maint-admin-link { display: block; margin-top: 12px; color: #444; font-size: 11px; cursor: pointer; text-decoration: underline; transition: color 0.2s; }
+.maint-admin-link:hover { color: #f43f5e; }
+
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88); backdrop-filter: blur(12px);
+  z-index: 99990; display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.28s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal-sheet {
+  width: 100%; max-width: 560px; max-height: 88vh;
+  background: #0c0c14; border: 1px solid var(--border);
+  border-radius: 26px 26px 0 0; overflow: hidden;
+  display: flex; flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.36s cubic-bezier(0.34,1.1,0.64,1);
+}
+.modal-overlay.open .modal-sheet { transform: translateY(0); }
+.modal-handle {
+  width: 36px; height: 4px; background: rgba(255,255,255,0.1);
+  border-radius: 4px; margin: 11px auto 0; flex-shrink: 0;
+}
+.modal-head {
+  padding: 14px 20px 12px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.modal-head h3 { color: #fff; font-size: 14px; font-weight: 800; }
+.modal-close {
+  width: 30px; height: 30px; border-radius: 9px;
+  background: rgba(255,255,255,0.05); border: none; color: #888;
+  font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+}
+.modal-close:hover { background: var(--primary-dim); color: var(--primary); }
+.modal-body {
+  padding: 16px 20px; overflow-y: auto; flex: 1;
+  scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+}
+html[dir="rtl"] .modal-body { text-align: right; }
+html[dir="ltr"] .modal-body { text-align: left; }
+.modal-body h4 { color: var(--primary); font-size: 12px; font-weight: 800; margin: 14px 0 6px; }
+.modal-body h4:first-child { margin-top: 0; }
+.modal-body p, .modal-body li { color: #999; font-size: 12px; line-height: 1.85; }
+.modal-body ul { margin: 5px 0; }
+html[dir="rtl"] .modal-body ul { padding-right: 14px; }
+html[dir="ltr"] .modal-body ul { padding-left: 14px; }
+.modal-footer-btn { padding: 12px 20px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.modal-accept-btn {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, var(--primary), #c4024e);
+  color: #fff; border: none; border-radius: 14px;
+  font-family: 'Cairo', sans-serif; font-size: 13.5px; font-weight: 800; cursor: pointer; transition: 0.28s;
+}
+.modal-accept-btn:hover { box-shadow: 0 7px 18px var(--primary-glow); transform: translateY(-1px); }
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+#toast {
+  position: fixed; top: 18px; left: 50%;
+  transform: translateX(-50%) translateY(-70px);
+  background: rgba(14,14,20,0.97);
+  backdrop-filter: blur(20px); border-radius: 16px;
+  padding: 11px 18px; display: flex; align-items: center; gap: 10px;
+  font-family: 'Cairo', sans-serif; font-size: 12.5px; font-weight: 600;
+  color: #fff; z-index: 99999;
+  min-width: 220px; max-width: min(320px, calc(100vw - 28px));
+  box-shadow: 0 10px 36px rgba(0,0,0,0.55);
+  border: 1px solid var(--border);
+  transition: transform 0.38s cubic-bezier(0.34,1.56,0.64,1), opacity 0.28s;
+  opacity: 0; pointer-events: none;
+}
+#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+#toast .t-icon-wrap {
+  width: 30px; height: 30px; border-radius: 9px;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+#toast .t-text { flex: 1; line-height: 1.5; }
+html[dir="rtl"] #toast .t-text { text-align: right; }
+html[dir="ltr"] #toast .t-text { text-align: left; }
+#toast.t-error  { border-color: rgba(248,5,102,0.32); }
+#toast.t-success{ border-color: rgba(74,222,128,0.28); }
+#toast.t-info   { border-color: rgba(96,165,250,0.28); }
+#toast.t-error   .t-icon-wrap { background: var(--primary-dim); }
+#toast.t-success .t-icon-wrap { background: rgba(74,222,128,0.09); }
+#toast.t-info    .t-icon-wrap { background: rgba(96,165,250,0.09); }
+#toast .t-bar {
+  position: absolute; bottom: 0; height: 2.5px; border-radius: 0 0 16px 16px;
+  background: var(--primary); animation: shrink linear forwards;
+}
+html[dir="rtl"] #toast .t-bar { right: 0; }
+html[dir="ltr"] #toast .t-bar { left: 0; }
+@keyframes shrink { from{width:100%} to{width:0%} }
+
+/* ══════════════════════════════════════
+   CHAT INTERFACE (after match)
+══════════════════════════════════════ */
+.chat-overlay {
+  position: fixed; inset: 0; z-index: 88888;
+  background: rgba(0,0,0,0.94); backdrop-filter: blur(16px);
+  display: flex; flex-direction: column; align-items: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.chat-overlay.open { opacity: 1; pointer-events: auto; }
+
+.chat-window {
+  display: flex; flex-direction: column;
+  width: 100%; max-width: 500px; height: 100%;
+  background: var(--card-bg2); border-inline: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+
+/* Chat Header */
+.chat-hdr {
+  padding: 10px 14px; flex-shrink: 0;
+  background: rgba(8,8,14,0.95); backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.chat-peer-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.chat-av-wrap {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  position: relative;
+}
+.chat-av-wrap.male   { background: linear-gradient(135deg,#2563EB,#1D4ED8); box-shadow:0 0 12px rgba(37,99,235,0.3); }
+.chat-av-wrap.female { background: linear-gradient(135deg,#EC4899,#BE185D); box-shadow:0 0 12px rgba(236,72,153,0.3); }
+.chat-av-wrap.other  { background: linear-gradient(135deg,#7C3AED,#5B21B6); box-shadow:0 0 12px rgba(124,58,237,0.3); }
+.chat-online-dot {
+  position: absolute; bottom: -1px; right: -1px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--teal); border: 2px solid #08080e;
+  box-shadow: 0 0 6px var(--teal);
+}
+.chat-peer-name { font-size: 13.5px; font-weight: 800; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-peer-status { font-size: 10px; color: var(--teal); display: flex; align-items: center; gap: 4px; margin-top: 1px; }
+.chat-peer-meta { font-size: 10px; color: #444; margin-top: 1px; }
+
+/* Chat Action Buttons */
+.chat-actions { display: flex; gap: 7px; flex-shrink: 0; }
+.chat-btn {
+  width: 36px; height: 36px; border-radius: 11px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: #666; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; transition: all 0.18s;
+}
+.chat-btn:hover { transform: scale(1.07); }
+.chat-btn.block  { color: #FF6B6B; border-color: rgba(255,107,107,0.18); background: rgba(255,107,107,0.05); }
+.chat-btn.block:hover  { background: rgba(255,50,50,0.14); color: #FF3333; border-color: rgba(255,50,50,0.32); }
+.chat-btn.report { color: #FFBB33; border-color: rgba(255,187,51,0.18); background: rgba(255,187,51,0.05); }
+.chat-btn.report:hover { background: rgba(255,170,0,0.14); color: orange; border-color: rgba(255,170,0,0.32); }
+.chat-btn.leave  { color: var(--primary); border-color: var(--primary-border); background: var(--primary-dim); }
+.chat-btn.leave:hover  { background: rgba(248,5,102,0.16); border-color: rgba(248,5,102,0.4); }
+
+/* Messages Area */
+.msgs-area {
+  flex: 1; overflow-y: auto; padding: 12px 14px 8px;
+  display: flex; flex-direction: column; gap: 7px;
+  scrollbar-width: thin; scrollbar-color: rgba(248,5,102,0.18) transparent;
+}
+.msgs-area::-webkit-scrollbar { width: 3px; }
+.msgs-area::-webkit-scrollbar-thumb { background: rgba(248,5,102,0.18); border-radius: 3px; }
+
+.bubble {
+  max-width: 72%; padding: 9px 13px;
+  border-radius: 16px; font-size: 13.5px; line-height: 1.55;
+  animation: bubblePop 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  word-break: break-word; position: relative;
+}
+@keyframes bubblePop { from{transform:scale(0.82);opacity:0;} to{transform:scale(1);opacity:1;} }
+.bubble.mine {
+  background: linear-gradient(135deg, var(--primary), #c4024e);
+  color: white; align-self: flex-end;
+  border-radius: 16px 16px 4px 16px;
+  box-shadow: 0 3px 16px rgba(248,5,102,0.22);
+}
+.bubble.theirs {
+  background: rgba(30,30,44,0.9); color: #e8e8e8;
+  border: 1px solid var(--border);
+  align-self: flex-start; border-radius: 16px 16px 16px 4px;
+}
+html[dir="rtl"] .bubble.mine   { border-radius: 16px 16px 16px 4px; }
+html[dir="rtl"] .bubble.theirs { border-radius: 16px 16px 4px 16px; }
+.bubble-time { font-size: 9px; opacity: 0.38; margin-top: 3px; }
+.bubble.mine .bubble-time { text-align: left; }
+html[dir="rtl"] .bubble.mine .bubble-time { text-align: right; }
+
+.msg-sys {
+  align-self: center;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  color: #444; font-size: 10px; padding: 4px 13px; border-radius: 20px; text-align: center;
+}
+.msg-warn {
+  align-self: center; max-width: 85%;
+  background: rgba(255,100,0,0.06); border: 1px solid rgba(255,100,0,0.18);
+  color: #FF9944; font-size: 10.5px; padding: 6px 14px; border-radius: 18px; text-align: center;
+}
+.typing-bubble {
+  display: none; align-self: flex-start;
+  background: rgba(30,30,44,0.9); border: 1px solid var(--border);
+  border-radius: 16px 16px 16px 4px; padding: 10px 15px;
+}
+html[dir="rtl"] .typing-bubble { border-radius: 16px 16px 4px 16px; }
+.typing-dots { display: flex; gap: 4px; align-items: center; }
+.typing-dots span {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #444; animation: tdot 1.2s infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:0.15s;}
+.typing-dots span:nth-child(3){animation-delay:0.3s;}
+@keyframes tdot { 0%,60%,100%{transform:translateY(0);background:#444;} 30%{transform:translateY(-4px);background:var(--primary);} }
+
+/* Disc Banner */
+.disc-banner {
+  display: none; margin: 6px 10px; flex-shrink: 0;
+  background: rgba(255,50,50,0.05); border: 1px solid rgba(255,50,50,0.18);
+  border-radius: 14px; padding: 11px 13px; text-align: center;
+}
+.disc-msg { font-size: 11.5px; color: #FF7777; margin-bottom: 7px; }
+.disc-btn {
+  background: linear-gradient(135deg, var(--primary), #AA0036);
+  border: none; color: white; font-family: 'Cairo', sans-serif;
+  font-size: 11.5px; font-weight: 700; padding: 7px 18px;
+  border-radius: 20px; cursor: pointer;
+}
+
+/* Input Bar */
+.input-bar {
+  padding: 9px 11px; flex-shrink: 0;
+  background: rgba(6,6,12,0.97); backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  display: flex; gap: 7px; align-items: flex-end;
+}
+.msg-input {
+  flex: 1; background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border); color: white;
+  font-family: 'Cairo', sans-serif; font-size: 13.5px;
+  padding: 9px 14px; border-radius: 20px;
+  resize: none; max-height: 90px; line-height: 1.45;
+  transition: border-color 0.2s; outline: none;
+}
+.msg-input:focus { border-color: rgba(248,5,102,0.32); }
+.msg-input::placeholder { color: #333; }
+.send-btn {
+  width: 40px; height: 40px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--primary), #c4024e);
+  border: none; border-radius: 50%; color: white;
+  font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 14px rgba(248,5,102,0.32); transition: transform 0.14s;
+}
+.send-btn:active { transform: scale(0.9); }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.page-footer {
+  width: 100%; max-width: var(--max-w);
+  padding: 12px 10px 26px; text-align: center;
+  color: #2a2a2a; font-size: 11.5px; line-height: 2.2;
+}
+.page-footer a { color: #444; text-decoration: none; transition: color 0.2s; margin: 0 4px; }
+.page-footer a:hover { color: var(--primary); }
+.footer-divider { color: #222; margin: 0 2px; }
+
+/* ══════════════════════════════════════
+   UTILS
+══════════════════════════════════════ */
+.hidden { display: none !important; }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 480px) {
+  .auth-card { padding: 24px 16px; border-radius: 22px; }
+  .about-section, .answers-section, .updates-section { border-radius: 22px; }
+  .page-wrap { padding: 11px 11px 28px; gap: 13px; }
+  .country-dropdown { width: 220px; }
+  .chat-window { border-inline: none; }
+}
+@media (max-width: 360px) {
+  .card-title { font-size: 17px; }
+  .auth-card { padding: 20px 13px; }
+  .btn-primary { font-size: 14px; padding: 13px; }
+}
+@media (min-width: 768px) {
+  .auth-card { padding: 40px 36px; }
+  .about-section, .answers-section, .updates-section { border-radius: 28px; }
+  .page-wrap { padding: 22px 18px 40px; gap: 20px; }
+}
+@media (min-width: 1024px) {
+  .page-wrap { padding: 26px 22px 48px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast" role="alert" aria-live="polite">
+  <div class="t-icon-wrap"><span class="t-icon">⚠️</span></div>
+  <span class="t-text" id="toastText"></span>
+  <div class="t-bar" id="toastBar"></div>
+</div>
+
+<!-- Privacy Modal -->
+<div class="modal-overlay" id="privacyModal" role="dialog" aria-modal="true">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <h3>🔒 سياسة الخصوصية والشروط</h3>
+      <button class="modal-close" onclick="closePrivacyModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h4>📋 مقدمة</h4>
+      <p>مرحباً بك في منصة <strong style="color:#fff">Anon HT</strong>. باستخدامك للمنصة فأنت توافق على هذه السياسة.</p>
+      <h4>📦 البيانات التي نجمعها</h4>
+      <ul>
+        <li>الاسم الكامل وعنوان البريد الإلكتروني</li>
+        <li>رقم الهاتف (للتحقق من الهوية فقط)</li>
+        <li>العمر والجنس (لتخصيص التجربة)</li>
+        <li>بيانات الاستخدام وتفضيلات التطبيق</li>
+      </ul>
+      <h4>🔐 كيف نحمي بياناتك</h4>
+      <p>تُحفظ جميع بياناتك مشفرة على خوادم Firebase الآمنة. لا نشارك بياناتك مع أطراف ثالثة.</p>
+      <h4>🕵️ المحتوى المجهول</h4>
+      <p>الأسئلة مجهولة الهوية. نحتفظ بسجلات داخلية للحد من الإساءة فقط.</p>
+      <h4>👤 حقوقك</h4>
+      <ul>
+        <li>حق الوصول إلى بياناتك الشخصية</li>
+        <li>حق تصحيح أي بيانات غير دقيقة</li>
+        <li>حق حذف حسابك ومعلوماتك</li>
+      </ul>
+      <h4>📞 تواصل معنا</h4>
+      <p>للاستفسار: <strong style="color:var(--primary)">support@anonht.com</strong></p>
+    </div>
+    <div class="modal-footer-btn">
+      <button class="modal-accept-btn" onclick="acceptPrivacy()">✅ أوافق على السياسة</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT OVERLAY (after match) -->
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-window">
+    <!-- Chat Header -->
+    <div class="chat-hdr">
+      <div class="chat-peer-info">
+        <div class="chat-av-wrap other" id="chatAvWrap">
+          <span id="chatAvEmoji">👤</span>
+          <div class="chat-online-dot"></div>
+        </div>
+        <div>
+          <div class="chat-peer-name" id="chatPeerName">مجهول</div>
+          <div class="chat-peer-status">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--teal);box-shadow:0 0 5px var(--teal);animation:pulse 2s infinite;display:inline-block;"></span>
+            متصل الآن
+          </div>
+          <div class="chat-peer-meta" id="chatPeerMeta"></div>
+        </div>
+      </div>
+      <div class="chat-actions">
+        <div class="chat-btn block"  onclick="openChatBlock()"  title="حظر">🚫</div>
+        <div class="chat-btn report" onclick="openChatReport()" title="إبلاغ">🚩</div>
+        <div class="chat-btn leave"  onclick="leaveChat()"      title="مغادرة">↩</div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="msgs-area" id="msgsArea">
+      <div class="msg-sys">🔒 محادثة مجهولة آمنة — هويتك محمية بالكامل</div>
+      <div class="typing-bubble" id="typingBubble">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <!-- Disc Banner -->
+    <div class="disc-banner" id="discBanner">
+      <div class="disc-msg">⚠️ انقطع الاتصال بالطرف الآخر</div>
+      <button class="disc-btn" onclick="leaveChat()">🔄 ابحث عن شخص جديد</button>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="input-bar">
+      <textarea class="msg-input" id="chatInput" placeholder="اكتب رسالة..." rows="1"
+        maxlength="500" oninput="onTyping()" onkeydown="onChatKey(event)"></textarea>
+      <button class="send-btn" onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN PAGE -->
+<main class="page-wrap">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <a class="logo-mark" href="#">
+      <img src="images/logo.png" alt="Anon HT" onerror="this.style.display='none'">
+      <span>Anon HT</span>
+    </a>
+    <div class="top-bar-right">
+      <div class="online-pill">
+        <div class="pulse-dot"></div>
+        <span id="onlineCount">—</span>
+        <span style="color:#336655;font-size:9.5px;">متصل</span>
+      </div>
+      <div class="lang-switcher" id="langSwitcher">
+        <button class="lang-active-btn" id="langActiveBtn" onclick="toggleLangMenu()">
+          🌐 <span id="langCurrentLabel">AR</span>
+          <span class="lang-chevron" id="langChevron">&#8964;</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <div class="lang-option" onclick="selectLang('ar')"><span class="lang-opt-flag">🇸🇦</span><span class="lang-opt-name">العربية</span><span class="lang-opt-check" id="check-ar">✓</span></div>
+          <div class="lang-option" onclick="selectLang('en')"><span class="lang-opt-flag">🇬🇧</span><span class="lang-opt-name">English</span><span class="lang-opt-check" id="check-en"></span></div>
+          <div class="lang-option" onclick="selectLang('fr')"><span class="lang-opt-flag">🇫🇷</span><span class="lang-opt-name">Français</span><span class="lang-opt-check" id="check-fr"></span></div>
+          <div class="lang-option" onclick="selectLang('es')"><span class="lang-opt-flag">🇪🇸</span><span class="lang-opt-name">Español</span><span class="lang-opt-check" id="check-es"></span></div>
+          <div class="lang-option" onclick="selectLang('tr')"><span class="lang-opt-flag">🇹🇷</span><span class="lang-opt-name">Türkçe</span><span class="lang-opt-check" id="check-tr"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Maintenance Banner -->
+  <div class="maintenance-banner hidden" id="maintenanceBanner">
+    <span class="maint-icon">🔧</span>
+    <div class="maint-title" id="maintTitle">الموقع في وضع الصيانة</div>
+    <div class="maint-msg" id="maintMsg">نعمل على تحسين تجربتك. سنعود قريباً!</div>
+    <div class="maint-timer-label">⏱ العودة خلال</div>
+    <div class="maint-timer" id="maintTimer">
+      <span id="maintHH">00</span>:<span id="maintMM">00</span>:<span id="maintSS">00</span>
+    </div>
+    <div class="maint-timer-sub">ساعة : دقيقة : ثانية</div>
+    <div class="maint-progress"><div class="maint-progress-fill" id="maintProgressFill" style="width:0%"></div></div>
+    <div class="maint-badge"><div class="maint-badge-dot"></div>جاري الصيانة الآن</div>
+    <a class="maint-admin-link" href="#" onclick="showAdminLoginFromMaint();return false;">🔐 دخول المشرف</a>
+  </div>
+
+  <!-- Auth Card -->
+  <div class="auth-card" id="authCard">
+    <div class="logo-box">
+      <img src="images/logo.png" alt="Anon HT" width="54" height="54"
+           onerror="this.style.display='none'">
+    </div>
+
+    <!-- تسجيل الدخول -->
+    <div id="signin-section">
+      <div class="card-title">تسجيل الدخول</div>
+      <div class="card-subtitle">أهلاً بك مجدداً في عالم الغموض</div>
+      <div class="input-group">
+        <input type="email" class="field-input" id="loginEmail"
+          placeholder="البريد الإلكتروني" required maxlength="254" autocomplete="email">
+      </div>
+      <div class="input-group">
+        <input type="password" class="field-input" id="loginPass"
+          placeholder="كلمة المرور" required maxlength="128" autocomplete="current-password">
+      </div>
+      <button class="btn-primary" id="loginBtn" onclick="handleLogin()">دخول</button>
+      <span class="forgot-link" onclick="openResetModal()">نسيت كلمة السر؟</span>
+      <div class="switch-area">
+        مستخدم جديد؟ <b onclick="toggleAuth()">أنشئ حساباً</b>
+      </div>
+    </div>
+
+    <!-- إكمال البيانات -->
+    <div id="complete-section" class="hidden">
+      <div class="card-title">أكمل بياناتك 📋</div>
+      <div class="card-subtitle">بياناتك غير مكتملة، يرجى تعبئة الحقول التالية</div>
+      <div class="missing-notice" id="missingNotice">
+        <div class="mn-title">⚠️ البيانات الناقصة:</div>
+        <ul id="missingList"></ul>
+      </div>
+      <div class="input-group hidden" id="completeNameGroup">
+        <input type="text" class="field-input" id="completeName"
+          placeholder="الاسم الكامل" maxlength="60" autocomplete="name">
+      </div>
+      <div class="input-group hidden" id="completePhoneGroup">
+        <div class="phone-group">
+          <div class="country-selector">
+            <div class="country-btn" id="countryBtn2">
+              <span class="cflag" id="selectedFlag2">🇪🇬</span>
+              <span class="ccode" id="selectedCode2">+20</span>
+              <span class="carrow">▾</span>
+            </div>
+            <div class="country-dropdown" id="countryDropdown2">
+              <input class="country-search" id="countrySearch2" type="text" placeholder="ابحث عن دولة...">
+              <div id="countryList2"></div>
+            </div>
+          </div>
+          <input type="tel" class="field-input" id="completePhone"
+            placeholder="رقم الهاتف" maxlength="15" pattern="[0-9]*" autocomplete="tel">
+        </div>
+      </div>
+      <button class="btn-primary" id="completeBtn" onclick="handleComplete()">حفظ والمتابعة</button>
+    </div>
+
+    <!-- إنشاء حساب -->
+    <div id="signup-section" class="hidden">
+      <div class="card-title">حساب جديد</div>
+      <div class="card-subtitle">اكتشف من يراقبك في صمت</div>
+      <div class="input-group">
+        <input type="text" class="field-input" id="regName"
+          placeholder="الاسم الكامل" required maxlength="60" autocomplete="name">
+      </div>
+      <div class="input-group">
+        <input type="text" class="field-input" id="regUser"
+          placeholder="اسم المستخدم (4+ حروف)" required maxlength="30" autocomplete="username">
+      </div>
+      <div class="input-group">
+        <input type="email" class="field-input" id="emailInput"
+          placeholder="البريد الإلكتروني" required maxlength="254" autocomplete="email">
+      </div>
+      <div class="input-group">
+        <input type="password" class="field-input" id="regPass"
+          placeholder="كلمة المرور (8+ حروف)" required maxlength="128" autocomplete="new-password">
+        <div class="strength-bar" aria-hidden="true">
+          <span id="sb1"></span><span id="sb2"></span><span id="sb3"></span><span id="sb4"></span>
+        </div>
+        <div class="strength-label" id="strengthLabel" aria-live="polite"></div>
+      </div>
+      <div class="input-group">
+        <div class="phone-group">
+          <div class="country-selector">
+            <div class="country-btn" id="countryBtn">
+              <span class="cflag" id="selectedFlag">🇪🇬</span>
+              <span class="ccode" id="selectedCode">+20</span>
+              <span class="carrow">▾</span>
+            </div>
+            <div class="country-dropdown" id="countryDropdown">
+              <input class="country-search" id="countrySearch" type="text" placeholder="ابحث عن دولة...">
+              <div id="countryList"></div>
+            </div>
+          </div>
+          <input type="tel" class="field-input" id="regPhone"
+            placeholder="رقم الهاتف (إجباري)" maxlength="15" pattern="[0-9]*" required autocomplete="tel">
+        </div>
+      </div>
+
+      <!-- OTP Section -->
+      <div id="otpSection" class="hidden">
+        <div style="text-align:center;margin-bottom:13px;">
+          <div style="font-size:12.5px;color:#888;margin-bottom:9px;">
+            📱 أُرسل كود التحقق إلى <span id="otpPhoneDisplay" style="color:#fff;font-weight:700;"></span>
+          </div>
+        </div>
+        <div class="input-group">
+          <input type="text" class="field-input" id="otpInput"
+            placeholder="الكود المكوّن من 6 أرقام"
+            maxlength="6" pattern="[0-9]*" inputmode="numeric"
+            style="text-align:center;letter-spacing:7px;font-size:20px;font-weight:800;">
+        </div>
+        <div style="text-align:center;margin-bottom:13px;">
+          <span style="font-size:11px;color:#444;" id="otpTimer"></span>
+          <span id="resendLink" class="hidden"
+            style="font-size:11px;color:var(--primary);cursor:pointer;font-weight:700;"
+            onclick="resendOTP()">إعادة الإرسال</span>
+        </div>
+        <button class="btn-primary" id="verifyOtpBtn" onclick="verifyOTP()">تحقق ✅</button>
+        <button onclick="cancelOTP()"
+          style="width:100%;margin-top:9px;padding:11px;background:none;
+          border:1px solid var(--border);border-radius:var(--radius-btn);color:#555;
+          font-family:'Cairo',sans-serif;font-size:12.5px;cursor:pointer;transition:var(--tr);"
+          onmouseover="this.style.borderColor='rgba(255,255,255,0.14)';this.style.color='#aaa';"
+          onmouseout="this.style.borderColor='var(--border)';this.style.color='#555';">
+          ← رجوع وتعديل الرقم
+        </button>
+      </div>
+      <div id="recaptcha-container"></div>
+
+      <!-- Birthdate -->
+      <div class="input-group">
+        <div class="birthdate-picker" id="birthdatePicker">
+          <span style="font-size:16px;">🎂</span>
+          <div class="bd-col">
+            <div class="bd-arrow" onclick="bdChange('day',1)">▲</div>
+            <div class="bd-val" id="bdDay">01</div>
+            <div class="bd-arrow" onclick="bdChange('day',-1)">▼</div>
+          </div>
+          <span class="bd-sep">/</span>
+          <div class="bd-col">
+            <div class="bd-arrow" onclick="bdChange('month',1)">▲</div>
+            <div class="bd-val" id="bdMonth">01</div>
+            <div class="bd-arrow" onclick="bdChange('month',-1)">▼</div>
+          </div>
+          <span class="bd-sep">/</span>
+          <div class="bd-col year-col">
+            <div class="bd-arrow" onclick="bdChange('year',1)">▲</div>
+            <div class="bd-val year-val" id="bdYear">2000</div>
+            <div class="bd-arrow" onclick="bdChange('year',-1)">▼</div>
+          </div>
+        </div>
+        <div class="bd-age-label" id="bdAgeLabel" aria-live="polite"></div>
+      </div>
+
+      <!-- Gender -->
+      <div class="input-group">
+        <div class="select-wrap">
+          <select id="regGender" class="field-select" required>
+            <option value="" disabled selected>الجنس</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+            <option value="other">أفضل عدم الإفصاح</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Language -->
+      <div class="input-group">
+        <div class="select-wrap">
+          <select id="regLang" class="field-select">
+            <option value="ar">🇸🇦 العربية</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="tr">🇹🇷 Türkçe</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Privacy -->
+      <div class="privacy-wrap" id="privacyWrap" onclick="togglePrivacyCheck()"
+        role="checkbox" aria-checked="false" tabindex="0">
+        <div class="custom-cb" id="privacyCb"><span class="cb-check">✓</span></div>
+        <div class="privacy-text">
+          أوافق على <a href="#" onclick="openPrivacyModal(event)">سياسة الخصوصية والشروط</a>
+          وأقر بأن بياناتي صحيحة وأنني أعمر 13 سنة أو أكثر
+        </div>
+      </div>
+
+      <button class="btn-primary" id="signupBtn" onclick="handleSignup()" disabled>إنشاء الحساب</button>
+      <div class="switch-area">
+        لديك حساب؟ <b onclick="toggleAuth()">سجل دخولك</b>
+      </div>
+    </div>
+
+    <!-- انتظار التفعيل -->
+    <div id="verify-waiting" class="hidden">
+      <div class="card-title" style="font-size:18px;">تفقد بريدك 📧</div>
+      <div class="card-subtitle">أرسلنا رابط التفعيل. اضغط عليه لتأكيد هويتك.</div>
+      <div class="loader" style="margin:20px auto"></div>
+      <button onclick="location.reload()" class="btn-primary" style="margin-top:18px;">
+        تم التفعيل، دخول
+      </button>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="about-banner">
+      <div class="about-icon">🕵️</div>
+      <div>
+        <div class="about-title">المنصة المجهولة الأولى عربياً</div>
+        <div class="about-sub">شارك رابطك، واكتشف من يراقبك في صمت.</div>
+      </div>
+    </div>
+    <div class="about-stats">
+      <div class="stat-item"><span class="stat-num">100%</span><div class="stat-label">مجهول</div></div>
+      <div class="stat-item"><span class="stat-num">🔒</span><div class="stat-label">مشفر</div></div>
+      <div class="stat-item"><span class="stat-num">24/7</span><div class="stat-label">متاح</div></div>
+      <div class="stat-item"><span class="stat-num">مجاني</span><div class="stat-label">للأبد</div></div>
+    </div>
+    <div class="about-features">
+      <div class="feat-pill">🛡️ أمان تام</div>
+      <div class="feat-pill">⚡ سريع</div>
+      <div class="feat-pill">🌍 متعدد اللغات</div>
+      <div class="feat-pill">🎁 مكافآت</div>
+      <div class="feat-pill">📱 جوال</div>
+      <div class="feat-pill">💬 شات عشوائي</div>
+    </div>
+  </section>
+
+  <!-- Live Answers Section -->
+  <section class="answers-section" id="liveAnswersSection">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon">🔥</div>
+        أفضل الإجابات
+      </div>
+      <div class="live-badge"><div class="live-dot"></div>مباشر</div>
+    </div>
+    <div class="answer-feed" id="answerFeed">
+      <div class="no-answers">⏳ جاري التحميل...</div>
+    </div>
+  </section>
+
+  <!-- Updates Section -->
+  <section class="updates-section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-icon">📢</div>
+        آخر التحديثات
+      </div>
+      <span class="updates-badge" id="articlesBadge">جديد</span>
+    </div>
+    <div class="article-list" id="articlesList">
+      <div class="no-answers">⏳ جاري التحميل...</div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="page-footer">
+  <div>
+    <a href="#" onclick="openPrivacyModal(event)">سياسة الخصوصية</a>
+    <span class="footer-divider">·</span>
+    <a href="#" onclick="openPrivacyModal(event)">شروط الاستخدام</a>
+    <span class="footer-divider">·</span>
+    <a href="mailto:support@anonht.com">تواصل معنا</a>
+  </div>
+  <div style="margin-top:4px;color:#1a1a1a;">© 2026 Anon HT · جميع الحقوق محفوظة</div>
+</footer>
+
+<!-- Firebase (placeholder — replace with your config) -->
+<script>
+/* ══════════════════════════════════════
+   FIREBASE PLACEHOLDER
+   Replace APP_CONFIG with your actual config
+══════════════════════════════════════ */
+if (typeof APP_CONFIG === 'undefined') {
+  window.APP_CONFIG = {
+    firebase: {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    }
+  };
+}
+</script>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════
+   HELPERS
+══════════════════════════════════════ */
+const cleanInput = v => typeof v !== 'string' ? '' : v.trim().slice(0,200).replace(/[<>'"\\\/\x00-\x1F\x7F]/g,'');
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+const pad2 = n => String(n).padStart(2,'0');
+const fmtTime = d => d ? d.toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'}) : '';
+
+const BLOCKED_DOMAINS = new Set(['mailinator.com','guerrillamail.com','trashmail.com','tempmail.com','temp-mail.org','yopmail.com','fakeinbox.com','mailsac.com','10minutemail.com','throwaway.email','discard.email']);
+const ALLOWED_DOMAINS = new Set(['gmail.com','googlemail.com','outlook.com','outlook.sa','outlook.ae','hotmail.com','hotmail.co.uk','hotmail.fr','live.com','yahoo.com','yahoo.co.uk','yahoo.fr','icloud.com','me.com','mac.com','proton.me','protonmail.com','pm.me','zoho.com','mail.ru','yandex.ru','yandex.com','gmx.com','gmx.net','aol.com','qq.com','163.com','126.com','naver.com','tutanota.com','fastmail.com','maktoob.com']);
+
+function isValidEmail(e) {
+  if (!e || e.length > 254) return false;
+  if (!/^[^\s@]{1,64}@[^\s@]{1,253}\.[^\s@]{2,}$/.test(e)) return false;
+  const domain = e.split('@')[1]?.toLowerCase();
+  if (!domain) return false;
+  if (BLOCKED_DOMAINS.has(domain)) return false;
+  if (!ALLOWED_DOMAINS.has(domain)) return false;
+  return true;
+}
+
+function genderEmoji(g) {
+  if (!g) return '👤';
+  if (g==='ذكر'||g==='male') return '👦';
+  if (g==='أنثى'||g==='female') return '👧';
+  return '🌀';
+}
+function genderClass(g) {
+  if (!g) return 'other';
+  if (g==='ذكر'||g==='male') return 'male';
+  if (g==='أنثى'||g==='female') return 'female';
+  return 'other';
+}
+
+/* ══ TOAST ══ */
+let _toastTimer = null;
+function showToast(msg, type='error', duration=3200) {
+  const icons  = {error:'⛔',success:'✅',info:'💡'};
+  const colors = {error:'#f80566',success:'#4ade80',info:'#60a5fa'};
+  const toast  = document.getElementById('toast');
+  toast.className = `show t-${type}`;
+  document.getElementById('toastText').textContent = msg;
+  document.querySelector('#toast .t-icon').textContent = icons[type]||'ℹ️';
+  const bar = document.getElementById('toastBar');
+  bar.style.background = colors[type]||'#f80566';
+  bar.style.animation  = 'none'; bar.offsetHeight;
+  bar.style.animation  = `shrink ${duration/1000}s linear forwards`;
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(()=>toast.classList.remove('show'), duration);
+}
+
+/* ══ PRIVACY MODAL ══ */
+let _privacyAccepted = false;
+function openPrivacyModal(e) {
+  if(e) e.preventDefault();
+  document.getElementById('privacyModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePrivacyModal() {
+  document.getElementById('privacyModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function acceptPrivacy() {
+  _privacyAccepted = true;
+  document.getElementById('privacyCb').classList.add('checked');
+  document.getElementById('privacyWrap').classList.add('checked');
+  document.getElementById('privacyWrap').setAttribute('aria-checked','true');
+  const btn = document.getElementById('signupBtn');
+  if(btn) btn.disabled = false;
+  closePrivacyModal();
+  showToast('تم القبول ✅','success',2000);
+}
+function togglePrivacyCheck() {
+  if(!_privacyAccepted){ openPrivacyModal(null); return; }
+  _privacyAccepted = !_privacyAccepted;
+  document.getElementById('privacyCb').classList.toggle('checked',_privacyAccepted);
+  document.getElementById('privacyWrap').classList.toggle('checked',_privacyAccepted);
+  document.getElementById('privacyWrap').setAttribute('aria-checked',String(_privacyAccepted));
+  document.getElementById('signupBtn').disabled = !_privacyAccepted;
+}
+document.getElementById('privacyModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closePrivacyModal();});
+document.getElementById('privacyWrap').addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();togglePrivacyCheck();}});
+
+/* ══ LANG SWITCHER ══ */
+function toggleLangMenu() {
+  const menu=document.getElementById('langMenu');
+  const btn=document.getElementById('langActiveBtn');
+  const open=menu.classList.contains('open');
+  menu.classList.toggle('open',!open);
+  btn.classList.toggle('open',!open);
+}
+function selectLang(lang) {
+  document.getElementById('langMenu')?.classList.remove('open');
+  document.getElementById('langActiveBtn')?.classList.remove('open');
+  const labels={ar:'AR',en:'EN',fr:'FR',es:'ES',tr:'TR',de:'DE',ru:'RU',zh:'ZH',hi:'HI',pt:'PT'};
+  document.getElementById('langCurrentLabel').textContent = labels[lang]||lang.toUpperCase();
+  document.querySelectorAll('[id^="check-"]').forEach(el=>el.textContent='');
+  const chk=document.getElementById('check-'+lang);
+  if(chk) chk.textContent='✓';
+  const isRtl=['ar'].includes(lang);
+  document.getElementById('htmlTag').dir=isRtl?'rtl':'ltr';
+  document.getElementById('htmlTag').lang=lang;
+  localStorage.setItem('anon_lang',lang);
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#langSwitcher')){
+    document.getElementById('langMenu')?.classList.remove('open');
+    document.getElementById('langActiveBtn')?.classList.remove('open');
+  }
+});
+
+/* ══ RATE LIMIT ══ */
+const RATE_LIMIT = {
+  maxAttempts:5, windowMs:15*60*1000,
+  check(a){
+    const key='rl_'+a;
+    let d=JSON.parse(localStorage.getItem(key)||'{"count":0,"resetAt":0}');
+    const now=Date.now();
+    if(now>d.resetAt) d={count:0,resetAt:now+this.windowMs};
+    if(d.count>=this.maxAttempts) return{allowed:false,mins:Math.ceil((d.resetAt-now)/60000)};
+    return{allowed:true};
+  },
+  increment(a){
+    const key='rl_'+a;
+    let d=JSON.parse(localStorage.getItem(key)||'{"count":0,"resetAt":0}');
+    const now=Date.now();
+    if(now>d.resetAt) d={count:0,resetAt:now+this.windowMs};
+    d.count++; localStorage.setItem(key,JSON.stringify(d));
+  },
+  reset:a=>localStorage.removeItem('rl_'+a)
+};
+
+/* ══ COUNTRIES ══ */
+const COUNTRIES=[
+  {name:"مصر",flag:"🇪🇬",code:"+20"},{name:"السعودية",flag:"🇸🇦",code:"+966"},
+  {name:"الإمارات",flag:"🇦🇪",code:"+971"},{name:"الكويت",flag:"🇰🇼",code:"+965"},
+  {name:"قطر",flag:"🇶🇦",code:"+974"},{name:"البحرين",flag:"🇧🇭",code:"+973"},
+  {name:"عمان",flag:"🇴🇲",code:"+968"},{name:"الأردن",flag:"🇯🇴",code:"+962"},
+  {name:"لبنان",flag:"🇱🇧",code:"+961"},{name:"العراق",flag:"🇮🇶",code:"+964"},
+  {name:"سوريا",flag:"🇸🇾",code:"+963"},{name:"فلسطين",flag:"🇵🇸",code:"+970"},
+  {name:"اليمن",flag:"🇾🇪",code:"+967"},{name:"ليبيا",flag:"🇱🇾",code:"+218"},
+  {name:"تونس",flag:"🇹🇳",code:"+216"},{name:"الجزائر",flag:"🇩🇿",code:"+213"},
+  {name:"المغرب",flag:"🇲🇦",code:"+212"},{name:"السودان",flag:"🇸🇩",code:"+249"},
+  {name:"تركيا",flag:"🇹🇷",code:"+90"},{name:"باكستان",flag:"🇵🇰",code:"+92"},
+  {name:"الهند",flag:"🇮🇳",code:"+91"},{name:"المملكة المتحدة",flag:"🇬🇧",code:"+44"},
+  {name:"الولايات المتحدة",flag:"🇺🇸",code:"+1"},{name:"فرنسا",flag:"🇫🇷",code:"+33"},
+  {name:"المانيا",flag:"🇩🇪",code:"+49"},{name:"روسيا",flag:"🇷🇺",code:"+7"},
+  {name:"الصين",flag:"🇨🇳",code:"+86"},{name:"اليابان",flag:"🇯🇵",code:"+81"},
+  {name:"البرازيل",flag:"🇧🇷",code:"+55"},{name:"إيران",flag:"🇮🇷",code:"+98"},
+];
+let selectedDial='+20', selectedDial2='+20';
+
+function renderCountries(list,containerId){
+  document.getElementById(containerId).innerHTML=list.map(c=>
+    `<div class="country-item" data-flag="${esc(c.flag)}" data-code="${esc(c.code)}">
+      <span class="ci-flag">${esc(c.flag)}</span>
+      <span class="ci-name">${esc(c.name)}</span>
+      <span class="ci-dial" dir="ltr">${esc(c.code)}</span>
+    </div>`
+  ).join('');
+}
+
+function setupCountrySelector(btnId,ddId,searchId,listId,flagId,codeId,isPrimary){
+  const btn=document.getElementById(btnId);
+  const dd=document.getElementById(ddId);
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    const open=dd.classList.contains('open');
+    document.querySelectorAll('.country-dropdown').forEach(el=>el.classList.remove('open'));
+    document.querySelectorAll('.country-btn').forEach(el=>el.classList.remove('open'));
+    if(!open){
+      dd.classList.add('open'); btn.classList.add('open');
+      document.getElementById(searchId).value='';
+      renderCountries(COUNTRIES,listId);
+      setTimeout(()=>document.getElementById(searchId).focus(),70);
+    }
+  });
+  document.getElementById(searchId).addEventListener('input',function(){
+    const q=this.value.trim().toLowerCase();
+    renderCountries(q?COUNTRIES.filter(c=>c.name.includes(q)||c.code.includes(q)):COUNTRIES,listId);
+  });
+  document.getElementById(listId).addEventListener('click',e=>{
+    const item=e.target.closest('.country-item');
+    if(!item) return;
+    const code=item.dataset.code, flag=item.dataset.flag;
+    if(isPrimary) selectedDial=code; else selectedDial2=code;
+    document.getElementById(flagId).textContent=flag;
+    document.getElementById(codeId).textContent=code;
+    dd.classList.remove('open'); btn.classList.remove('open');
+  });
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.country-selector')){
+    document.querySelectorAll('.country-dropdown').forEach(el=>el.classList.remove('open'));
+    document.querySelectorAll('.country-btn').forEach(el=>el.classList.remove('open'));
+  }
+});
+setupCountrySelector('countryBtn','countryDropdown','countrySearch','countryList','selectedFlag','selectedCode',true);
+setupCountrySelector('countryBtn2','countryDropdown2','countrySearch2','countryList2','selectedFlag2','selectedCode2',false);
+renderCountries(COUNTRIES,'countryList');
+renderCountries(COUNTRIES,'countryList2');
+
+/* ══ PASSWORD STRENGTH ══ */
+let _lastPassVal='';
+function updateStrengthLabel(){
+  const val=_lastPassVal;
+  if(!val){document.getElementById('strengthLabel').textContent='';return;}
+  let s=0;
+  if(val.length>=8)s++; if(/[A-Z]/.test(val))s++; if(/[0-9]/.test(val))s++; if(/[^A-Za-z0-9]/.test(val))s++;
+  const labels=['ضعيفة جداً','ضعيفة','متوسطة','قوية'];
+  document.getElementById('strengthLabel').textContent='قوة كلمة المرور: '+(labels[s-1]||labels[0]);
+}
+document.getElementById('regPass').addEventListener('input',function(){
+  _lastPassVal=this.value;
+  let s=0;
+  if(this.value.length>=8)s++; if(/[A-Z]/.test(this.value))s++; if(/[0-9]/.test(this.value))s++; if(/[^A-Za-z0-9]/.test(this.value))s++;
+  const colors=['#f80566','#ff6b35','#ffd166','#4ade80'];
+  for(let i=1;i<=4;i++) document.getElementById('sb'+i).style.background=i<=s?colors[s-1]:'rgba(255,255,255,0.07)';
+  updateStrengthLabel();
+});
+
+/* ══ BIRTHDATE PICKER ══ */
+let _bdDay=1,_bdMonth=1,_bdYear=2000;
+function bdDaysInMonth(m,y){return new Date(y,m,0).getDate();}
+function bdChange(field,delta){
+  const maxYear=new Date().getFullYear()-13;
+  if(field==='day'){
+    const maxDay=bdDaysInMonth(_bdMonth,_bdYear);
+    _bdDay+=delta;
+    if(_bdDay<1)_bdDay=maxDay; if(_bdDay>maxDay)_bdDay=1;
+  } else if(field==='month'){
+    _bdMonth+=delta;
+    if(_bdMonth<1)_bdMonth=12; if(_bdMonth>12)_bdMonth=1;
+    const maxDay=bdDaysInMonth(_bdMonth,_bdYear);
+    if(_bdDay>maxDay)_bdDay=maxDay;
+  } else if(field==='year'){
+    _bdYear+=delta;
+    if(_bdYear<1950)_bdYear=1950; if(_bdYear>maxYear)_bdYear=maxYear;
+  }
+  document.getElementById('bdDay').textContent=pad2(_bdDay);
+  document.getElementById('bdMonth').textContent=pad2(_bdMonth);
+  document.getElementById('bdYear').textContent=_bdYear;
+  updateBdAgeLabel();
+}
+function getBdAge(){
+  const today=new Date();
+  let age=today.getFullYear()-_bdYear;
+  const m=today.getMonth()+1-_bdMonth;
+  if(m<0||(m===0&&today.getDate()<_bdDay)) age--;
+  return age;
+}
+function getBirthdateString(){return `${_bdYear}-${pad2(_bdMonth)}-${pad2(_bdDay)}`;}
+function updateBdAgeLabel(){
+  const age=getBdAge();
+  const el=document.getElementById('bdAgeLabel');
+  if(!el) return;
+  if(age<13){el.textContent='⚠️ يجب أن تكون 13 سنة أو أكثر';el.style.color='#f80566';}
+  else{el.textContent=`✅ عمرك ${age} سنة`;el.style.color='#4ade80';}
+}
+
+/* ══ TOGGLE AUTH ══ */
+const toggleAuth=()=>{
+  document.getElementById('signin-section').classList.toggle('hidden');
+  document.getElementById('signup-section').classList.toggle('hidden');
+};
+
+/* ══ MAINTENANCE ══ */
+let _maintInterval=null,_maintEndTime=null,_maintStart=null;
+function applyMaintenanceMode(data){
+  const durationMin=data.maintenanceDuration||60;
+  const startedAt=data.maintenanceStartedAt;
+  if(startedAt?.toDate){_maintStart=startedAt.toDate().getTime();_maintEndTime=_maintStart+durationMin*60*1000;}
+  else{_maintEndTime=Date.now()+durationMin*60*1000;_maintStart=Date.now();}
+  document.getElementById('maintTitle').textContent=data.maintenanceTitle||'الموقع في وضع الصيانة';
+  document.getElementById('maintMsg').textContent=data.maintenanceMsg||'نعمل على تحسين تجربتك. سنعود قريباً!';
+  document.getElementById('maintenanceBanner').classList.remove('hidden');
+  document.getElementById('authCard').style.display='none';
+  startMaintCountdown();
+}
+function startMaintCountdown(){
+  if(_maintInterval) clearInterval(_maintInterval);
+  function tick(){
+    const now=Date.now(), left=Math.max(0,_maintEndTime-now), total=Math.max(1,_maintEndTime-_maintStart);
+    document.getElementById('maintProgressFill').style.width=Math.min(100,((total-left)/total)*100)+'%';
+    document.getElementById('maintHH').textContent=String(Math.floor(left/3600000)).padStart(2,'0');
+    document.getElementById('maintMM').textContent=String(Math.floor((left%3600000)/60000)).padStart(2,'0');
+    document.getElementById('maintSS').textContent=String(Math.floor((left%60000)/1000)).padStart(2,'0');
+    if(left<=0){clearInterval(_maintInterval);setTimeout(()=>location.reload(),3000);}
+  }
+  tick(); _maintInterval=setInterval(tick,1000);
+}
+function showAdminLoginFromMaint(){
+  document.getElementById('maintenanceBanner').classList.add('hidden');
+  document.getElementById('authCard').style.display='';
+  document.getElementById('signin-section').classList.remove('hidden');
+  showToast('دخول المشرف','info');
+}
+
+/* ══ CHAT INTERFACE (UI Only - wire up to your Firebase) ══ */
+let _chatPeer = {nick:'', age:'', gender:''};
+let _typingTimer = null;
+const BANNED_WORDS = ['سكس','جنس','نيك','زب','كس','شرموطة','sex','porn','fuck','shit','bitch'];
+function hasBannedWord(txt){
+  const clean=txt.toLowerCase().replace(/\s+/g,'');
+  return BANNED_WORDS.some(w=>clean.includes(w.replace(/\s+/g,'')));
+}
+
+function openChat(peerNick, peerAge, peerGender) {
+  _chatPeer = {nick:peerNick||'مجهول', age:peerAge||'', gender:peerGender||''};
+  const avWrap = document.getElementById('chatAvWrap');
+  const avEmoji = document.getElementById('chatAvEmoji');
+  const gClass  = peerGender==='female'?'female':peerGender==='male'?'male':'other';
+  avWrap.className = `chat-av-wrap ${gClass}`;
+  avEmoji.textContent = genderEmoji(peerGender);
+  document.getElementById('chatPeerName').textContent = peerNick||'مجهول';
+  document.getElementById('chatPeerMeta').textContent = [peerAge,peerGender].filter(Boolean).join(' • ');
+  const area = document.getElementById('msgsArea');
+  area.innerHTML = `
+    <div class="msg-sys">🔒 محادثة مجهولة آمنة — هويتك محمية بالكامل</div>
+    <div class="typing-bubble" id="typingBubble">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>`;
+  document.getElementById('discBanner').style.display='none';
+  document.getElementById('chatInput').disabled=false;
+  document.getElementById('chatOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('chatInput').focus();
+}
+
+function leaveChat(){
+  document.getElementById('chatOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  showToast('غادرت المحادثة','info',2000);
+}
+
+function addBubble(text,type,date){
+  const area=document.getElementById('msgsArea');
+  const tb=document.getElementById('typingBubble');
+  const div=document.createElement('div');
+  div.className=`bubble ${type}`;
+  div.innerHTML=`${esc(text)}<div class="bubble-time">${fmtTime(date||new Date())}</div>`;
+  if(tb) area.insertBefore(div,tb); else area.appendChild(div);
+  scrollMsgs();
+}
+function addSysMsg(text){
+  const area=document.getElementById('msgsArea');
+  const tb=document.getElementById('typingBubble');
+  const div=document.createElement('div');
+  div.className='msg-sys'; div.textContent=text;
+  if(tb) area.insertBefore(div,tb); else area.appendChild(div);
+  scrollMsgs();
+}
+function scrollMsgs(){
+  const a=document.getElementById('msgsArea');
+  if(a) setTimeout(()=>{a.scrollTop=a.scrollHeight;},40);
+}
+
+function sendMsg(){
+  const inp=document.getElementById('chatInput');
+  const text=inp.value.trim();
+  if(!text) return;
+  if(hasBannedWord(text)){
+    addSysMsg('⚠️ رسالتك تحتوي على محتوى مخالف');
+    inp.value=''; return;
+  }
+  addBubble(text,'mine',new Date());
+  inp.value=''; inp.style.height='auto';
+  // wire to your firebase: db.collection('randomChats').doc(chatId).collection('messages').add(...)
+}
+
+function onTyping(){
+  const inp=document.getElementById('chatInput');
+  inp.style.height='auto';
+  inp.style.height=Math.min(inp.scrollHeight,90)+'px';
+  clearTimeout(_typingTimer);
+  _typingTimer=setTimeout(()=>{},2000);
+}
+
+function onChatKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}
+}
+
+function openChatReport(){showToast('تم تسجيل البلاغ 🚩','success',2500);}
+function openChatBlock(){
+  if(confirm('هل تريد حظر هذا المستخدم؟')){
+    showToast('🚫 تم الحظر بنجاح','success',2500);
+    setTimeout(()=>leaveChat(),800);
+  }
+}
+
+/* ══ DEMO: Test Chat Button (remove in production) ══ */
+// Uncomment below to test the chat UI:
+// setTimeout(()=>openChat('أبو حسن','24','ذكر'),1000);
+
+/* ══ LOGIN (stub — wire to your Firebase) ══ */
+async function handleLogin(){
+  const rl=RATE_LIMIT.check('login');
+  if(!rl.allowed){showToast(`حاول بعد ${rl.mins} دقيقة`,'error',5000);return;}
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true; btn.innerHTML='<div class="loader"></div>';
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!isValidEmail(email)){
+    showToast('بريد غير صالح أو غير مدعوم','error');
+    btn.disabled=false; btn.textContent='دخول'; return;
+  }
+  if(!pass){showToast('أدخل كلمة المرور','error'); btn.disabled=false; btn.textContent='دخول'; return;}
+  // Wire to: auth.signInWithEmailAndPassword(email, pass)
+  showToast('جارٍ الاتصال... (ربط Firebase مطلوب)','info',3000);
+  setTimeout(()=>{btn.disabled=false; btn.textContent='دخول';},2500);
+}
+
+async function handleSignup(){
+  if(!_privacyAccepted){showToast('يجب الموافقة على السياسة أولاً','error'); openPrivacyModal(null); return;}
+  const name=cleanInput(document.getElementById('regName').value);
+  const user=cleanInput(document.getElementById('regUser').value).toLowerCase();
+  const email=document.getElementById('emailInput').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const rawPhone=document.getElementById('regPhone').value.trim().replace(/\D/g,'');
+  const ageVal=getBdAge();
+  const gender=document.getElementById('regGender').value;
+  if(!name){showToast('الاسم مطلوب','error');return;}
+  if(user.length<4){showToast('اسم المستخدم قصير جداً (4+ حروف)','error');return;}
+  if(!/^[a-z0-9._]+$/.test(user)){showToast('اسم المستخدم يحتوي حروفاً غير مسموح بها','error');return;}
+  if(!isValidEmail(email)){showToast('بريد إلكتروني غير صالح','error');return;}
+  if(pass.length<8){showToast('كلمة المرور قصيرة (8+ حروف)','error');return;}
+  if(!rawPhone){showToast('رقم الهاتف مطلوب','error');return;}
+  if(ageVal<13||ageVal>110){showToast('يرجى إدخال تاريخ ميلاد صحيح','error');return;}
+  if(!gender){showToast('يرجى اختيار الجنس','error');return;}
+  showToast('جارٍ الإنشاء... (ربط Firebase مطلوب)','info',3000);
+  // Wire to: auth.createUserWithEmailAndPassword(email, pass)
+}
+
+async function handleComplete(){
+  showToast('جارٍ الحفظ... (ربط Firebase مطلوب)','info',3000);
+}
+
+async function openResetModal(){
+  const email=document.getElementById('loginEmail').value.trim();
+  if(!email){showToast('أدخل بريدك أولاً','info');return;}
+  if(!isValidEmail(email)){showToast('⛔ يُسمح فقط بمزودي بريد موثوقين','error',4000);return;}
+  showToast('تم إرسال رابط الاسترداد ✉️','success');
+  // Wire to: auth.sendPasswordResetEmail(email)
+}
+
+/* ══ LOAD ARTICLES (stub) ══ */
+function loadArticles(){
+  const list=document.getElementById('articlesList');
+  const badge=document.getElementById('articlesBadge');
+  const items=[
+    {icon:'🚀',cat:'تحديث',title:'إطلاق ميزة الشات العشوائي الجديدة',date:'يونيو ٢٠٢٦',views:'1.2k',isNew:true},
+    {icon:'✨',cat:'جديد',title:'نظام المكافآت اليومية والنقاط',date:'مايو ٢٠٢٦',views:'890',isNew:true},
+    {icon:'🔧',cat:'تحسين',title:'تحسينات الأمان والخصوصية',date:'أبريل ٢٠٢٦',views:'640',isNew:false},
+  ];
+  badge.textContent=items.filter(i=>i.isNew).length+' جديد';
+  list.innerHTML=items.map(i=>`
+    <a class="article-card" href="#" onclick="showToast('ربط Firebase مطلوب لعرض المقال','info');return false;">
+      <div class="article-icon">${i.icon}</div>
+      <div class="article-body">
+        <div class="article-cat">${esc(i.cat)}${i.isNew?' 🆕':''}</div>
+        <div class="article-title">${esc(i.title)}</div>
+        <div class="article-meta"><span>📅 ${esc(i.date)}</span><span>👁️ ${esc(i.views)}</span></div>
+      </div>
+      <span class="article-arrow">›</span>
+    </a>`).join('');
+}
+
+/* ══ LOAD LIVE ANSWERS (stub) ══ */
+function loadLiveAnswers(){
+  const feed=document.getElementById('answerFeed');
+  const demos=[
+    {rank:1,name:'أحمد م.',uname:'ahmed_m',gender:'male',q:'ما هو أكثر شيء تتمنى تغييره؟',a:'أتمنى لو كنت أجرأ في اتخاذ قراراتي. دائماً أفكر كثيراً وأتردد!',likes:234,ago:'منذ ٢ س'},
+    {rank:2,name:'سارة أ.',uname:'sara_a',gender:'female',q:'ما الشيء الذي يجعلك سعيداً دائماً؟',a:'القهوة الصباحية والكتب. لا يوجد يوم سيئ مع هذين الشيئين 📚☕',likes:187,ago:'منذ ٣ س'},
+    {rank:3,name:'محمد ك.',uname:'mhmd_k',gender:'male',q:'هل تؤمن بالصدفة أم القدر؟',a:'أؤمن بأن الإنسان يصنع قدره بخياراته، لكن هناك قوة أكبر تحرك الأمور.',likes:156,ago:'منذ ٥ س'},
+  ];
+  const rankIcons=['🥇','🥈','🥉'];
+  feed.innerHTML=demos.map((d,i)=>`
+    <div class="answer-card" onclick="showToast('سجل دخولك للتفاعل 🔐','info',2500)">
+      <div class="answer-top">
+        <div class="answer-rank ${i===0?'r1':i===1?'r2':'r3'}">${rankIcons[i]}</div>
+        <div class="answer-avatar">${genderEmoji(d.gender)}</div>
+        <div class="answer-user-info">
+          <div class="answer-username">${esc(d.name)}</div>
+          <div class="answer-time">@${esc(d.uname)} · ${esc(d.ago)}</div>
+        </div>
+        <div class="answer-likes-big">❤️ ${d.likes}<span>إعجاب</span></div>
+      </div>
+      <div class="answer-question">${esc(d.q)}</div>
+      <div class="answer-text">${esc(d.a)}</div>
+      <div class="answer-footer">
+        <span style="font-size:10.5px;color:#444;">🔥 الأكثر تفاعلاً</span>
+        <div class="answer-join">✨ انضم وتفاعل</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ══ KEYBOARD ══ */
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();});
+document.getElementById('loginEmail').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
+
+/* ══ OTP STUBS ══ */
+let _otpTimer=null,_otpSeconds=60;
+function setupRecaptcha(){ /* wire to firebase.auth.RecaptchaVerifier */ }
+async function sendOTP(){showToast('ربط Firebase مطلوب لإرسال OTP','info');}
+function startOtpTimer(){
+  _otpSeconds=60;
+  if(_otpTimer) clearInterval(_otpTimer);
+  document.getElementById('resendLink').classList.add('hidden');
+  _otpTimer=setInterval(()=>{
+    _otpSeconds--;
+    const el=document.getElementById('otpTimer');
+    if(el) el.textContent=`إعادة الإرسال بعد ${_otpSeconds} ثانية`;
+    if(_otpSeconds<=0){clearInterval(_otpTimer);if(el)el.textContent='';document.getElementById('resendLink').classList.remove('hidden');}
+  },1000);
+}
+async function resendOTP(){document.getElementById('resendLink').classList.add('hidden'); await sendOTP();}
+async function verifyOTP(){showToast('ربط Firebase مطلوب للتحقق','info');}
+function cancelOTP(){
+  if(_otpTimer) clearInterval(_otpTimer);
+  document.getElementById('otpSection').classList.add('hidden');
+  document.querySelectorAll('#signup-section .input-group:not(#otpSection .input-group),#signup-section .privacy-wrap').forEach(el=>el.classList.remove('hidden'));
+  const btn=document.getElementById('signupBtn');
+  btn.classList.remove('hidden'); btn.disabled=!_privacyAccepted; btn.textContent='إنشاء الحساب';
+  document.querySelector('#signup-section .switch-area')?.classList.remove('hidden');
+}
+
+/* ══ INIT ══ */
+window.addEventListener('load',()=>{
+  updateBdAgeLabel();
+  loadArticles();
+  loadLiveAnswers();
+  const savedLang=localStorage.getItem('anon_lang')||'ar';
+  if(savedLang!=='ar') selectLang(savedLang);
+  else selectLang('ar');
+
+  // Simulate online count
+  let baseOnline = 127 + Math.floor(Math.random()*40);
+  document.getElementById('onlineCount').textContent = baseOnline;
+  setInterval(()=>{
+    baseOnline += Math.random()>0.5 ? Math.floor(Math.random()*3)+1 : -(Math.floor(Math.random()*2)+1);
+    baseOnline = Math.max(80, Math.min(300, baseOnline));
+    document.getElementById('onlineCount').textContent = baseOnline;
+  }, 4000);
+
+  // Wire to Firebase if available:
+  // if (typeof firebase !== 'undefined' && typeof APP_CONFIG !== 'undefined') {
+  //   firebase.initializeApp(APP_CONFIG.firebase);
+  //   const db   = firebase.firestore();
+  //   const auth = firebase.auth();
+  //   // ... your existing firebase logic
+  // }
+});
+</script>
+</body>
+</html>

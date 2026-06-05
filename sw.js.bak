@@ -1,0 +1,56 @@
+self.options = {
+    "domain": "anonht.com",
+    "zoneId": 11087897
+}
+self.lary = ""
+importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
+
+self.addEventListener('install', event => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
+
+importScripts('https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: "AIzaSyDbAYctYxiv3mTUlpfdY4ZeZDNxH89nklk",
+  authDomain: "anon-ht.firebaseapp.com",
+  projectId: "anon-ht",
+  storageBucket: "anon-ht.firebasestorage.app",
+  messagingSenderId: "214497552351",
+  appId: "1:214497552351:web:9645cd0ce48b9d5466a1"
+});
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage((payload) => {
+  self.registration.showNotification(
+    payload.notification?.title || 'Anon',
+    {
+      body: payload.notification?.body || 'إشعار جديد',
+      icon: '/images/logo.png',
+      badge: '/images/logo.png',
+      data: { url: payload.data?.url || '/' }
+    }
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then(list => {
+      for (const client of list) {
+        if ('focus' in client) return client.focus();
+      }
+      return clients.openWindow(event.notification.data?.url || '/');
+    })
+  );
+});

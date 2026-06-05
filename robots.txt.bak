@@ -1,5 +1,7 @@
 # robots.txt — anonht.com
-# Last updated: 2026-05-31
+# Last updated: 2026-05-29
+# ⚠️  تحذير: احذف serviceAccountKey.zip و ModerationManager.java
+#     من السيرفر فوراً — Disallow لا يحميهم من الوصول المباشر
 
 # ══════════════════════════════════════════
 #  Default: كل الـ bots
@@ -19,18 +21,27 @@ Allow: /verification.html
 Allow: /lang.js
 Allow: /404.html
 
+# صفحات خاصة بالمستخدم — لا نريد فهرستها
 Disallow: /signin.html
 Disallow: /profile.html
 Disallow: /notifications.html
 Disallow: /feed.html
-Disallow: /admin.html
-Disallow: /oldprofile.html
-Disallow: /migrate.html
+
+# ملفات حساسة وخطيرة — يجب حذفها من السيرفر
+Disallow: /serviceAccountKey.zip
+Disallow: /ModerationManager.java
 Disallow: /config.js
 Disallow: /ads.js
 Disallow: /header-ad.js
 Disallow: /footer-ad.js
 Disallow: /ad-banner.html
+
+# أدوات داخلية
+Disallow: /admin.html
+Disallow: /oldprofile.html
+Disallow: /migrate.html
+
+# ملفات تقنية لا تحتاج فهرسة
 Disallow: /manifest.json
 Disallow: /service-worker.js
 Disallow: /onesignal-notify.js
@@ -43,7 +54,7 @@ Disallow: /sounds/
 Disallow: /.git/
 
 # ══════════════════════════════════════════
-#  Googlebot
+#  Googlebot — نفس القواعد + تفصيل
 # ══════════════════════════════════════════
 User-agent: Googlebot
 Allow: /
@@ -63,18 +74,13 @@ Disallow: /profile.html
 Disallow: /notifications.html
 Disallow: /feed.html
 Disallow: /admin.html
+Disallow: /serviceAccountKey.zip
+Disallow: /ModerationManager.java
 Disallow: /config.js
 Disallow: /ads.js
 Disallow: /.git/
 Disallow: /bad_words/
 Disallow: /sounds/
-
-# ══════════════════════════════════════════
-#  Googlebot-Image
-# ══════════════════════════════════════════
-User-agent: Googlebot-Image
-Allow: /images/
-Allow: /og-cover.jpg
 
 # ══════════════════════════════════════════
 #  Bingbot
@@ -97,6 +103,7 @@ Disallow: /profile.html
 Disallow: /notifications.html
 Disallow: /feed.html
 Disallow: /admin.html
+Disallow: /serviceAccountKey.zip
 Disallow: /config.js
 Disallow: /ads.js
 Disallow: /.git/
@@ -104,30 +111,20 @@ Disallow: /bad_words/
 Disallow: /sounds/
 
 # ══════════════════════════════════════════
-#  Social crawlers
+#  Social crawlers — صور ومحتوى فقط
 # ══════════════════════════════════════════
 User-agent: Twitterbot
 Allow: /
 Allow: /images/
 Disallow: /admin.html
+Disallow: /serviceAccountKey.zip
 Disallow: /config.js
 
 User-agent: facebookexternalhit
 Allow: /
 Allow: /images/
 Disallow: /admin.html
-Disallow: /config.js
-
-User-agent: LinkedInBot
-Allow: /
-Allow: /images/
-Disallow: /admin.html
-Disallow: /config.js
-
-User-agent: WhatsApp
-Allow: /
-Allow: /images/
-Disallow: /admin.html
+Disallow: /serviceAccountKey.zip
 Disallow: /config.js
 
 # ══════════════════════════════════════════
@@ -149,15 +146,6 @@ User-agent: anthropic-ai
 Disallow: /
 
 User-agent: Claude-Web
-Disallow: /
-
-User-agent: PerplexityBot
-Disallow: /
-
-User-agent: cohere-ai
-Disallow: /
-
-User-agent: meta-externalagent
 Disallow: /
 
 # ══════════════════════════════════════════

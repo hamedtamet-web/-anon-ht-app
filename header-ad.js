@@ -1,13 +1,16 @@
 document.addEventListener("DOMContentLoaded", function() {
     const headerAd = document.getElementById('header-ad-placeholder');
-    if (headerAd) {
-        // حط هنا كود الإعلان بتاعك
-        headerAd.innerHTML = `
-            <a href="#">
-                <img src="https://via.placeholder.com/728x90?text=Your+Ad+Here" style="width:100%; border-radius:12px;">
-            </a>
-        `;
-    }
+    if (!headerAd) return;
+
+    const ins = document.createElement('ins');
+    ins.className = 'adsbygoogle';
+    ins.style.cssText = 'display:block;width:100%;min-height:50px;';
+    ins.dataset.adClient = 'ca-pub-9442350195298931';
+    ins.dataset.adFormat = 'auto';
+    ins.dataset.fullWidthResponsive = 'true';
+    headerAd.appendChild(ins);
+
+    setTimeout(() => {
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+    }, 300);
 });
-
-

@@ -37,6 +37,7 @@ function createAdsterraBanner(size, onLoad) {
     const width   = isLarge ? 300 : 320;
     const height  = isLarge ? 250 : 50;
 
+    // ✅ الـ wrapper مخفي من الأول
     const wrapper = document.createElement('div');
     wrapper.style.cssText = `
         display:none;
@@ -52,12 +53,13 @@ function createAdsterraBanner(size, onLoad) {
         position:relative;
     `;
 
+    // ✅ Blur overlay
     const blurOverlay = document.createElement('div');
     blurOverlay.style.cssText = `
         position:absolute;
         inset:0;
-        backdrop-filter:blur(6px);
-        -webkit-backdrop-filter:blur(6px);
+        backdrop-filter:blur(10px);
+        -webkit-backdrop-filter:blur(10px);
         background:rgba(13,13,13,0.15);
         z-index:10;
         border-radius:18px;
@@ -81,15 +83,18 @@ function createAdsterraBanner(size, onLoad) {
     scriptInvoke.type = 'text/javascript';
     scriptInvoke.src = `https://assistedtogether.com/${key}/invoke.js`;
 
+    // ✅ يظهر بس لما الإعلان يتحمل
     scriptInvoke.onload = () => {
         wrapper.style.display = 'flex';
         if (typeof onLoad === 'function') onLoad();
     };
 
+    // ✅ لو فشل امسحه خالص
     scriptInvoke.onerror = () => {
         wrapper.remove();
     };
 
+    // ✅ safety net بعد 3 ثواني
     setTimeout(() => {
         if (wrapper.style.display === 'none') wrapper.remove();
     }, 3000);
@@ -111,6 +116,7 @@ const AdsManager = {
             this.injectStaticAd('AD_PROFILE_TOP');
             const topBanner = document.getElementById('topAdBanner');
             if (topBanner) {
+                // ✅ مخفي من الأول
                 topBanner.style.display = 'none';
                 const banner = createAdsterraBanner('320x50', () => {
                     topBanner.style.display = 'flex';
@@ -132,20 +138,22 @@ const AdsManager = {
         cards.forEach((card, i) => {
             const pos = i + 1;
 
+            // ✅ كل 6 كارت بانر كبير 300x250
             if (pos % 6 === 0) {
                 const b = createAdsterraBanner('300x250');
                 card.after(b);
 
+            // ✅ كل 3 كارت بانر صغير 320x50
             } else if (pos % 3 === 0) {
                 const b = createAdsterraBanner('320x50');
                 card.after(b);
             }
 
+            // ✅ AdSense كل 9 كارت
             if (pos % 9 === 0) {
                 const wrapper = document.createElement('div');
                 wrapper.style.cssText = `
                     display:none;
-                    position:relative;
                     background:#0d0d0d;
                     border:1px solid rgba(255,255,255,0.06);
                     border-radius:18px;
@@ -155,18 +163,6 @@ const AdsManager = {
                     overflow:hidden;
                     justify-content:center;
                 `;
-                const blurFeed = document.createElement('div');
-                blurFeed.style.cssText = `
-                    position:absolute;
-                    inset:0;
-                    backdrop-filter:blur(6px);
-                    -webkit-backdrop-filter:blur(6px);
-                    background:rgba(13,13,13,0.15);
-                    z-index:10;
-                    border-radius:18px;
-                    pointer-events:none;
-                `;
-                wrapper.appendChild(blurFeed);
                 const ins = document.createElement('ins');
                 ins.className = 'adsbygoogle';
                 ins.style.cssText = 'display:block;width:100%;max-width:320px;';
@@ -180,6 +176,7 @@ const AdsManager = {
                 setTimeout(() => {
                     try {
                         (window.adsbygoogle = window.adsbygoogle || []).push({});
+                        // ✅ يظهر بس لو AdSense حمّل إعلان
                         const observer = new MutationObserver(() => {
                             if (ins.getAttribute('data-ad-status') === 'filled') {
                                 wrapper.style.display = 'flex';
@@ -190,6 +187,7 @@ const AdsManager = {
                             }
                         });
                         observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
+                        // safety net
                         setTimeout(() => {
                             if (wrapper.style.display === 'none') wrapper.remove();
                         }, 5000);
@@ -206,22 +204,8 @@ const AdsManager = {
         const el = document.getElementById(containerId);
         if (!el) return;
 
+        // ✅ مخفي من الأول
         el.style.display = 'none';
-        el.style.position = 'relative';
-        el.style.overflow = 'hidden';
-
-        const blur = document.createElement('div');
-        blur.style.cssText = `
-            position:absolute;
-            inset:0;
-            backdrop-filter:blur(6px);
-            -webkit-backdrop-filter:blur(6px);
-            background:rgba(13,13,13,0.15);
-            z-index:10;
-            border-radius:inherit;
-            pointer-events:none;
-        `;
-        el.appendChild(blur);
 
         const ins = document.createElement('ins');
         ins.className = 'adsbygoogle';

@@ -1,0 +1,15 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const footerAd = document.getElementById('footer-ad-placeholder');
+    if (footerAd) {
+        footerAd.innerHTML = `
+            <ins class="adsbygoogle"
+                 style="display:block;width:100%;min-height:50px;"
+                 data-ad-client="ca-ca-pub-9442350195298931"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        `;
+        setTimeout(() => {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+        }, 100);
+    }
+});

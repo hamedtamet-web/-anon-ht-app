@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9442350195298931"
+     crossorigin="anonymous"></script>
+    <title>الردود | Anon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root { 
+            --primary: #f80566; --bg: #050505; --card: #0d0d0d; 
+            --border: rgba(255,255,255,0.08); --text-dim: #888;
+        }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: white; font-family: 'Cairo', sans-serif; margin: 0; padding-bottom: 80px; line-height: 1.4; }
+
+        header { 
+            padding: 12px 5%; display: flex; align-items: center; gap: 15px; 
+            sticky: top; background: rgba(5,5,5,0.8); backdrop-filter: blur(15px); 
+            border-bottom: 1px solid var(--border); z-index: 100;
+        }
+        .back-btn { color: white; font-size: 18px; cursor: pointer; padding: 5px; }
+
+        .main-wrapper { max-width: 550px; margin: 0 auto; padding: 15px; }
+
+        /* البطاقة الرئيسية للسؤال */
+        .main-q-card { 
+            background: linear-gradient(145deg, #121212, #080808); 
+            border-radius: 20px; padding: 20px; border: 1px solid var(--border);
+            margin-bottom: 25px; border-right: 4px solid var(--primary);
+        }
+        .main-q-text { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; font-weight: 600; }
+        .main-a-text { font-size: 16px; font-weight: 800; color: #fff; }
+
+        .threads-title { 
+            font-size: 14px; font-weight: 800; margin-bottom: 15px; 
+            color: var(--primary); display: flex; align-items: center; gap: 10px; 
+        }
+        .threads-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+        /* استايل الردود المتجاوب */
+        .thread-item { 
+            background: var(--card); border-radius: 15px; padding: 12px; 
+            margin-bottom: 10px; border: 1px solid var(--border);
+            display: flex; gap: 12px; align-items: flex-start;
+            animation: fadeIn 0.3s ease;
+        }
+        .thread-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); background: #111; }
+        .thread-content { flex: 1; }
+        .thread-user { font-weight: 800; font-size: 12px; color: var(--primary); display: flex; align-items: center; gap: 5px; }
+        .thread-text { font-size: 13.5px; color: #eee; font-weight: 600; margin-top: 2px; word-break: break-word; }
+        .thread-time { font-size: 9px; color: #444; margin-top: 5px; display: block; }
+
+        /* صندوق الإدخال الصغير للموبايل */
+        .comment-box { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: rgba(10,10,10,0.95); backdrop-filter: blur(10px);
+            padding: 10px 15px; border-top: 1px solid var(--border); 
+            display: flex; gap: 8px; align-items: center; z-index: 1000;
+        }
+        .comment-input { 
+            flex: 1; background: #1a1a1a; border: 1px solid var(--border); 
+            padding: 10px 15px; border-radius: 25px; color: white; 
+            font-family: 'Cairo'; font-size: 13px; transition: 0.3s;
+        }
+        .comment-input:focus { border-color: var(--primary); background: #222; }
+        .send-btn { 
+            background: var(--primary); border: none; width: 40px; height: 40px; 
+            border-radius: 50%; color: white; font-size: 16px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .send-btn:active { transform: scale(0.9); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 480px) {
+            .main-wrapper { padding: 10px; }
+            .main-a-text { font-size: 14.5px; }
+            .thread-text { font-size: 12.5px; }
+            .thread-avatar { width: 30px; height: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <i class="fa-solid fa-arrow-right back-btn" onclick="history.back()"></i>
+        <span style="font-weight: 900; font-size: 14px;">مناقشة الثريد</span>
+    </header>
+
+    <div class="main-wrapper">
+        <div id="mainQuestionContainer"></div>
+        <div class="threads-title"><i class="fa-regular fa-comments"></i> التعليقات</div>
+        <div id="threadsContainer"></div>
+    </div>
+
+    <div class="comment-box">
+        <input type="text" id="replyInput" class="comment-input" placeholder="اكتب تعليقك..." maxlength="300">
+        <button class="send-btn" id="btnSend" onclick="sendReply()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+
+    <script>
+        firebase.initializeApp({ 
+            apiKey: "AIzaSyDbAYctYxiv3mTUlpfdY4ZeZDNxH89nklk", 
+            authDomain: "anon-ht.firebaseapp.com", 
+            projectId: "anon-ht", 
+            storageBucket: "anon-ht.firebasestorage.app", 
+            appId: "1:214497552351:web:9645cd0ce48b9d5466a" 
+        });
+        const db = firebase.firestore(), auth = firebase.auth();
+        const qId = new URLSearchParams(window.location.search).get('id');
+
+        if (!qId) location.href = "index.html";
+
+        // أيقونات وصور افتراضية للمجهول
+        const ANONYMOUS_IMG = "images/user.png"; 
+
+        // تحميل السؤال الأساسي بتأمين بسيط
+        db.collection("questions").doc(qId).onSnapshot(doc => {
+            if (!doc.exists) return;
+            const d = doc.data();
+            document.getElementById('mainQuestionContainer').innerHTML = `
+                <div class="main-q-card">
+                    <div class="main-q-text">${d.text}</div>
+                    <div class="main-a-text">${d.reply}</div>
+                </div>
+            `;
+        });
+
+        // تحميل الردود مع التحقق من الهوية (مجهول أو معلن)
+        db.collection("questions").doc(qId).collection("threads").orderBy("createdAt", "asc")
+        .onSnapshot(snap => {
+            const container = document.getElementById('threadsContainer');
+            if (snap.empty) {
+                container.innerHTML = '<p style="text-align:center; color:#444; font-size:11px; margin-top:20px;">لا توجد تعليقات هنا بعد.</p>';
+                return;
+            }
+            let html = "";
+            snap.docs.forEach(doc => {
+                const t = doc.data();
+                const date = t.createdAt?.toDate() || new Date();
+                
+                // تحديد الصورة والاسم بناءً على حالة الخصوصية
+                const userImg = t.isAnonymous ? ANONYMOUS_IMG : (t.userAvatar || ANONYMOUS_IMG);
+                const userName = t.isAnonymous ? "مجهول" : t.userName;
+
+                html += `
+                    <div class="thread-item">
+                        <img src="${userImg}" class="thread-avatar">
+                        <div class="thread-content">
+                            <span class="thread-user">${userName} ${t.isAnonymous ? '<i class="fa-solid fa-mask" style="font-size:10px; opacity:0.5"></i>' : ''}</span>
+                            <div class="thread-text">${t.text}</div>
+                            <span class="thread-time">${date.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'})}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        });
+
+        // إرسال رد مؤمن
+        async function sendReply() {
+            const input = document.getElementById('replyInput');
+            const btn = document.getElementById('btnSend');
+            const text = input.value.trim();
+
+            if (!text || !auth.currentUser) return;
+            
+            btn.disabled = true; // منع الإرسال المتكرر
+
+            try {
+                const userDoc = await db.collection("users").doc(auth.currentUser.uid).get();
+                const userData = userDoc.data();
+
+                // افتراضياً: الرد يتبع حالة السؤال (إذا كان المستخدم يظهر نفسه في البروفايل)
+                // يمكنك إضافة Toggle هنا لاحقاً ليختار المستخدم إذا كان رده مجهولاً أم لا
+                await db.collection("questions").doc(qId).collection("threads").add({
+                    text: text,
+                    userId: auth.currentUser.uid,
+                    userName: userData.name || "مستخدم",
+                    userAvatar: userData.avatarUrl || "",
+                    isAnonymous: false, // اجعلها true إذا أردت الردود مجهولة دائماً
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                input.value = "";
+                window.scrollTo(0, document.body.scrollHeight);
+            } catch (e) {
+                console.error("Error sending reply: ", e);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

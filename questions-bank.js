@@ -312,7 +312,7 @@ const QUESTIONS_BANK = [
 {cat:"إسلاميات",diff:1,q:"كم عدد الصلوات المفروضة في اليوم والليلة؟",choices:["5","3","7","4"],ans:0,hint:"فجر وظهر وعصر ومغرب وعشاء"},
 {cat:"إسلاميات",diff:1,q:"ما الركن الخامس من أركان الإسلام؟",choices:["الحج","الزكاة","الصوم","الجهاد"],ans:0,hint:"يؤدى في مكة المكرمة مرة في العمر"},
 {cat:"إسلاميات",diff:1,q:"ما نصاب زكاة الذهب؟",choices:["85 غراماً تقريباً","100 غرام","50 غراماً","70 غراماً"],ans:0,hint:"يساوي عشرين مثقالاً"},
-{cat:"إسلاميات",diff:1,q:"كم عدد أنبياء الله المذكورين في القرآن الكريم؟",choices:["25","20","30","15"],ans:0,hint:"من آدم إلى محمد صلى الله عليه وسلم"],
+{cat:"إسلاميات",diff:1,q:"كم عدد أنبياء الله المذكورين في القرآن الكريم؟",choices:["25","20","30","15"],ans:0,hint:"من آدم إلى محمد صلى الله عليه وسلم"},
 {cat:"إسلاميات",diff:1,q:"ما أول قبلة للمسلمين قبل تحويلها إلى الكعبة؟",choices:["المسجد الأقصى","الكعبة مباشرة","مكة المكرمة","مسجد قباء"],ans:0,hint:"في القدس الشريف"},
 {cat:"إسلاميات",diff:1,q:"ما اسم زوجة النبي محمد صلى الله عليه وسلم الأولى؟",choices:["خديجة بنت خويلد","عائشة","فاطمة","زينب"],ans:0,hint:"أول من آمن بالنبي"},
 {cat:"إسلاميات",diff:1,q:"ما الليلة التي يُحيا فيها القرآن ويُقال إنها خير من ألف شهر؟",choices:["ليلة القدر","ليلة الإسراء","ليلة النصف من شعبان","ليلة الجمعة"],ans:0,hint:"في العشر الأواخر من رمضان"},
@@ -356,5 +356,12 @@ const QUESTIONS_BANK = [
 
 function getRandomQuestions(count = 10, language = 'ar') {
   const shuffled = [...QUESTIONS_BANK].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
+  const selected = shuffled.slice(0, count);
+
+  return selected.map(q => {
+    const correct = q.choices[q.ans];
+    const newChoices = [...q.choices].sort(() => Math.random() - 0.5);
+    const newAns = newChoices.indexOf(correct);
+    return { ...q, choices: newChoices, ans: newAns };
+  });
 }

@@ -1,12 +1,16 @@
 document.addEventListener("DOMContentLoaded", function() {
     const footerAd = document.getElementById('footer-ad-placeholder');
-    if (footerAd) {
-        footerAd.innerHTML = `
-            <div style="background: #222; color: #fff; padding: 10px; border-radius: 12px;">
-                <p>إعرض إعلانك هنا...</p>
-            </div>
-        `;
-    }
+    if (!footerAd) return;
+
+    const ins = document.createElement('ins');
+    ins.className = 'adsbygoogle';
+    ins.style.cssText = 'display:block;width:100%;min-height:50px;';
+    ins.dataset.adClient = 'ca-pub-9442350195298931';
+    ins.dataset.adFormat = 'auto';
+    ins.dataset.fullWidthResponsive = 'true';
+    footerAd.appendChild(ins);
+
+    setTimeout(() => {
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+    }, 400);
 });
-
-

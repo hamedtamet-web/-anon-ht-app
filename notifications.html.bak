@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9442350195298931"
+     crossorigin="anonymous"></script>
+    <title>تنبيهاتي | Anon</title>
+    
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js">
+    </script>
+    
+    <script src="100271050.js"></script>
+    <script src="maintenance-guard.js"></script>
+
+    <style>
+        :root {
+            --primary: #f80566;
+            --bg: #050505;
+            --card-bg: #0d0d0d;
+            --border: rgba(255, 255, 255, 0.08);
+            --text-dim: #888;
+            --glass: rgba(255, 255, 255, 0.03);
+            --verify-blue: #00bfff;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 5%;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            color: white;
+            background: var(--glass);
+            width: 45px;
+            height: 45px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1005;
+        }
+
+        .back-btn:hover { background: var(--primary); transform: scale(1.05); }
+
+        .header-title {
+            font-size: 19px;
+            font-weight: 900;
+            flex: 1;
+            text-align: center;
+            margin-right: -45px;
+            letter-spacing: -0.5px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 20px 15px 40px;
+        }
+
+        /* ===== بطاقة الإشعار ===== */
+        .notif-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .notif-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(248, 5, 102, 0.3);
+        }
+
+        .notif-card.unread {
+            background: linear-gradient(145deg, rgba(248, 5, 102, 0.07) 0%, var(--card-bg) 100%);
+            border-right: 4px solid var(--primary);
+        }
+
+        .notif-card.unread.follow-type {
+            background: linear-gradient(145deg, rgba(0, 191, 255, 0.07) 0%, var(--card-bg) 100%);
+            border-right: 4px solid var(--verify-blue);
+        }
+
+        /* ===== صورة المرسل ===== */
+        .sender-avatar-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .sender-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 18px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            background: #111;
+        }
+
+        /* أيقونة نوع الإشعار فوق الصورة */
+        .notif-type-icon {
+            position: absolute;
+            bottom: -4px;
+            left: -4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            border: 2px solid var(--bg);
+        }
+
+        .notif-type-icon.like  { background: var(--primary); color: white; }
+        .notif-type-icon.follow { background: var(--verify-blue); color: white; }
+        .notif-type-icon.comment { background: #666; color: white; }
+
+        .notif-info { flex: 1; min-width: 0; }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+
+        .username {
+            font-weight: 800;
+            font-size: 15px;
+            color: #fff;
+        }
+
+        .verify-badge { height: 17px; width: auto; }
+        .admin-glow { 
+            animation: pulse 2s infinite; 
+            filter: drop-shadow(0 0 5px var(--primary)); 
+        }
+
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        .notif-text {
+            font-size: 14px;
+            color: #ccc;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .notif-time {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ===== حالة فارغة / تحميل ===== */
+        .empty-state {
+            text-align: center;
+            padding: 120px 20px;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary);
+            opacity: 0.2;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .empty-state p { color: #555; font-size: 14px; }
+
+        /* ===== skeleton ===== */
+        .skeleton {
+            background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 24px;
+            height: 90px;
+            margin-bottom: 15px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        @media (max-width: 600px) {
+            .header-title { font-size: 17px; }
+            .notif-card { padding: 15px; border-radius: 20px; }
+            .sender-img { width: 48px; height: 48px; border-radius: 14px; }
+            .notif-text { font-size: 13px; }
+            .username { font-size: 14px; }
+        }
+    </style>
+
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "71cc9b86-54ef-4716-b23e-9cbbae53d39d",
+      safari_web_id: "web.onesignal.auto.3f702284-340c-42a7-8810-51cb92b23548",
+      notifyButton: { enable: false },
+      promptOptions: {
+        slidedown: {
+          enabled: true,
+          autoPrompt: true,
+          timeDelay: 5,
+          pageViews: 1,
+          actionMessage: "فعّل الإشعارات واعرف على طول لما يوصلك سؤال أو تفاعل جديد! 🔔",
+          acceptButtonText: "السماح بالإشعارات",
+          cancelButtonText: "لاحقاً",
+        }
+      }
+    });
+  });
+</script>
+</head>
+<body>
+
+    <header>
+        <a onclick="window.location.href='index.html'; return false;" class="back-btn">
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        <div class="header-title">الإشعارات والتنبيهات</div>
+    </header>
+
+    <div class="container" id="notificationsList">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+    </div>
+
+    <script>
+        "use strict";
+
+        firebase.initializeApp(APP_CONFIG.firebase);
+        const db   = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ===== حماية XSS =====
+        const escapeHTML = (str) => {
+            if (str === null || str === undefined) return "";
+            const p = document.createElement('p');
+            p.textContent = String(str);
+            return p.innerHTML;
+        };
+
+        // ===== تنسيق الوقت =====
+        const timeSince = (timestamp) => {
+            if (!timestamp) return "الآن";
+            try {
+                const seconds = Math.floor((new Date() - timestamp.toDate()) / 1000);
+                if (seconds < 60)    return "الآن";
+                if (seconds < 3600)  return `منذ ${Math.floor(seconds / 60)} دقيقة`;
+                if (seconds < 86400) return `منذ ${Math.floor(seconds / 3600)} ساعة`;
+                if (seconds < 2592000) return `منذ ${Math.floor(seconds / 86400)} يوم`;
+                if (seconds < 31536000) return `منذ ${Math.floor(seconds / 2592000)} شهر`;
+                return "منذ سنة";
+            } catch(e) { return "الآن"; }
+        };
+
+        // ===== شارات التحقق =====
+        const getBadge = (username, verified) => {
+            if (username?.toUpperCase() === 'HT') {
+                return `<img src="images/admin-verified-logo.png" class="verify-badge admin-glow" title="المطور">`;
+            }
+            if (verified) {
+                return `<img src="images/verified-logo.png" class="verify-badge" title="موثق">`;
+            }
+            return '';
+        };
+
+        // ===== نص وأيقونة حسب نوع الإشعار =====
+        const getNotifDetails = (n) => {
+            const name = escapeHTML(n.senderName || "شخص ما");
+            switch(n.type) {
+                case 'like':
+                    return {
+                        text: `${name} أعجب بإجابتك ❤️`,
+                        icon: 'fa-solid fa-heart',
+                        iconClass: 'like'
+                    };
+                case 'follow':
+                    return {
+                        text: `${name} بدأ في متابعتك 💙`,
+                        icon: 'fa-solid fa-user-plus',
+                        iconClass: 'follow'
+                    };
+                case 'comment':
+                    return {
+                        text: `${name} علّق على إجابتك 💬`,
+                        icon: 'fa-solid fa-comment',
+                        iconClass: 'comment'
+                    };
+                default:
+                    return {
+                        text: escapeHTML(n.message || n.text || "إشعار جديد"),
+                        icon: 'fa-solid fa-bell',
+                        iconClass: 'like'
+                    };
+            }
+        };
+
+        // ===== رابط الانتقال حسب النوع =====
+        const getNotifLink = (n) => {
+            if (n.type === 'follow' && n.senderId) return `profile.html?id=${n.senderId}`;
+            if (n.contentId) return `thread.html?id=${n.contentId}`;
+            if (n.link && n.link !== '#') return n.link;
+            return null;
+        };
+
+        // ===== الكاش: نتجنب إعادة رسم البطاقات الموجودة =====
+        const renderedIds = new Set();
+        const container   = document.getElementById('notificationsList');
+
+        // ===== تحميل الإشعارات مع الثبات عند التحديث =====
+        function loadNotifications(uid) {
+            db.collection("notifications")
+                .where("receiverId", "==", uid)  // ← الحقل الموحّد
+                .orderBy("timestamp", "desc")     // ← الحقل الموحّد
+                .limit(50)
+                .onSnapshot(snapshot => {
+
+                    if (snapshot.empty) {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fa-regular fa-bell-slash"></i>
+                                <p>لا توجد تنبيهات حتى الآن</p>
+                            </div>`;
+                        return;
+                    }
+
+                    // إزالة skeleton إن وجد
+                    const skeletons = container.querySelectorAll('.skeleton');
+                    skeletons.forEach(s => s.remove());
+
+                    // معالجة التغييرات فقط (إضافة / تعديل / حذف)
+                    snapshot.docChanges().forEach(change => {
+                        const doc = change.doc;
+                        const n   = doc.data();
+
+                        if (change.type === 'added') {
+                            // إضافة البطاقة الجديدة في أعلى القائمة
+                            const card = buildCard(doc.id, n, uid);
+                            // نضيفها قبل أول عنصر موجود
+                            const firstCard = container.querySelector('.notif-card');
+                            if (firstCard) container.insertBefore(card, firstCard);
+                            else container.appendChild(card);
+                            renderedIds.add(doc.id);
+
+                        } else if (change.type === 'modified') {
+                            // تحديث البطاقة الموجودة بدون إعادة رسم كل القائمة
+                            const existing = container.querySelector(`[data-id="${doc.id}"]`);
+                            if (existing) {
+                                const updated = buildCard(doc.id, n, uid);
+                                existing.replaceWith(updated);
+                            }
+
+                        } else if (change.type === 'removed') {
+                            const existing = container.querySelector(`[data-id="${doc.id}"]`);
+                            if (existing) existing.remove();
+                            renderedIds.delete(doc.id);
+                        }
+                    });
+
+                    // تحديد الكل كمقروء بعد الفتح
+                    markAllRead(uid);
+
+                }, err => {
+                    console.error("Notifications error:", err);
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <p>حدث خطأ في تحميل الإشعارات</p>
+                        </div>`;
+                });
+        }
+
+        // ===== بناء بطاقة إشعار =====
+        function buildCard(id, n, currentUid) {
+            const details  = getNotifDetails(n);
+            const link     = getNotifLink(n);
+            const isUnread = !n.isRead; // ← الحقل الموحّد
+            const isFollow = n.type === 'follow';
+
+            const card = document.createElement('div');
+            card.className = `notif-card ${isUnread ? 'unread' : ''} ${isFollow && isUnread ? 'follow-type' : ''}`;
+            card.dataset.id = id;
+
+            // صورة المرسل — نجلبها من senderAvatar مع fallback
+            const avatarUrl = n.senderAvatar || 'images/user.png';
+
+            card.innerHTML = `
+                <div class="sender-avatar-wrapper">
+                    <img src="${escapeHTML(avatarUrl)}"
+                         class="sender-img"
+                         onerror="this.src='images/user.png'"
+                         loading="lazy">
+                    <div class="notif-type-icon ${details.iconClass}">
+                        <i class="${details.icon}"></i>
+                    </div>
+                </div>
+                <div class="notif-info">
+                    <div class="user-meta">
+                        <span class="username">${escapeHTML(n.senderName || "شخص ما")}</span>
+                        ${getBadge(n.senderUsername || n.senderName, n.isSenderVerified)}
+                    </div>
+                    <p class="notif-text">${details.text}</p>
+                    <div class="notif-time">
+                        <i class="fa-regular fa-clock"></i>
+                        ${timeSince(n.timestamp)}
+                    </div>
+                </div>
+            `;
+
+            if (link) {
+                card.onclick = async () => {
+                    try {
+                        await db.collection("notifications").doc(id).update({ isRead: true });
+                    } catch(e) {}
+                    window.location.href = link;
+                };
+            }
+
+            return card;
+        }
+
+        // ===== تحديد جميع الإشعارات كمقروءة =====
+        function markAllRead(uid) {
+            db.collection("notifications")
+                .where("receiverId", "==", uid)
+                .where("isRead", "==", false)
+                .get()
+                .then(snap => {
+                    if (snap.empty) return;
+                    const batch = db.batch();
+                    snap.forEach(d => batch.update(d.ref, { isRead: true }));
+                    return batch.commit();
+                })
+                .catch(e => console.log("markAllRead error:", e));
+        }
+
+        // ===== Auth =====
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                loadNotifications(user.uid);
+            } else {
+                window.location.replace("signin.html");
+            }
+        });
+    </script>
+<script src="onesignal-notify.js"></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.login(auth.currentUser?.uid || "guest");
+});
+</script>
+<script src="notify-prompt.js" defer></script>
+</body>
+</html>

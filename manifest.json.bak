@@ -19,7 +19,7 @@
   "background_color": "#050505",
   "orientation": "portrait",
   "lang": "ar",
-  "dir": "rtl",
+  "dir": "rtl"
   "description": "منصة أسئلة مجهولة متاحة عالمياً بـ 10 لغات",
-  "categories": ["social", "entertainment"]
+"categories": ["social", "entertainment"]
 }

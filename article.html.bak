@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9442350195298931"
+     crossorigin="anonymous"></script>
+    <title>Anon | قراءة المقال</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="lang.js"></script>
+    <style>
+        :root { --primary: #f80566; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body, html {
+            width: 100%; min-height: 100%;
+            font-family: 'Cairo', sans-serif;
+            background: #050505 url('images/bbgg.jpg') center/cover fixed;
+            color: #fff; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.88); z-index: -1;
+        }
+
+        /* ══ TOPBAR ══ */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 18px;
+            overflow: visible;
+        }
+        .back-btn {
+            width: 38px; height: 38px; border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: .25s; text-decoration: none; flex-shrink: 0;
+        }
+        .back-btn:hover { background: rgba(248,5,102,0.15); border-color: var(--primary); color: var(--primary); }
+        .topbar-title {
+            flex: 1; font-size: 13px; font-weight: 800;
+            color: #fff; overflow: hidden;
+            white-space: nowrap; text-overflow: ellipsis; min-width: 0;
+        }
+        .topbar-logo { width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 0 6px var(--primary)); flex-shrink: 0; }
+
+        /* ══ LANG ══ */
+        .lang-switcher { position: relative; flex-shrink: 0; }
+        .lang-active-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.13);
+            color: #fff; padding: 7px 12px;
+            border-radius: 50px; font-size: 12px; font-weight: 700;
+            cursor: pointer; font-family: 'Cairo', sans-serif;
+            transition: all 0.25s;
+        }
+        .lang-active-btn:hover { border-color: var(--primary); background: rgba(248,5,102,0.12); }
+        .lang-menu {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: rgba(14,14,14,0.97);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px; min-width: 150px; z-index: 9999;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: all 0.22s cubic-bezier(0.34,1.3,0.64,1);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+        }
+        html[dir="rtl"] .lang-menu { right: auto; left: 0; }
+        .lang-menu.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .lang-option {
+            padding: 10px 16px; cursor: pointer; color: #ccc;
+            font-size: 13px; display: flex; gap: 8px; align-items: center;
+            font-family: 'Cairo', sans-serif;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.18s;
+        }
+        .lang-option:last-child { border-bottom: none; }
+        .lang-option:hover { background: rgba(248,5,102,0.12); color: #fff; }
+        .lang-opt-check { color: var(--primary); font-weight: 900; margin-inline-start: auto; }
+
+        /* ══ TRANSLATE TOAST ══ */
+        .translate-toast {
+            position: fixed; top: 70px; left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: rgba(10,10,18,0.97);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px; padding: 8px 20px;
+            font-size: 12px; font-weight: 700;
+            z-index: 9990; opacity: 0;
+            transition: all 0.3s;
+            backdrop-filter: blur(20px);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .translate-toast.show {
+            opacity: 1; transform: translateX(-50%) translateY(0);
+        }
+        .translate-toast.success { color: #4ade80; border-color: rgba(74,222,128,0.3); }
+        .translate-toast.error   { color: #f87171; border-color: rgba(248,113,113,0.3); }
+        .translate-toast.loading { color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+
+        /* ══ MAIN ══ */
+        .page-wrap {
+            max-width: 680px; margin: 0 auto;
+            padding: 24px 16px 60px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        /* ══ HERO ══ */
+        .article-hero {
+            background: rgba(15,15,15,0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 28px; overflow: hidden;
+        }
+        .hero-top {
+            background: linear-gradient(135deg, rgba(248,5,102,0.18), rgba(80,0,40,0.18));
+            border-bottom: 1px solid rgba(248,5,102,0.1);
+            padding: 28px 24px 22px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .article-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+        .badge-cat {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(248,5,102,0.15); border: 1px solid rgba(248,5,102,0.3);
+            color: var(--primary); font-size: 11px; font-weight: 800;
+            padding: 4px 12px; border-radius: 50px; letter-spacing: .5px;
+        }
+        .badge-new {
+            background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3);
+            color: #4ade80; font-size: 11px; font-weight: 800;
+            padding: 4px 10px; border-radius: 50px;
+        }
+        .article-big-title {
+            font-size: 22px; font-weight: 900; line-height: 1.55;
+            color: #fff; text-align: right;
+        }
+        html[dir="ltr"] .article-big-title { text-align: left; }
+        .article-meta-row {
+            display: flex; gap: 16px; flex-wrap: wrap;
+            align-items: center; font-size: 12px; color: #777;
+        }
+        .meta-item { display: flex; align-items: center; gap: 5px; }
+
+        /* ══ BODY ══ */
+        .article-content-wrap { padding: 24px; }
+        .article-body-text {
+            font-size: 15px; line-height: 2;
+            color: #ccc; text-align: right;
+            word-break: break-word;
+        }
+        html[dir="ltr"] .article-body-text { text-align: left; }
+        .article-body-text p { margin-bottom: 16px; }
+        .article-body-text h2 { color: #fff; font-size: 18px; font-weight: 800; margin: 24px 0 10px; }
+        .article-body-text h3 { color: var(--primary); font-size: 15px; font-weight: 700; margin: 18px 0 8px; }
+        .article-body-text ul { padding-right: 20px; margin: 10px 0; }
+        html[dir="ltr"] .article-body-text ul { padding-right: 0; padding-left: 20px; }
+        .article-body-text ul li { margin-bottom: 8px; color: #bbb; }
+        .article-body-text strong { color: #fff; font-weight: 800; }
+
+        /* ══ DIVIDER ══ */
+        .content-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(248,5,102,0.25), transparent);
+            margin: 4px 24px 0;
+        }
+
+        /* ══ SHARE ══ */
+        .share-section {
+            background: rgba(15,15,15,0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 24px; padding: 20px;
+            display: flex; flex-direction: column; gap: 14px; align-items: center;
+        }
+        .share-title { font-size: 13px; font-weight: 700; color: #aaa; }
+        .share-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .share-btn {
+            display: flex; align-items: center; gap: 7px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px; padding: 10px 16px;
+            color: #ccc; font-family: 'Cairo', sans-serif;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: .25s; white-space: nowrap;
+        }
+        .share-btn:hover { background: rgba(248,5,102,0.12); border-color: var(--primary); color: #fff; }
+        .share-btn.copied { border-color: #4ade80; color: #4ade80; }
+
+        /* ══ BACK CARD ══ */
+        .back-card {
+            background: rgba(248,5,102,0.06);
+            border: 1px solid rgba(248,5,102,0.2);
+            border-radius: 20px; padding: 18px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            text-decoration: none; transition: .25s;
+        }
+        .back-card:hover { background: rgba(248,5,102,0.1); border-color: rgba(248,5,102,0.4); }
+        .back-card-text { color: #ccc; font-size: 13px; }
+        .back-card-text b { color: var(--primary); display: block; font-size: 15px; margin-top: 2px; }
+        .back-card-arrow { color: var(--primary); font-size: 22px; }
+
+        /* ══ LOADER ══ */
+        .page-loader {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            min-height: 60vh; gap: 16px;
+        }
+        .spin {
+            width: 44px; height: 44px;
+            border: 3px solid rgba(255,255,255,0.08);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { color: #555; font-size: 13px; }
+
+        /* ══ ERROR ══ */
+        .error-box {
+            text-align: center; padding: 60px 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 14px;
+        }
+        .error-icon { font-size: 52px; }
+        .error-title { color: #fff; font-size: 18px; font-weight: 900; }
+        .error-msg { color: #666; font-size: 13px; line-height: 1.8; }
+        .error-btn {
+            margin-top: 8px; padding: 12px 28px;
+            background: var(--primary); color: #fff; border: none;
+            border-radius: 16px; font-family: 'Cairo', sans-serif;
+            font-size: 14px; font-weight: 800; cursor: pointer; transition: .3s;
+        }
+        .error-btn:hover { box-shadow: 0 8px 20px rgba(248,5,102,.3); transform: translateY(-2px); }
+
+        /* ══ FOOTER ══ */
+        .page-footer {
+            text-align: center; color: #333; font-size: 12px;
+            padding: 0 10px 20px; line-height: 2;
+        }
+        .page-footer a { color: #555; text-decoration: none; margin: 0 6px; }
+        .page-footer a:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<!-- TRANSLATE TOAST -->
+<div class="translate-toast" id="translateToast"></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <a href="javascript:history.back()" class="back-btn" aria-label="رجوع">&#8250;</a>
+    <div class="topbar-title" id="topbarTitle">جاري التحميل...</div>
+    <img src="images/logo.png" alt="Anon" class="topbar-logo">
+
+    <!-- Lang Switcher -->
+    <div class="lang-switcher" id="langSwitcher">
+        <button class="lang-active-btn" id="langActiveBtn" onclick="toggleLangMenu()">
+            🌐 <span id="langCurrentLabel">AR</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+            <div class="lang-option" onclick="selectLang('ar')">
+                🇸🇦 العربية <span class="lang-opt-check" id="check-ar">✓</span>
+            </div>
+            <div class="lang-option" onclick="selectLang('en')">
+                🇬🇧 English <span class="lang-opt-check" id="check-en"></span>
+            </div>
+            <div class="lang-option" onclick="selectLang('fr')">
+                🇫🇷 Français <span class="lang-opt-check" id="check-fr"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CONTENT -->
+<div class="page-wrap" id="pageWrap">
+    <div class="page-loader" id="loader">
+        <div class="spin"></div>
+        <div class="loader-text">جاري تحميل المقال...</div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+    <div>
+        <a href="signin.html">الرئيسية</a>
+        <span style="color:#222">·</span>
+        <a href="mailto:support@anonht.com">تواصل معنا</a>
+    </div>
+    <div style="margin-top:4px">© 2026 Anon Platform · جميع الحقوق محفوظة</div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+<script>
+    /* ══ Firebase ══ */
+    const firebaseConfig = {
+        apiKey: "AIzaSyDbAYctYxiv3mTUlpfdY4ZeZDNxH89nklk",
+        authDomain: "anonht.com",
+        projectId: "anon-ht",
+        storageBucket: "anon-ht.firebasestorage.app",
+        messagingSenderId: "214497552351",
+        appId: "1:214497552351:web:9645cd0ce48b9d5466a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    /* ══ State ══ */
+    let originalBodyText = "";
+    let currentLang = 'ar';
+    let translateToastTO = null;
+
+    /* ══ Show Translate Toast ══ */
+    function showTranslateToast(msg, type) {
+        const t = document.getElementById('translateToast');
+        t.textContent = msg;
+        t.className = 'translate-toast show ' + (type || '');
+        clearTimeout(translateToastTO);
+        if (type !== 'loading') {
+            translateToastTO = setTimeout(() => {
+                t.className = 'translate-toast';
+            }, 2500);
+        }
+    }
+    function hideTranslateToast() {
+        document.getElementById('translateToast').className = 'translate-toast';
+    }
+
+    /* ══ Translate Article Body ══ */
+    async function translateBody(targetLang) {
+    const bodyEl = document.getElementById("articleBody");
+    if (!bodyEl || !originalBodyText) return;
+
+    if (targetLang === 'ar') {
+        const paragraphs = originalBodyText.split(/\n+/);
+        bodyEl.innerHTML = paragraphs
+            .map(p => p.trim() ? "<p>" + escHtml(p.trim()) + "</p>" : "")
+            .join("");
+        document.documentElement.dir = 'rtl';
+        const bodyTextEl = document.querySelector('.article-body-text');
+        if (bodyTextEl) bodyTextEl.style.textAlign = 'right';
+        return;
+    }
+
+    const toastMsg = targetLang === 'en' ? '⏳ Translating...' : '⏳ Traduction...';
+    showTranslateToast(toastMsg, 'loading');
+
+    try {
+        const langCode = targetLang === 'en' ? 'en' : 'fr';
+        const paragraphs = originalBodyText.split(/\n+/).filter(p => p.trim());
+        const translated = [];
+
+        for (const chunk of paragraphs) {
+            if (chunk.length > 490) {
+                // تقسيم الجملة الطويلة
+                const parts = chunk.match(/.{1,490}/g) || [chunk];
+                for (const part of parts) {
+                    const res = await fetch(
+                        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(part)}&langpair=ar|${langCode}`
+                    );
+                    const data = await res.json();
+                    translated.push(data.responseData?.translatedText || part);
+                }
+            } else {
+                const res = await fetch(
+                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=ar|${langCode}`
+                );
+                const data = await res.json();
+                translated.push(data.responseData?.translatedText || chunk);
+            }
+        }
+
+        bodyEl.innerHTML = translated
+            .map(p => p.trim() ? "<p>" + escHtml(p.trim()) + "</p>" : "")
+            .join("");
+
+        document.documentElement.dir = 'ltr';
+        const bodyTextEl = document.querySelector('.article-body-text');
+        if (bodyTextEl) bodyTextEl.style.textAlign = 'left';
+
+        const doneMsg = targetLang === 'en' ? '✅ Translated!' : '✅ Traduit!';
+        showTranslateToast(doneMsg, 'success');
+
+    } catch(e) {
+        console.error("translateBody error:", e);
+        const errMsg = targetLang === 'en' ? '❌ Translation failed' : '❌ Échec traduction';
+        showTranslateToast(errMsg, 'error');
+    }
+}
+    /* ══ Lang Switcher ══ */
+    function toggleLangMenu() {
+        const menu = document.getElementById('langMenu');
+        menu.classList.toggle('open');
+    }
+
+    function selectLang(lang) {
+        document.getElementById('langMenu').classList.remove('open');
+        ['ar','en','fr'].forEach(l => {
+            const el = document.getElementById('check-' + l);
+            if (el) el.textContent = l === lang ? '✓' : '';
+        });
+        document.getElementById('langCurrentLabel').textContent = lang.toUpperCase();
+
+        // تغيير اللغة في الـ LangManager لو موجود
+        if (typeof LangManager !== 'undefined') LangManager.set(lang);
+
+        // ترجمة المقال تلقائياً
+        if (lang !== currentLang) {
+            currentLang = lang;
+            translateBody(lang);
+        }
+    }
+
+    document.addEventListener('click', e => {
+        if (!e.target.closest('#langSwitcher')) {
+            const menu = document.getElementById('langMenu');
+            if (menu) menu.classList.remove('open');
+        }
+    });
+
+    /* ══ Helpers ══ */
+    function getLang() {
+        return currentLang || document.documentElement.lang || 'ar';
+    }
+
+    function escHtml(str) {
+        return String(str || "")
+            .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function formatDate(ts) {
+        if (!ts) return "";
+        try {
+            const d = ts.toDate ? ts.toDate() : new Date(ts);
+            const lang = getLang();
+            const locale = lang === 'ar' ? 'ar-EG' : lang === 'fr' ? 'fr-FR' : 'en-GB';
+            return d.toLocaleDateString(locale, { year:"numeric", month:"long", day:"numeric" });
+        } catch(e) { return ""; }
+    }
+
+    function formatViews(n) {
+        if (!n) return "0";
+        return n > 999 ? (Math.floor(n / 1000)) + "k" : String(n);
+    }
+
+    /* ══ UI strings per lang ══ */
+    function ui(key) {
+        const lang = getLang();
+        const map = {
+            loading:    { ar:'جاري تحميل المقال...', en:'Loading article...', fr:'Chargement...' },
+            views:      { ar:'مشاهدة', en:'views', fr:'vues' },
+            readTime:   { ar:'دقيقة للقراءة', en:'min read', fr:'min de lecture' },
+            share:      { ar:'📤 شارك المقال مع أصدقائك', en:'📤 Share this article', fr:'📤 Partager cet article' },
+            whatsapp:   { ar:'💚 واتساب', en:'💚 WhatsApp', fr:'💚 WhatsApp' },
+            twitter:    { ar:'🐦 تويتر', en:'🐦 Twitter', fr:'🐦 Twitter' },
+            copyLink:   { ar:'🔗 نسخ الرابط', en:'🔗 Copy Link', fr:'🔗 Copier le lien' },
+            copied:     { ar:'✅ تم النسخ', en:'✅ Copied!', fr:'✅ Copié!' },
+            backTo:     { ar:'عودة إلى', en:'Back to', fr:'Retour à' },
+            home:       { ar:'🏠 الصفحة الرئيسية', en:'🏠 Home', fr:'🏠 Accueil' },
+            errorTitle: { ar:'تعذر تحميل المقال', en:'Failed to load article', fr:'Impossible de charger' },
+            errorBack:  { ar:'← العودة للخلف', en:'← Go Back', fr:'← Retour' },
+            noContent:  { ar:'لا يوجد محتوى لهذا المقال.', en:'No content available.', fr:'Aucun contenu disponible.' },
+            notFound:   { ar:'المقال غير موجود أو تم حذفه.', en:'Article not found or deleted.', fr:'Article introuvable ou supprimé.' },
+            noId:       { ar:'لم يتم تحديد المقال المطلوب.', en:'No article ID specified.', fr:'Aucun identifiant d\'article.' },
+            connErr:    { ar:'حدث خطأ في الاتصال، تحقق من الإنترنت وحاول مجدداً.', en:'Connection error. Check your internet and try again.', fr:'Erreur de connexion. Vérifiez votre connexion.' },
+        };
+        return (map[key] && map[key][lang]) || (map[key] && map[key]['ar']) || key;
+    }
+
+    /* ══ Copy Link ══ */
+    function copyLink() {
+        const btn = document.getElementById("copyBtn");
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            btn.textContent = ui('copied');
+            btn.classList.add("copied");
+            setTimeout(() => {
+                btn.textContent = ui('copyLink');
+                btn.classList.remove("copied");
+            }, 2500);
+        }).catch(() => {
+            const ta = document.createElement("textarea");
+            ta.value = window.location.href;
+            document.body.appendChild(ta);
+            ta.select(); document.execCommand("copy");
+            document.body.removeChild(ta);
+            btn.textContent = ui('copied');
+            setTimeout(() => { btn.textContent = ui('copyLink'); }, 2500);
+        });
+    }
+
+    /* ══ Share ══ */
+    function shareWhatsapp(title) {
+        const url = encodeURIComponent(window.location.href);
+        const txt = encodeURIComponent("📢 " + title + "\n");
+        window.open("https://wa.me/?text=" + txt + url, "_blank");
+    }
+
+    function shareTwitter(title) {
+        const url = encodeURIComponent(window.location.href);
+        const txt = encodeURIComponent("📢 " + title);
+        window.open("https://twitter.com/intent/tweet?text=" + txt + "&url=" + url, "_blank");
+    }
+
+    /* ══ Increment Views ══ */
+    function incrementViewsOnce(docId) {
+        const storageKey = "viewed_article_" + docId;
+        if (sessionStorage.getItem(storageKey)) return;
+        if (localStorage.getItem(storageKey)) return;
+        try {
+            db.collection("site_updates").doc(docId).update({
+                views: firebase.firestore.FieldValue.increment(1)
+            }).then(() => {
+                sessionStorage.setItem(storageKey, "1");
+                localStorage.setItem(storageKey, "1");
+            }).catch(e => console.error("incrementViews error:", e));
+        } catch(e) { console.error("incrementViews error:", e); }
+    }
+
+    /* ══ Render Article ══ */
+    function renderArticle(data, docId) {
+        const icons = ["🚀","✨","🔧","📢","🎉","🛡️","💎","⚡"];
+        const title    = data.title    || "تحديث جديد";
+        const body     = data.body     || data.content || data.description || "";
+        const category = data.category || "تحديث";
+        const isNew    = data.isNew    === true;
+        const views    = formatViews(data.views);
+        const date     = formatDate(data.createdAt);
+        const readTime = Math.max(1, Math.ceil((body.length || 200) / 600));
+        const icon     = data.icon || icons[0];
+
+        document.getElementById("topbarTitle").textContent = title;
+        document.title = "Anon | " + title;
+
+        /* حفظ النص الأصلي */
+        originalBodyText = body;
+
+        incrementViewsOnce(docId);
+
+        const safeTitle = escHtml(title).replace(/'/g,"\\'");
+
+        const html = `
+        <div class="article-hero">
+            <div class="hero-top">
+                <div class="article-badges">
+                    <span class="badge-cat">${escHtml(icon)} ${escHtml(category)}</span>
+                    ${isNew ? '<span class="badge-new">🆕 ' + (currentLang==='en'?'New':currentLang==='fr'?'Nouveau':'جديد') + '</span>' : ''}
+                </div>
+                <div class="article-big-title">${escHtml(title)}</div>
+                <div class="article-meta-row">
+                    ${date ? `<span class="meta-item">📅 ${escHtml(date)}</span>` : ''}
+                    <span class="meta-item">👁️ ${escHtml(views)} ${ui('views')}</span>
+                    <span class="meta-item">⏱️ ${readTime} ${ui('readTime')}</span>
+                </div>
+            </div>
+            <div class="content-divider"></div>
+            <div class="article-content-wrap">
+                <div class="article-body-text" id="articleBody"></div>
+            </div>
+        </div>
+
+        <div class="share-section">
+            <div class="share-title">${ui('share')}</div>
+            <div class="share-btns">
+                <button class="share-btn" onclick="shareWhatsapp('${safeTitle}')">${ui('whatsapp')}</button>
+                <button class="share-btn" onclick="shareTwitter('${safeTitle}')">${ui('twitter')}</button>
+                <button class="share-btn" id="copyBtn" onclick="copyLink()">${ui('copyLink')}</button>
+            </div>
+        </div>
+
+        <a href="signin.html" class="back-card">
+            <div class="back-card-text">
+                ${ui('backTo')}
+                <b>${ui('home')}</b>
+            </div>
+            <span class="back-card-arrow">‹</span>
+        </a>`;
+
+        document.getElementById("pageWrap").innerHTML = html;
+
+        const bodyEl = document.getElementById("articleBody");
+        if (body) {
+            const paragraphs = body.split(/\n+/);
+            bodyEl.innerHTML = paragraphs
+                .map(p => p.trim() ? "<p>" + escHtml(p.trim()) + "</p>" : "")
+                .join("");
+        } else {
+            bodyEl.innerHTML = '<p style="color:#555;text-align:center">' + ui('noContent') + '</p>';
+        }
+
+        /* لو اللغة مش عربي، اترجم فوراً */
+        if (currentLang !== 'ar') {
+            translateBody(currentLang);
+        }
+    }
+
+    /* ══ Show Error ══ */
+    function showError(msg) {
+        document.getElementById("topbarTitle").textContent = "خطأ";
+        document.getElementById("pageWrap").innerHTML = `
+        <div class="error-box">
+            <div class="error-icon">😕</div>
+            <div class="error-title">${ui('errorTitle')}</div>
+            <div class="error-msg">${escHtml(msg)}</div>
+            <button class="error-btn" onclick="history.back()">${ui('errorBack')}</button>
+        </div>`;
+    }
+
+    /* ══ Load ══ */
+    async function loadArticle() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        if (!id) { showError(ui('noId')); return; }
+        try {
+            const snap = await db.collection("site_updates").doc(id).get();
+            if (!snap.exists) { showError(ui('notFound')); return; }
+            renderArticle(snap.data(), snap.id);
+        } catch(e) {
+            console.error("loadArticle error:", e);
+            showError(ui('connErr'));
+        }
+    }
+
+    /* ══ INIT ══ */
+    window.addEventListener("load", () => {
+        const savedLang = localStorage.getItem('anon_lang') || localStorage.getItem('appLang') || 'ar';
+        currentLang = savedLang;
+
+        // تحديث الـ UI للغة المحفوظة
+        ['ar','en','fr'].forEach(l => {
+            const el = document.getElementById('check-' + l);
+            if (el) el.textContent = l === savedLang ? '✓' : '';
+        });
+        document.getElementById('langCurrentLabel').textContent = savedLang.toUpperCase();
+
+        if (typeof LangManager !== 'undefined') LangManager.set(savedLang);
+
+        loadArticle();
+    });
+</script>
+</body>
+</html>
