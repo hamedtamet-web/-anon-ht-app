@@ -235,6 +235,11 @@ window.__h82AlnkH6D91__("WyJwdWItOTQ0MjM1MDE5NTI5ODkzMSIsW251bGwsbnVsbCxudWxsLCJ
 
                 input.value = "";
                 window.scrollTo(0, document.body.scrollHeight);
+                const qDoc = await db.collection('questions').doc(qId).get();
+                const qOwnerId = qDoc.data()?.userId;
+                if (qOwnerId && qOwnerId !== auth.currentUser.uid) {
+                    await notifyNewComment(qOwnerId, userData.name || 'لوصحم', userData.avatarUrl || '');
+                }
             } catch (e) {
                 console.error("Error sending reply: ", e);
             } finally {

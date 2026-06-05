@@ -1310,6 +1310,9 @@ async function toggleFollow() {
             followersCount: firebase.firestore.FieldValue.increment(1)
         });
         await sendFollowNotification(uid, currentProfileId);
+        const meDoc2 = await db.collection('users').doc(uid).get();
+        const meData2 = meDoc2.data() || {};
+        await notifyNewFollow(currentProfileId, meData2.name || t('anonymous'), meData2.avatarUrl || '');
         
     }
 }
@@ -2041,6 +2044,12 @@ async function likeShout(id, btn) {
         await ref.update({likedBy:firebase.firestore.FieldValue.arrayUnion(uid), likesCount:n});
         btn.classList.add('liked');
         btn.innerHTML=`<i class="fa-solid fa-heart" aria-hidden="true"></i> ${n}`;
+        const shoutOwner = snap.data()?.senderId;
+        if (shoutOwner && shoutOwner !== uid) {
+            const meDoc = await db.collection('users').doc(uid).get();
+            const meData = meDoc.data() || {};
+            await notifyNewLike(shoutOwner, meData.name || t('anonymous'), meData.avatarUrl || '');
+        }
     }
 }
 
@@ -2304,6 +2313,11 @@ async function sendReply(shoutId) {
     await db.collection('shouts').doc(shoutId).update({repliesCount:firebase.firestore.FieldValue.increment(1)});
     if (input) input.value='';
     toast('success', t('reply_sent'));
+    const shoutDoc2 = await db.collection('shouts').doc(shoutId).get();
+    const shoutOwner2 = shoutDoc2.data()?.senderId;
+    if (shoutOwner2 && shoutOwner2 !== auth.currentUser.uid) {
+        await notifyNewReply(shoutOwner2, currentUserData?.name || t('anonymous'), currentUserData?.avatarUrl || '');
+    }
 }
 
 function loadSubreplies(shoutId, replyId, container) {
