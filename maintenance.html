@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9442350195298931"
+     crossorigin="anonymous"></script>
+<title>قيد الصيانة — Anon HT</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/png" href="images/logo.png">
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+<script src="100271050.js"></script>
+<style>
+:root {
+  --primary: #f80566;
+  --primary-dim: rgba(248,5,102,0.08);
+  --primary-glow: rgba(248,5,102,0.35);
+  --bg: #050505;
+  --card: #0d0d0d;
+  --card2: #111;
+  --border: rgba(255,255,255,0.06);
+  --border-hot: rgba(248,5,102,0.18);
+  --text: #e2e8f0;
+  --text2: #888;
+  --text3: #333;
+  --radius: 24px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ══ BG ══ */
+.bg-base {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 65% 55% at 15% 15%, rgba(248,5,102,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 85% 80%, rgba(248,5,102,0.05) 0%, transparent 55%),
+    #050505;
+  animation: bgPulse 10s ease-in-out infinite alternate;
+  transition: background 1s;
+}
+@keyframes bgPulse{0%{opacity:.7}100%{opacity:1}}
+
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(248,5,102,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(248,5,102,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.bg-scan {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
+}
+
+/* ══ CANVAS ══ */
+#bgCanvas {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* ══ INTERACTIVE CANVAS ══ */
+#interactCanvas {
+  position: fixed; inset: 0; z-index: 2;
+  cursor: crosshair;
+  transition: opacity 0.5s;
+}
+#interactCanvas.hidden { opacity: 0; pointer-events: none; }
+
+/* ══ CURSOR TRAIL ══ */
+.cursor-dot {
+  position: fixed; pointer-events: none; z-index: 9999;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 12px var(--primary), 0 0 24px rgba(248,5,102,0.4);
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s;
+  mix-blend-mode: screen;
+}
+
+/* ══ LAYOUT ══ */
+.page-wrap {
+  position: relative; z-index: 10;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 20px;
+  gap: 24px;
+}
+
+/* ══ MAIN CARD ══ */
+.card-wrap {
+  width: 100%; max-width: 540px;
+  animation: cardReveal 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes cardReveal{from{opacity:0;transform:translateY(36px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border-hot);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(248,5,102,0.05), 0 40px 80px rgba(0,0,0,0.95), 0 0 80px rgba(248,5,102,0.06) inset;
+}
+
+.card-topline {
+  height: 2px;
+  background: linear-gradient(90deg,transparent 0%,var(--primary) 25%,rgba(255,255,255,0.7) 50%,var(--primary) 75%,transparent 100%);
+  background-size: 250% 100%;
+  animation: toplineFlow 2.8s linear infinite;
+}
+@keyframes toplineFlow{0%{background-position:250% 0}100%{background-position:-250% 0}}
+
+.card::before,.card::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--primary);border-style:solid;opacity:.35}
+.card::before{top:9px;right:9px;border-width:1px 1px 0 0;border-radius:0 3px 0 0}
+.card::after{bottom:9px;left:9px;border-width:0 0 1px 1px;border-radius:0 0 3px 0}
+
+.card-inner { padding: 28px 32px 32px; }
+
+/* ══ STATUS STRIP ══ */
+.status-strip{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.status-left{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:var(--text3)}
+.status-ping{width:7px;height:7px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary);animation:pingBlink 1.2s ease-in-out infinite}
+@keyframes pingBlink{0%,100%{opacity:1}50%{opacity:.15}}
+.status-code{font-family:'JetBrains Mono';font-size:9px;letter-spacing:3px;color:var(--text3);padding:3px 10px;border:1px solid rgba(255,255,255,0.04);border-radius:6px}
+
+/* ══ ICON ══ */
+.icon-section{text-align:center;margin-bottom:20px}
+.icon-rings{position:relative;width:108px;height:108px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center}
+.ring{position:absolute;border-radius:50%;border:1px solid rgba(248,5,102,0.15)}
+.ring-1{inset:0;animation:ringRot 9s linear infinite}
+.ring-1::before{content:'';position:absolute;width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary),0 0 20px rgba(248,5,102,0.5);top:-3px;left:50%;transform:translateX(-50%)}
+.ring-2{inset:-13px;border-style:dashed;border-color:rgba(248,5,102,0.07);animation:ringRot 22s linear infinite reverse}
+.ring-3{inset:-26px;border-color:rgba(248,5,102,0.04);animation:ringRot 35s linear infinite}
+@keyframes ringRot{to{transform:rotate(360deg)}}
+.icon-glow{position:absolute;inset:-28px;border-radius:50%;background:radial-gradient(circle,rgba(248,5,102,0.18),transparent 65%);animation:glowPulse 4s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+.icon-frame{position:relative;z-index:2;width:78px;height:78px;border-radius:22px;background:linear-gradient(145deg,rgba(248,5,102,0.12),rgba(13,13,13,0.95));border:1px solid rgba(248,5,102,0.28);display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(248,5,102,0.18),inset 0 1px 0 rgba(255,255,255,0.05);animation:iconHover 5s ease-in-out infinite}
+@keyframes iconHover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.icon-frame img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(248,5,102,0.6))}
+
+.maint-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:20px;background:rgba(248,5,102,0.08);border:1px solid rgba(248,5,102,0.22);font-family:'JetBrains Mono';font-size:9px;font-weight:700;letter-spacing:2px;color:var(--primary);margin-bottom:10px}
+.maint-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--primary);animation:pingBlink 1s infinite}
+
+.maint-title{font-size:24px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:6px;letter-spacing:-.5px}
+.maint-title .highlight{background:linear-gradient(135deg,var(--primary),#ff6b9d,#ff99bb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.maint-msg{font-size:13px;line-height:1.8;color:var(--text2);margin-bottom:22px;min-height:38px}
+.maint-msg.loaded{color:#aaa}
+
+/* ══ COUNTDOWN ══ */
+.countdown-wrap{margin-bottom:20px}
+.countdown-label{font-family:'JetBrains Mono';font-size:9px;letter-spacing:3px;color:var(--text3);margin-bottom:10px;text-align:center;display:flex;align-items:center;gap:8px;justify-content:center}
+.countdown-label::before,.countdown-label::after{content:'';flex:1;max-width:55px;height:1px}
+.countdown-label::before{background:linear-gradient(90deg,transparent,var(--border-hot))}
+.countdown-label::after{background:linear-gradient(90deg,var(--border-hot),transparent)}
+.countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.countdown-unit{position:relative;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px 8px 12px;text-align:center;overflow:hidden;transition:border-color .3s}
+.countdown-unit:hover{border-color:var(--border-hot)}
+.countdown-unit::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(248,5,102,0.25),transparent)}
+.unit-val{font-family:'JetBrains Mono';font-size:28px;font-weight:700;color:#f1f5f9;line-height:1;display:block;transition:all .3s cubic-bezier(0.34,1.56,0.64,1)}
+.unit-val.flip{animation:unitFlip .35s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes unitFlip{0%{transform:translateY(-8px) scale(1.1);opacity:.3}100%{transform:translateY(0) scale(1);opacity:1}}
+.unit-val.urgent{color:var(--primary);text-shadow:0 0 18px rgba(248,5,102,0.5)}
+.unit-label{font-size:9px;font-family:'JetBrains Mono';letter-spacing:2px;color:var(--text3);margin-top:5px;display:block}
+
+/* ══ PROGRESS ══ */
+.progress-wrap{margin-bottom:20px}
+.progress-track{height:3px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;margin-bottom:7px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,rgba(248,5,102,0.4),var(--primary),rgba(255,150,180,0.7));background-size:200% 100%;animation:progressShine 2.5s linear infinite;transition:width 1s ease;min-width:4px}
+@keyframes progressShine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.progress-meta{display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:9px;color:var(--text3)}
+.progress-pct{color:var(--primary);font-weight:700}
+
+.divider{height:1px;background:var(--border);margin:18px 0}
+
+/* ══ EFFECTS PANEL ══ */
+.effects-label {
+  font-family: 'JetBrains Mono'; font-size: 9px; letter-spacing: 3px;
+  color: var(--text3); margin-bottom: 10px; text-align: center;
+  display: flex; align-items: center; gap: 8px; justify-content: center;
+}
+.effects-label::before,.effects-label::after{content:'';flex:1;max-width:40px;height:1px}
+.effects-label::before{background:linear-gradient(90deg,transparent,var(--border-hot))}
+.effects-label::after{background:linear-gradient(90deg,var(--border-hot),transparent)}
+
+.effects-row {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;
+}
+.effect-btn {
+  flex: 1; min-width: 70px;
+  padding: 9px 10px;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text2);
+  font-family: 'Cairo'; font-size: 11px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  text-align: center;
+}
+.effect-btn .ef-icon { font-size: 18px; }
+.effect-btn:hover,.effect-btn.active {
+  border-color: var(--primary);
+  color: #fff;
+  background: var(--primary-dim);
+  box-shadow: 0 0 16px rgba(248,5,102,0.18);
+}
+.effect-btn.active { box-shadow: 0 0 20px rgba(248,5,102,0.3); }
+
+/* ══ PERSONALITY QUIZ ══ */
+.quiz-card {
+  width: 100%; max-width: 540px;
+  animation: cardReveal 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+}
+.quiz-inner {
+  background: var(--card);
+  border: 1px solid var(--border-hot);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(248,5,102,0.05), 0 30px 60px rgba(0,0,0,0.9);
+}
+.quiz-topline {
+  height: 2px;
+  background: linear-gradient(90deg,transparent,rgba(248,5,102,0.6),transparent);
+  background-size: 200% 100%;
+  animation: toplineFlow 3.5s linear infinite reverse;
+}
+.quiz-body { padding: 24px 28px 28px; }
+
+.quiz-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+}
+.quiz-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--primary-dim);
+  border: 1px solid var(--border-hot);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.quiz-title-text { font-size: 15px; font-weight: 700; color: #fff; }
+.quiz-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+/* Progress bar for quiz */
+.quiz-progress-bar {
+  height: 2px; background: rgba(255,255,255,0.04);
+  border-radius: 2px; margin-bottom: 20px; overflow: hidden;
+}
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #ff6b9d);
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* Question */
+.q-step { animation: qSlideIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+@keyframes qSlideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+.q-number {
+  font-family: 'JetBrains Mono'; font-size: 9px; letter-spacing: 2px;
+  color: var(--primary); margin-bottom: 8px;
+}
+.q-text {
+  font-size: 15px; font-weight: 700; color: #fff;
+  margin-bottom: 16px; line-height: 1.5;
+}
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+.q-opt {
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text2); font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 10px;
+  text-align: right;
+}
+.q-opt-emoji { font-size: 16px; flex-shrink: 0; }
+.q-opt:hover {
+  border-color: rgba(248,5,102,0.4);
+  background: var(--primary-dim);
+  color: #fff;
+  transform: translateX(-3px);
+}
+.q-opt.selected {
+  border-color: var(--primary);
+  background: rgba(248,5,102,0.1);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(248,5,102,0.15);
+}
+
+/* Result */
+.quiz-result {
+  display: none; text-align: center;
+  animation: qSlideIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+.quiz-result.show { display: block; }
+.result-emoji {
+  font-size: 54px; margin-bottom: 12px;
+  animation: resultPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes resultPop{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0deg);opacity:1}}
+.result-type {
+  font-size: 11px; font-family: 'JetBrains Mono'; letter-spacing: 3px;
+  color: var(--primary); margin-bottom: 6px;
+}
+.result-name {
+  font-size: 22px; font-weight: 900; color: #fff;
+  margin-bottom: 10px;
+}
+.result-desc {
+  font-size: 13px; line-height: 1.8; color: var(--text2);
+  margin-bottom: 20px;
+}
+.result-traits {
+  display: flex; flex-wrap: wrap; gap: 7px; justify-content: center;
+  margin-bottom: 20px;
+}
+.trait-tag {
+  padding: 4px 12px; border-radius: 20px;
+  background: var(--primary-dim);
+  border: 1px solid var(--border-hot);
+  font-size: 11px; color: var(--primary); font-weight: 600;
+}
+.quiz-retry-btn {
+  padding: 10px 24px;
+  background: var(--primary-dim);
+  border: 1px solid var(--border-hot);
+  border-radius: 12px;
+  color: var(--primary); font-family: 'Cairo'; font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quiz-retry-btn:hover {
+  background: rgba(248,5,102,0.15);
+  box-shadow: 0 0 20px rgba(248,5,102,0.2);
+}
+
+/* ══ SOCIAL + FOOTER ══ */
+.social-row{display:flex;align-items:center;justify-content:center;gap:10px}
+.social-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text2);font-size:14px;text-decoration:none;transition:all .2s}
+.social-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-dim);box-shadow:0 0 14px rgba(248,5,102,0.2)}
+
+.card-footer{padding:12px 32px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;background:rgba(0,0,0,0.4)}
+.footer-brand{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono';font-size:10px;color:var(--text3);font-weight:700}
+.footer-brand img{width:18px;height:18px;border-radius:5px;opacity:.45}
+.footer-status{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text3)}
+.footer-dot{width:5px;height:5px;border-radius:50%;background:var(--primary);box-shadow:0 0 8px var(--primary);animation:pingBlink 1.5s infinite}
+
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,0.03),rgba(255,255,255,0.06),rgba(255,255,255,0.03));background-size:200% 100%;animation:skelAnim 1.5s ease infinite;border-radius:5px}
+@keyframes skelAnim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.expired-banner{display:none;background:rgba(0,230,118,0.05);border:1px solid rgba(0,230,118,0.2);border-radius:12px;padding:12px 16px;text-align:center;margin-bottom:16px;animation:bannerIn .5s ease}
+.expired-banner.show{display:block}
+@keyframes bannerIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.expired-banner p{font-size:13px;font-weight:700;color:#00e676}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:540px){
+  .card-inner,.quiz-body{padding:18px 16px 22px}
+  .card-footer{padding:10px 16px 12px}
+  .maint-title{font-size:20px}
+  .unit-val{font-size:22px}
+  .countdown-grid{gap:6px}
+  .countdown-unit{padding:11px 5px 9px;border-radius:12px}
+  .effect-btn{min-width:60px;font-size:10px}
+  .q-text{font-size:14px}
+  .result-name{font-size:18px}
+  .result-emoji{font-size:44px}
+  .page-wrap{padding:14px}
+}
+@media(max-width:360px){
+  .effects-row{gap:5px}
+  .effect-btn{min-width:52px;padding:8px 6px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-base" id="bgBase"></div>
+<div class="bg-grid"></div>
+<div class="bg-scan"></div>
+<canvas id="bgCanvas"></canvas>
+<canvas id="interactCanvas"></canvas>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<div class="page-wrap">
+
+  <!-- ══ MAIN CARD ══ -->
+  <div class="card-wrap">
+    <div class="card">
+      <div class="card-topline"></div>
+      <div class="card-inner">
+
+        <div class="status-strip">
+          <div class="status-left"><div class="status-ping"></div><span>SYSTEM STATUS</span></div>
+          <div class="status-code">503 MAINTENANCE</div>
+        </div>
+
+        <div class="icon-section">
+          <div class="icon-rings">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+            <div class="icon-glow"></div>
+            <div class="icon-frame">
+              <img src="images/logo.png" alt="Anon HT" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+              <span style="display:none;font-size:30px">⚙️</span>
+            </div>
+          </div>
+          <div class="maint-badge"><div class="maint-badge-dot"></div>MAINTENANCE MODE ACTIVE</div>
+          <div class="maint-title"><div class="highlight" id="mainTitle">تحت الصيانة</div></div>
+        </div>
+
+        <div class="expired-banner" id="expiredBanner"><p>✅ عادت الخدمة — جاري إعادة التوجيه...</p></div>
+
+        <div class="maint-msg" id="mainMsg">
+          <div class="skeleton" style="height:13px;width:88%;margin-bottom:7px"></div>
+          <div class="skeleton" style="height:13px;width:62%"></div>
+        </div>
+
+        <div class="countdown-wrap">
+          <div class="countdown-label">ESTIMATED TIME REMAINING</div>
+          <div class="countdown-grid">
+            <div class="countdown-unit"><span class="unit-val" id="cd-days">00</span><span class="unit-label">يوم</span></div>
+            <div class="countdown-unit"><span class="unit-val" id="cd-hours">00</span><span class="unit-label">ساعة</span></div>
+            <div class="countdown-unit"><span class="unit-val" id="cd-mins">00</span><span class="unit-label">دقيقة</span></div>
+            <div class="countdown-unit"><span class="unit-val" id="cd-secs">00</span><span class="unit-label">ثانية</span></div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          <div class="progress-meta">
+            <span id="progressStart">—</span>
+            <span class="progress-pct" id="progressPct">0%</span>
+            <span id="progressEnd">—</span>
+          </div>
+        </div>
+
+        <!-- Effects Panel -->
+        <div class="divider"></div>
+        <div class="effects-label">INTERACTIVE MODE — العب بينما تنتظر</div>
+        <div class="effects-row">
+          <button class="effect-btn active" id="ef-fire" onclick="setEffect('fire')">
+            <span class="ef-icon">🔥</span><span>نار</span>
+          </button>
+          <button class="effect-btn" id="ef-galaxy" onclick="setEffect('galaxy')">
+            <span class="ef-icon">🌌</span><span>مجرة</span>
+          </button>
+          <button class="effect-btn" id="ef-matrix" onclick="setEffect('matrix')">
+            <span class="ef-icon">💻</span><span>ماتريكس</span>
+          </button>
+          <button class="effect-btn" id="ef-shatter" onclick="setEffect('shatter')">
+            <span class="ef-icon">💥</span><span>تفجير</span>
+          </button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="social-row">
+          <a class="social-btn" href="#" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a class="social-btn" href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a class="social-btn" href="#" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="footer-brand">
+          <img src="images/logo.png" alt="" onerror="this.style.display='none'">
+          <span>ANON HT</span>
+        </div>
+        <div class="footer-status">
+          <div class="footer-dot"></div>
+          <span id="footerMsg">جاري التحقق...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ QUIZ CARD ══ -->
+  <div class="quiz-card">
+    <div class="quiz-inner">
+      <div class="quiz-topline"></div>
+      <div class="quiz-body">
+        <div class="quiz-header">
+          <div class="quiz-icon">🎭</div>
+          <div>
+            <div class="quiz-title-text">اكتشف شخصيتك على Anon HT</div>
+            <div class="quiz-sub">5 أسئلة سريعة — بينما الموقع يتصلح 😄</div>
+          </div>
+        </div>
+
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div>
+        </div>
+
+        <div id="quizContent">
+          <!-- Questions rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+'use strict';
+
+/* ════════════════════════════════════
+   FIREBASE
+═════════════════════════════════════ */
+let db;
+try {
+  const cfg = (typeof APP_CONFIG !== 'undefined') ? APP_CONFIG.firebase : null;
+  if (cfg) {
+    if (!firebase.apps.length) firebase.initializeApp(cfg);
+    else firebase.app();
+    db = firebase.firestore();
+  }
+} catch(e) { console.warn('Firebase:', e); }
+
+/* ════════════════════════════════════
+   COUNTDOWN
+═════════════════════════════════════ */
+let _targetTime=null,_startTime=null,_totalMs=null,_cdInterval=null,_checkInterval=null,_prevVals={};
+
+function pad2(n){return String(n).padStart(2,'0')}
+function fmtDate(d){return d.toLocaleDateString('ar-EG',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}
+
+function setUnit(id,val){
+  const el=document.getElementById(id);if(!el)return;
+  const s=pad2(val);if(_prevVals[id]===s)return;
+  _prevVals[id]=s;el.textContent=s;
+  el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip');
+}
+
+function tick(){
+  if(!_targetTime)return;
+  const now=Date.now(),remain=_targetTime-now;
+  if(remain<=0){clearInterval(_cdInterval);onExpired();return;}
+  setUnit('cd-days',Math.floor(remain/86400000));
+  setUnit('cd-hours',Math.floor((remain%86400000)/3600000));
+  setUnit('cd-mins',Math.floor((remain%3600000)/60000));
+  setUnit('cd-secs',Math.floor((remain%60000)/1000));
+  const urgent=remain<10*60*1000;
+  ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.toggle('urgent',urgent);
+  });
+  if(_startTime&&_totalMs){
+    const pct=Math.min(100,Math.round(((now-_startTime)/_totalMs)*100));
+    document.getElementById('progressFill').style.width=pct+'%';
+    document.getElementById('progressPct').textContent=pct+'%';
+  }
+}
+
+function startCountdown(target,start,total){
+  _targetTime=target;_startTime=start;_totalMs=total;
+  if(_cdInterval)clearInterval(_cdInterval);
+  tick();_cdInterval=setInterval(tick,1000);
+}
+
+function onExpired(){
+  document.getElementById('expiredBanner').classList.add('show');
+  setTimeout(checkStatus,3000);
+}
+
+async function loadData(){
+  if(!db){fallback();return;}
+  try{
+    const doc=await db.collection('admin').doc('settings').get();
+    if(!doc.exists){fallback();return;}
+    const d=doc.data();
+    if(!d.maintenance){window.location.replace('index.html');return;}
+    const title=d.maintenanceTitle||'الموقع قيد الصيانة';
+    document.getElementById('mainTitle').textContent=title;
+    document.title=title+' — Anon HT';
+    const msgEl=document.getElementById('mainMsg');
+    msgEl.textContent=d.maintenanceMsg||'نعمل على تحسين تجربتك. سنعود قريباً! 🔧';
+    msgEl.classList.add('loaded');
+    const durMin=parseInt(d.maintenanceDuration)||60;
+    const totalMs=durMin*60*1000;
+    const startMs=d.maintenanceStartedAt?(d.maintenanceStartedAt.toDate?d.maintenanceStartedAt.toDate().getTime():d.maintenanceStartedAt.seconds*1000):Date.now();
+    const targetMs=startMs+totalMs;
+    document.getElementById('progressStart').textContent=fmtDate(new Date(startMs));
+    document.getElementById('progressEnd').textContent=fmtDate(new Date(targetMs));
+    startCountdown(targetMs,startMs,totalMs);
+    document.getElementById('footerMsg').textContent='الصيانة نشطة — فحص كل دقيقة';
+  }catch(e){console.warn('loadData:',e);fallback();}
+}
+
+function fallback(){
+  const msgEl=document.getElementById('mainMsg');
+  msgEl.textContent='الموقع قيد الصيانة الآن. سنعود قريباً! 🔧';
+  msgEl.classList.add('loaded');
+  document.getElementById('footerMsg').textContent='وضع الصيانة نشط';
+  const now=Date.now();
+  startCountdown(now+3600000,now,3600000);
+}
+
+async function checkStatus(){
+  if(!db)return;
+  try{
+    const doc=await db.collection('admin').doc('settings').get();
+    if(!doc.exists)return;
+    if(!doc.data().maintenance){
+      clearInterval(_cdInterval);
+      const banner=document.getElementById('expiredBanner');
+      banner.classList.add('show');
+      banner.querySelector('p').textContent='✅ عادت الخدمة! جاري إعادة التوجيه...';
+      setTimeout(()=>window.location.replace('index.html'),2000);
+    }
+  }catch(e){}
+}
+
+/* ════════════════════════════════════
+   CURSOR DOT
+═════════════════════════════════════ */
+const cursorDot = document.getElementById('cursorDot');
+let mouseX=window.innerWidth/2, mouseY=window.innerHeight/2;
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursorDot.style.left = mouseX + 'px';
+  cursorDot.style.top  = mouseY + 'px';
+});
+document.addEventListener('mouseleave', () => cursorDot.style.opacity = '0');
+document.addEventListener('mouseenter', () => cursorDot.style.opacity = '1');
+
+/* ════════════════════════════════════
+   INTERACTIVE CANVAS EFFECTS
+═════════════════════════════════════ */
+const canvas   = document.getElementById('interactCanvas');
+const ctx      = canvas.getContext('2d');
+let W, H, particles = [], currentEffect = 'fire', animId = null;
+
+function resize(){
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* Particle class */
+class Particle {
+  constructor(x, y, effect){
+    this.x = x; this.y = y; this.effect = effect;
+    this.reset();
+  }
+  reset(){
+    switch(this.effect){
+      case 'fire':
+        this.vx = (Math.random()-0.5)*2.5;
+        this.vy = -(Math.random()*4+2);
+        this.life = 1; this.decay = Math.random()*0.025+0.012;
+        this.size = Math.random()*12+4;
+        this.hue  = Math.random()*40; // red-orange
+        break;
+      case 'galaxy':
+        const angle = Math.random()*Math.PI*2;
+        const speed = Math.random()*2+0.5;
+        this.vx = Math.cos(angle)*speed;
+        this.vy = Math.sin(angle)*speed;
+        this.life = 1; this.decay = Math.random()*0.01+0.005;
+        this.size = Math.random()*4+1;
+        this.hue  = Math.random()*360;
+        break;
+      case 'matrix':
+        this.vx = 0; this.vy = Math.random()*5+3;
+        this.life = 1; this.decay = Math.random()*0.02+0.008;
+        this.size = Math.random()*10+8;
+        this.char = String.fromCharCode(0x30A0 + Math.floor(Math.random()*96));
+        break;
+      case 'shatter':
+        const a2 = Math.random()*Math.PI*2;
+        const spd = Math.random()*10+4;
+        this.vx = Math.cos(a2)*spd;
+        this.vy = Math.sin(a2)*spd - 3;
+        this.gravity = 0.3;
+        this.life = 1; this.decay = Math.random()*0.02+0.01;
+        this.size = Math.random()*8+3;
+        this.rotation = Math.random()*Math.PI*2;
+        this.rotSpeed = (Math.random()-0.5)*0.3;
+        this.hue = 330 + Math.random()*60;
+        break;
+    }
+  }
+  update(){
+    switch(this.effect){
+      case 'fire':
+        this.x += this.vx + Math.sin(this.life*8)*0.5;
+        this.y += this.vy;
+        this.vy -= 0.08;
+        this.size *= 0.97;
+        break;
+      case 'galaxy':
+        this.x += this.vx; this.y += this.vy;
+        this.vx *= 0.99; this.vy *= 0.99;
+        break;
+      case 'matrix':
+        this.y += this.vy;
+        if(Math.random()<0.05) this.char=String.fromCharCode(0x30A0+Math.floor(Math.random()*96));
+        break;
+      case 'shatter':
+        this.x += this.vx; this.y += this.vy;
+        this.vy += this.gravity;
+        this.vx *= 0.97; this.vy *= 0.98;
+        this.rotation += this.rotSpeed;
+        break;
+    }
+    this.life -= this.decay;
+    return this.life > 0;
+  }
+  draw(ctx){
+    const a = Math.max(0, this.life);
+    switch(this.effect){
+      case 'fire': {
+        const g = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size);
+        g.addColorStop(0, `hsla(${this.hue},100%,80%,${a})`);
+        g.addColorStop(0.4,`hsla(${this.hue+15},100%,55%,${a*0.8})`);
+        g.addColorStop(1, `hsla(${this.hue+25},100%,30%,0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill();
+        break;
+      }
+      case 'galaxy': {
+        ctx.save();
+        ctx.globalAlpha = a * 0.9;
+        const gs = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*3);
+        gs.addColorStop(0,`hsl(${this.hue},100%,90%)`);
+        gs.addColorStop(1,`hsla(${this.hue},100%,60%,0)`);
+        ctx.fillStyle = gs;
+        ctx.beginPath(); ctx.arc(this.x,this.y,this.size*3,0,Math.PI*2); ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.restore();
+        break;
+      }
+      case 'matrix': {
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.fillStyle = `rgba(248,5,102,${a})`;
+        ctx.shadowColor = 'rgba(248,5,102,0.8)';
+        ctx.shadowBlur  = 8;
+        ctx.font = `${this.size}px 'JetBrains Mono'`;
+        ctx.fillText(this.char, this.x, this.y);
+        ctx.restore();
+        break;
+      }
+      case 'shatter': {
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.translate(this.x,this.y);
+        ctx.rotate(this.rotation);
+        ctx.fillStyle = `hsl(${this.hue},100%,60%)`;
+        ctx.shadowColor = `hsl(${this.hue},100%,60%)`;
+        ctx.shadowBlur  = 10;
+        ctx.fillRect(-this.size/2,-this.size/2,this.size,this.size);
+        ctx.restore();
+        break;
+      }
+    }
+  }
+}
+
+/* Spawn particles on interaction */
+let isPointerDown = false;
+function spawnAt(x, y, count=8){
+  for(let i=0;i<count;i++) particles.push(new Particle(x,y,currentEffect));
+}
+
+canvas.addEventListener('mousemove', e => {
+  if(currentEffect==='shatter') return;
+  spawnAt(e.clientX, e.clientY, currentEffect==='matrix'?2:5);
+});
+canvas.addEventListener('click', e => {
+  const count = currentEffect==='shatter' ? 40 : 20;
+  spawnAt(e.clientX, e.clientY, count);
+  // Ripple burst
+  for(let i=0;i<count;i++) particles.push(new Particle(e.clientX,e.clientY,currentEffect));
+});
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const t=e.touches[0];
+  spawnAt(t.clientX, t.clientY, 4);
+  mouseX=t.clientX; mouseY=t.clientY;
+  cursorDot.style.left=mouseX+'px'; cursorDot.style.top=mouseY+'px';
+},{passive:false});
+canvas.addEventListener('touchstart', e=>{
+  const t=e.touches[0];
+  spawnAt(t.clientX, t.clientY, currentEffect==='shatter'?30:15);
+});
+
+/* Auto ambient particles */
+function ambientSpawn(){
+  if(currentEffect==='fire'){
+    for(let i=0;i<2;i++) particles.push(new Particle(mouseX+(Math.random()-0.5)*20,mouseY+(Math.random()-0.5)*20,'fire'));
+  }
+}
+
+/* Render loop */
+function render(){
+  animId = requestAnimationFrame(render);
+  ctx.clearRect(0,0,W,H);
+  ambientSpawn();
+  particles = particles.filter(p => { const alive=p.update(); if(alive)p.draw(ctx); return alive; });
+  if(particles.length>800) particles.splice(0, particles.length-800);
+}
+render();
+
+/* Effect switcher */
+function setEffect(name){
+  currentEffect = name;
+  particles = [];
+  document.querySelectorAll('.effect-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ef-'+name).classList.add('active');
+
+  // Change bg accent subtly
+  const colors = {fire:'rgba(248,5,102,0.09)',galaxy:'rgba(80,0,200,0.07)',matrix:'rgba(0,248,80,0.05)',shatter:'rgba(248,100,5,0.08)'};
+  document.getElementById('bgBase').style.background =
+    `radial-gradient(ellipse 65% 55% at 15% 15%, ${colors[name]} 0%, transparent 60%),
+     radial-gradient(ellipse 50% 50% at 85% 80%, ${colors[name]} 0%, transparent 55%), #050505`;
+}
+
+/* ════════════════════════════════════
+   PERSONALITY QUIZ
+═════════════════════════════════════ */
+const QUESTIONS = [
+  {
+    q: 'لو كنت هتبعت سؤال مجهول، هتبعته لـ؟',
+    opts: [
+      {e:'💘', t:'حبيب/حبيبة — عايز أقوله حاجة ما قدرتش', s:'romantic'},
+      {e:'👥', t:'صاحب/صاحبة — أسأله حاجة بصراحة', s:'social'},
+      {e:'🎭', t:'شخص مشهور — عايز أعرف رأيه الحقيقي', s:'curious'},
+      {e:'🔥', t:'عدو — عايز أزعله بسؤال دسم 😈', s:'chaotic'},
+    ]
+  },
+  {
+    q: 'إيه أول حاجة بتعملها لما تصحى الصبح؟',
+    opts: [
+      {e:'📱', t:'بفتح الموبايل فوراً', s:'social'},
+      {e:'😴', t:'بنام تاني لساعة كمان', s:'chill'},
+      {e:'☕', t:'قهوة قبل أي كلام', s:'romantic'},
+      {e:'💭', t:'بفضل أفكر في أفكار عشوائية', s:'curious'},
+    ]
+  },
+  {
+    q: 'لو حد بعتلك سؤال مجهول وحشني، رد فعلك؟',
+    opts: [
+      {e:'😭', t:'بموت وبرد بحيوية عشان يكمل', s:'romantic'},
+      {e:'🕵️', t:'بحاول أعرف مين هو', s:'curious'},
+      {e:'😂', t:'بضحك وبعمل فيها تقيل', s:'chaotic'},
+      {e:'😐', t:'برد بجدية وبسرعة', s:'social'},
+    ]
+  },
+  {
+    q: 'الوقت 3 الصبح وصاحي — إيه اللي بيحصل؟',
+    opts: [
+      {e:'🎵', t:'سامع موسيقى وغارق في أفكار', s:'romantic'},
+      {e:'📺', t:'بنج ووتش سيرية', s:'chill'},
+      {e:'💬', t:'بشات مع ناس كتير', s:'social'},
+      {e:'🃏', t:'بعمل حاجات عشوائية مش هاشرحها', s:'chaotic'},
+    ]
+  },
+  {
+    q: 'شخصية Anon HT اللي أنت عليها أكتر؟',
+    opts: [
+      {e:'❓', t:'اللي بيبعت أسئلة حساسة وجريئة', s:'chaotic'},
+      {e:'👑', t:'اللي عنده profile مليان أسئلة', s:'social'},
+      {e:'🌙', t:'اللي بيبعت أسئلة عاطفية بالليل', s:'romantic'},
+      {e:'🔍', t:'اللي بيقرأ الأسئلة ومش بيرد 😂', s:'curious'},
+    ]
+  },
+];
+
+const RESULTS = {
+  romantic: {
+    emoji: '🌙', type: 'THE NIGHT SOUL',
+    name: 'روح الليل الرومانسية',
+    desc: 'أنت من الناس اللي بتحس بأعمق ما في الآخرين. بتبعت أسئلة فيها دفا وعمق، وبتخلي الناس تفكر. Anon HT عندك مكان تقول فيه اللي جوا قلبك بدون خوف.',
+    traits: ['عاطفي 💭', 'صادق 🌹', 'ليلي 🌙', 'عميق 🌊'],
+  },
+  social: {
+    emoji: '👑', type: 'THE CONNECTOR',
+    name: 'الشخص الاجتماعي',
+    desc: 'أنت المحور. بتعرف كل الناس وكل الناس بتعرفك. على Anon HT بتبعت أسئلة تخلي المحادثة تشتعل، وعندك profile مليان تفاعل.',
+    traits: ['اجتماعي 🤝', 'كاريزما ✨', 'مؤثر 📣', 'ودود 🫂'],
+  },
+  curious: {
+    emoji: '🔭', type: 'THE DEEP THINKER',
+    name: 'العقل المتسائل',
+    desc: 'أنت دايماً بتسأل "ليه؟" قبل أي حاجة. على Anon HT بتبعت أسئلة فلسفية وبتخلي الناس تفكر تاني. عقلك شغال 24/7.',
+    traits: ['فضولي 🔍', 'ذكي 🧠', 'تحليلي 📊', 'مبدع 💡'],
+  },
+  chill: {
+    emoji: '😎', type: 'THE VIBE MASTER',
+    name: 'سيد الهدوء',
+    desc: 'مش كل حاجة محتاجة ريأكشن. أنت بتعيش بالراحة وبتخلي الجو خفيف. على Anon HT بتستخدمه للمتعة وبس، وده في حد ذاته ذكاء.',
+    traits: ['هادي 🌿', 'خفيف الدم 😄', 'متوازن ⚖️', 'واقعي 🌍'],
+  },
+  chaotic: {
+    emoji: '🔥', type: 'THE CHAOS AGENT',
+    name: 'عميل الكاوس',
+    desc: 'أنت السبب في إن المحادثة تبقى ممتعة. بتبعت أسئلة جريئة وغير متوقعة، وبتشعل الناس. Anon HT كأنه اتعمل عشانك بالظبط.',
+    traits: ['جريء 🎯', 'غير متوقع 🌪️', 'ممتع 🎭', 'لا يُخاف ⚡'],
+  },
+};
+
+let qIndex = 0, scores = {romantic:0, social:0, curious:0, chill:0, chaotic:0};
+
+function renderQuestion(){
+  const qc = document.getElementById('quizContent');
+  const pct = (qIndex/QUESTIONS.length)*100;
+  document.getElementById('quizProgressFill').style.width = pct+'%';
+
+  if(qIndex >= QUESTIONS.length){ showResult(); return; }
+
+  const q = QUESTIONS[qIndex];
+  qc.innerHTML = `
+    <div class="q-step">
+      <div class="q-number">سؤال ${qIndex+1} / ${QUESTIONS.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-options">
+        ${q.opts.map((o,i)=>`
+          <div class="q-opt" onclick="pickOpt('${o.s}',this)">
+            <span class="q-opt-emoji">${o.e}</span>
+            <span>${o.t}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function pickOpt(score, el){
+  if(el.classList.contains('selected')) return;
+  el.classList.add('selected');
+  scores[score]++;
+  setTimeout(()=>{ qIndex++; renderQuestion(); }, 380);
+}
+
+function showResult(){
+  const best = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+  const r = RESULTS[best];
+  document.getElementById('quizProgressFill').style.width = '100%';
+
+  document.getElementById('quizContent').innerHTML = `
+    <div class="quiz-result show">
+      <div class="result-emoji">${r.emoji}</div>
+      <div class="result-type">${r.type}</div>
+      <div class="result-name">${r.name}</div>
+      <div class="result-desc">${r.desc}</div>
+      <div class="result-traits">
+        ${r.traits.map(t=>`<span class="trait-tag">${t}</span>`).join('')}
+      </div>
+      <button class="quiz-retry-btn" onclick="retryQuiz()">🔄 جرب تاني</button>
+    </div>
+  `;
+  // Celebrate with particles
+  for(let i=0;i<5;i++){
+    setTimeout(()=>{
+      const x=Math.random()*W, y=Math.random()*H*0.5;
+      for(let j=0;j<20;j++) particles.push(new Particle(x,y,'shatter'));
+    }, i*150);
+  }
+}
+
+function retryQuiz(){
+  qIndex=0; scores={romantic:0,social:0,curious:0,chill:0,chaotic:0};
+  document.getElementById('quizProgressFill').style.width='0%';
+  renderQuestion();
+}
+
+/* ════════════════════════════════════
+   BOOT
+═════════════════════════════════════ */
+window.addEventListener('load', ()=>{
+  loadData();
+  _checkInterval = setInterval(checkStatus, 60000);
+  renderQuestion();
+});
+</script>
+<script src="/onesignal-notify.js"></script>
+</body>
+</html>

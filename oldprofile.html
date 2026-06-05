@@ -50,7 +50,7 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-    <script src="ads.js" defer></script>
+    <script src="ads.js?v=2" defer></script>
 
     <style>
         :root{
@@ -2338,5 +2338,6 @@ function showVerificationMessage(type) {
     toast('success', type==='admin' ? t('badge_admin') : t('badge_user'), 2500);
 }
 </script>
+<script src="/onesignal-notify.js"></script>
 </body>
 </html>

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+     <script src="ads.js?v=2"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9442350195298931" crossorigin="anonymous"></script>
     <title>الأسئلة | Anon</title>
     <meta name="description" content="Anon - استقبل أسئلة مجهولة وأجب عليها بصدق وشفافية">
     <meta name="keywords" content="أسئلة مجهولة, anon, اسأل بشكل مجهول, ردود صريحة">
@@ -10,15 +12,15 @@
     <meta name="author" content="Anon HT">
     <meta property="og:title" content="الأسئلة | Anon">
     <meta property="og:description" content="استقبل أسئلة مجهولة وأجب عليها بصدق وشفافية">
-    <meta property="og:image" content="https://anon-ht.web.app/images/logo.png">
-    <meta property="og:url" content="https://anon-ht.web.app/questions.html">
+    <meta property="og:image" content="https://anonht.com/images/logo.png">
+    <meta property="og:url" content="https://anonht.com/questions.html">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ar_EG">
     <meta property="og:site_name" content="Anon HT">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="الأسئلة | Anon">
     <meta name="twitter:description" content="استقبل أسئلة مجهولة وأجب عليها بصدق وشفافية">
-    <meta name="twitter:image" content="https://anon-ht.web.app/images/logo.png">
+    <meta name="twitter:image" content="https://anonht.com/images/logo.png">
     <link rel="icon" type="image/png" href="images/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,8 +29,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics-compat.js"></script>
     <script src="lang.js"></script>
-    <script src="config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <script src="100271050.js"></script>
+    <script src="maintenance-guard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer>
+    </script>
     <style>
         :root {
             --primary: #f80566;
@@ -92,11 +96,19 @@
         .tab-badge.show { display: inline-block; }
 
         .ask-card {
-            background: var(--card); backdrop-filter: blur(15px);
-            border-radius: 18px; margin-bottom: 12px;
-            border: 1px solid var(--border); overflow: hidden;
-            animation: slideUp 0.3s ease;
-        }
+    background: linear-gradient(145deg, rgba(248,5,102,0.04), rgba(13,13,13,0.9));
+    backdrop-filter: blur(15px);
+    border-radius: 18px; margin-bottom: 12px;
+    border: 1px solid rgba(248,5,102,0.15); overflow: hidden;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 4px 20px rgba(248,5,102,0.06);
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.ask-card:hover {
+    border-color: rgba(248,5,102,0.35);
+    box-shadow: 0 8px 30px rgba(248,5,102,0.18);
+    transform: translateY(-2px);
+}
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(10px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -155,10 +167,18 @@
         .reply-send-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; font-family: 'Cairo'; font-size: 13px; }
 
         .shout-inbox-card {
-            background: var(--card); border-radius: 18px; margin-bottom: 12px;
-            border: 1px solid var(--shout-border); overflow: hidden;
-            animation: slideUp 0.3s ease; position: relative;
-        }
+    background: linear-gradient(145deg, rgba(248,5,102,0.04), rgba(13,13,13,0.9));
+    border-radius: 18px; margin-bottom: 12px;
+    border: 1px solid rgba(248,5,102,0.18); overflow: hidden;
+    animation: slideUp 0.3s ease; position: relative;
+    box-shadow: 0 4px 20px rgba(248,5,102,0.06);
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.shout-inbox-card:hover {
+    border-color: rgba(248,5,102,0.35);
+    box-shadow: 0 8px 30px rgba(248,5,102,0.18);
+    transform: translateY(-2px);
+}
         .shout-inbox-card::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
             background: linear-gradient(90deg, var(--shout-color), transparent);
@@ -208,10 +228,18 @@
 
         /* ══ صدى كارد ══ */
         .sada-card {
-            background: var(--card); border-radius: 18px; margin-bottom: 10px;
-            border: 1px solid var(--border); overflow: hidden;
-            animation: slideUp 0.3s ease; position: relative;
-        }
+    background: linear-gradient(145deg, rgba(248,5,102,0.04), rgba(13,13,13,0.9));
+    border-radius: 18px; margin-bottom: 10px;
+    border: 1px solid rgba(248,5,102,0.15); overflow: hidden;
+    animation: slideUp 0.3s ease; position: relative;
+    box-shadow: 0 4px 20px rgba(248,5,102,0.06);
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.sada-card:hover {
+    border-color: rgba(248,5,102,0.35);
+    box-shadow: 0 8px 30px rgba(248,5,102,0.18);
+    transform: translateY(-2px);
+}
         .sada-card::before {
             content:''; position:absolute; top:0; right:0; left:0; height:2px;
             background: linear-gradient(90deg, var(--primary), transparent);
@@ -345,7 +373,7 @@ const t = k => {
 function applyLanguage(lang) {
     currentLang = lang;
     document.documentElement.lang = lang;
-    document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir  = ['ar'].includes(lang) ? 'rtl' : 'ltr';
     const ids = {
         'txt-tabAll':      'tabAll',
         'txt-tabPersonal': 'tabPersonal',
@@ -453,16 +481,22 @@ function confirmSwal(title, text, confirmTxt, danger = false) {
 
 /* ══════════ AUTH ══════════ */
 auth.onAuthStateChanged(user => {
-    if (!user) { location.href = 'signin.html'; return; }
+    if (!user) { location.href = '/'; return; }
     currentUserId = user.uid;
     document.getElementById('navProfileLink').href = 'profile.html?id=' + user.uid;
+    
 
     unsubs.push(
-        db.collection('users').doc(user.uid).onSnapshot(doc => {
-            if (doc.exists) document.getElementById('userCoins').textContent =
+    db.collection('users').doc(user.uid).onSnapshot(doc => {
+        if (doc.exists) {
+            document.getElementById('userCoins').textContent =
                 (doc.data().anonCoins || 0).toFixed(2);
-        })
-    );
+            if (typeof AdsManager !== 'undefined' && typeof AdsManager.init === 'function') {
+    AdsManager.init(doc.data());
+}
+        }
+    })
+);
 
     applyLanguage(currentLang);
     startListeners(user.uid);
@@ -734,6 +768,7 @@ function renderAll() {
             });
             list.innerHTML = '';
             list.appendChild(frag);
+if (typeof AdsManager !== 'undefined') AdsManager.injectAds(list);
             return;
         }
 
@@ -760,6 +795,7 @@ function renderAll() {
         });
         list.innerHTML = '';
         list.appendChild(frag);
+        if (typeof AdsManager !== 'undefined') AdsManager.injectAds(list);
     });
 }
 
@@ -1081,7 +1117,9 @@ async function sendQuestionReply(questionId, qData) {
             likesCount:   0,
             likedBy:      [],
             likes:        [],
-            type:         'question_reply'
+            type:         'question_reply',
+            language:     uData.language || uData.lang?.toLowerCase() || 'ar',
+            country:      uData.country  || ''
         });
 
         await db.collection('questions').doc(questionId).update({
@@ -1095,6 +1133,9 @@ async function sendQuestionReply(questionId, qData) {
         });
 
         toast('success', t('replySuccess') || 'تم نشر إجابتك ✓');
+        if (qData.senderId && qData.senderId !== currentUserId) {
+    createNotification(qData.senderId, 'answer', null);
+}
     } catch (e) {
         console.error('sendQuestionReply:', e);
         toast('error', t('connError') || 'حدث خطأ، حاول مرة أخرى');
@@ -1140,7 +1181,9 @@ async function sendShoutReply(shoutId, sData) {
             likesCount:   0,
             likedBy:      [],
             likes:        [],
-            type:         'shout_reply'
+            type:         'shout_reply',
+            language:     uData.language || uData.lang?.toLowerCase() || 'ar',
+            country:      uData.country  || ''
         });
 
         await db.collection('shouts').doc(shoutId).update({
@@ -1153,6 +1196,10 @@ async function sendShoutReply(shoutId, sData) {
         });
 
         toast('success', t('replySuccess') || 'تم إرسال ردك ✓');
+        const shoutOwnerId = sData.ownerId || sData.senderId || null;
+if (shoutOwnerId && shoutOwnerId !== currentUserId) {
+    createNotification(shoutOwnerId, 'answer', shoutId);
+}
     } catch (e) {
         console.error('sendShoutReply:', e);
         if (card) card.classList.remove('sending-overlay');
@@ -1186,6 +1233,27 @@ async function handleDeleteQuestion(questionId) {
         } catch (_) {}
         toast('error', t('connError') || 'تعذر الحذف');
     }
+}
+
+async function createNotification(receiverId, type, answerId = null) {
+    if (!receiverId || !currentUserId || receiverId === currentUserId) return;
+    try {
+        const sSnap = await db.collection('users').doc(currentUserId).get();
+        const sData = sSnap.exists ? sSnap.data() : {};
+        const nd = {
+            receiverId,
+            senderId:        currentUserId,
+            senderName:      sData.name       || '',
+            senderUsername:  sData.username   || '',
+            senderAvatar:    sData.avatarUrl  || '',
+            isSenderVerified: !!(sData.isVerified || sData.isPremium),
+            type,
+            isRead:    false,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        if (answerId) nd.answerId = answerId;
+        await db.collection('notifications').add(nd);
+    } catch(e) { console.error('createNotification:', e); }
 }
 
 /* ══════════ DISMISS SHOUT ══════════ */
@@ -1259,5 +1327,6 @@ window.addEventListener('beforeunload', () => {
     shoutRepliesUnsubs.forEach(fn => { try { fn(); } catch (_) {} });
 });
 </script>
+<script src="/onesignal-notify.js"></script>
 </body>
 </html>
