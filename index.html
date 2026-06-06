@@ -2288,5 +2288,54 @@ document.addEventListener('click', e => {
   }
 });
 </script>
+
+<script>
+// Preload الصفحات المهمة
+const pages = ['/questions.html', '/profile.html', '/notifications.html'];
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    pages.forEach(page => {
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = page;
+      document.head.appendChild(link);
+    });
+  }, 2000);
+});
+</script>
+
+<div id="offline-bar" style="
+  display:none;
+  position:fixed;
+  top:0;left:0;
+  width:100%;
+  padding:8px;
+  background:#f80566;
+  color:white;
+  text-align:center;
+  font-size:13px;
+  z-index:99999;">
+  📵 لا يوجد اتصال بالإنترنت
+</div>
+
+<script>
+window.addEventListener('online', () => {
+  document.getElementById('offline-bar').style.display = 'none';
+  location.reload();
+});
+window.addEventListener('offline', () => {
+  document.getElementById('offline-bar').style.display = 'block';
+});
+</script>
+
+<style>
+.no-copy {
+  -webkit-user-select: none;
+  user-select: none;
+}
+</style>
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+</script>
 </body>
 </html>
