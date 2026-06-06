@@ -2,6 +2,11 @@
   "appId": "com.anon.app",
   "appName": "Anon HT",
   "webDir": "www",
+  "server": {
+    "url": "https://anonht.com",
+    "cleartext": false,
+    "androidScheme": "https"
+  },
   "plugins": {
     "PushNotifications": {
       "presentationOptions": ["badge", "sound", "alert"]
