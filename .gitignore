@@ -1,6 +1,6 @@
-*.keystore
-*.jks
-android/app/src/main/res/drawable/splash.png
 node_modules/
-node_modules/
-node_modules/
+android/
+.gradle/
+build/
+*.apk
+*.aab
