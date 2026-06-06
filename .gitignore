@@ -1,3 +1,4 @@
 *.keystore
 *.jks
 android/app/src/main/res/drawable/splash.png
+node_modules/
