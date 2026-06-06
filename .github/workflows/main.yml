@@ -20,7 +20,7 @@ jobs:
       - name: Create assets directory
         run: mkdir -p android/app/src/main/assets
       - name: Sync Capacitor
-        run: ./node_modules/.bin/cap sync android
+        run: npx @capacitor/cli sync android
       - name: Build APK
         run: cd android && ./gradlew assembleDebug
       - name: Upload APK
