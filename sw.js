@@ -1,6 +1,19 @@
-self.options = {
-    "domain": "anonht.com",
-    "zoneId": 11087897
-}
-self.lary = ""
-importScripts('https://anonht.com/act/files/service-worker.min.js?r=sw')
+const CACHE = 'anon-v1';
+const FILES = [
+  '/',
+  '/index.html',
+  '/images/logo.png',
+  '/404.html'
+];
+
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(c => c.addAll(FILES))
+  );
+});
+
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(r => r || fetch(e.request))
+  );
+});

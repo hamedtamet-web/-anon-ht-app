@@ -2337,5 +2337,22 @@ window.addEventListener('offline', () => {
 <script>
 document.addEventListener('contextmenu', e => e.preventDefault());
 </script>
+
+<script>
+// تحقق من تحديثات كل 30 دقيقة
+setInterval(() => {
+  fetch('/version.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      const current = localStorage.getItem('app_version');
+      if (current && current !== data.version) {
+        if (confirm('يوجد تحديث جديد! هل تريد التحديث الآن؟')) {
+          location.reload(true);
+        }
+      }
+      localStorage.setItem('app_version', data.version);
+    }).catch(() => {});
+}, 1800000);
+</script>
 </body>
 </html>
