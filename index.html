@@ -2354,5 +2354,41 @@ setInterval(() => {
     }).catch(() => {});
 }, 1800000);
 </script>
+
+<script>
+// منع النوافذ المنبثقة والإعلانات
+window.open = function() { return null; };
+window.alert = function() { return null; };
+window.confirm = function() { return true; };
+
+// منع فتح روابط خارجية
+document.addEventListener('click', function(e) {
+  const a = e.target.closest('a');
+  if (a && a.target === '_blank') {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = a.href;
+  }
+}, true);
+
+// منع النوافذ المنبثقة من الإعلانات
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(m => {
+    m.addedNodes.forEach(node => {
+      if (node.nodeType === 1) {
+        const style = window.getComputedStyle(node);
+        if (style.position === 'fixed' || style.position === 'absolute') {
+          const zIndex = parseInt(style.zIndex);
+          if (zIndex > 9000 && !node.id.includes('app-') && !node.id.includes('offline')) {
+            node.remove();
+          }
+        }
+      }
+    });
+  });
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
+</script>
 </body>
 </html>
