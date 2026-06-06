@@ -35,12 +35,21 @@ jobs:
       - name: Generate App Icons
         run: |
           sudo apt-get install -y imagemagick
-          for dir in mipmap-mdpi:48 mipmap-hdpi:72 mipmap-xhdpi:96 mipmap-xxhdpi:144 mipmap-xxxhdpi:192; do
-            folder="${dir%%:*}"
-            size="${dir##*:}"
-            convert assets/logo.png -resize ${size}x${size} android/app/src/main/res/${folder}/ic_launcher.png
-            convert assets/logo.png -resize ${size}x${size} android/app/src/main/res/${folder}/ic_launcher_round.png
-          done
+          convert assets/logo.png -resize 48x48 android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+          convert assets/logo.png -resize 48x48 android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+          convert assets/logo.png -resize 72x72 android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          convert assets/logo.png -resize 72x72 android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+          convert assets/logo.png -resize 96x96 android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+          convert assets/logo.png -resize 96x96 android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+          convert assets/logo.png -resize 144x144 android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+          convert assets/logo.png -resize 144x144 android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+          convert assets/logo.png -resize 192x192 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          convert assets/logo.png -resize 192x192 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+          rm -f android/app/src/main/res/mipmap-*/ic_launcher_foreground.png
+          rm -f android/app/src/main/res/mipmap-*/ic_launcher_background.png
+          rm -f android/app/src/main/res/drawable/ic_launcher_background.xml
+          rm -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+          rm -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
       - name: Generate Keystore
         run: |
           keytool -genkeypair -v \
