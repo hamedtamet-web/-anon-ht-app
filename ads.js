@@ -6,7 +6,6 @@ const ADS_CONFIG = {
         display: '5299327669'
     },
     adsterra: {
-        socialBar:     'https://assistedtogether.com/9f/c4/e2/9fc4e21c71c764da2d80fd465e66a454.js',
         banner320x50:  'f36658d42131ec282e9ddb99816dbca4',
         banner300x250: 'fd66d93c42228f791d7d72b077964a6d'
     }
@@ -79,7 +78,6 @@ function createAdsterraBanner(size, onLoad) {
 
     const scriptInvoke = document.createElement('script');
     scriptInvoke.type = 'text/javascript';
-    scriptInvoke.src = `https://assistedtogether.com/${key}/invoke.js`;
 
     scriptInvoke.onload = () => {
         wrapper.style.display = 'flex';
