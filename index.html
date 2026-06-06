@@ -2199,5 +2199,16 @@ async function giftCoinsInFeed(answerId, answerOwnerId, btn) {
 </script>
 <script src="fcm-init.js"></script>
 <script src="/onesignal-notify.js"></script>
+
+<div id="app-loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity 0.5s ease;">
+  <img src="/images/logo.png" style="width:120px;animation:pulse 1.5s infinite">
+  <div style="margin-top:20px;color:#f80566;font-size:14px">جاري التحميل...</div>
+</div>
+<style>
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:0.8}}
+</style>
+<script>
+window.addEventListener('load',function(){setTimeout(function(){var l=document.getElementById('app-loader');l.style.opacity='0';setTimeout(function(){l.style.display='none'},500)},800)});
+</script>
 </body>
 </html>
