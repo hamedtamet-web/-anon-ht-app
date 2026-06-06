@@ -21,7 +21,6 @@
   "dependencies": {
     "@capacitor/android": "^8.4.0",
     "@capacitor/cli": "^8.4.0",
-    "@capacitor/core": "^8.4.0",
-    "onesignal-cordova-plugin": "^5.3.11"
+    "@capacitor/core": "^8.4.0"
   }
 }
