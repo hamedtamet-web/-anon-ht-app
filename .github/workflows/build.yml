@@ -32,6 +32,25 @@ jobs:
         run: |
           npx cap add android 2>/dev/null || true
           npx cap sync android
+      - name: Generate App Icons
+        run: |
+          npm install -g jimp
+          node -e "
+          const Jimp = require('jimp');
+          const sizes = {
+            'mipmap-mdpi': 48,
+            'mipmap-hdpi': 72,
+            'mipmap-xhdpi': 96,
+            'mipmap-xxhdpi': 144,
+            'mipmap-xxxhdpi': 192
+          };
+          Object.entries(sizes).forEach(([dir, size]) => {
+            Jimp.read('assets/logo.png').then(img => {
+              img.resize(size, size).write('android/app/src/main/res/' + dir + '/ic_launcher.png');
+              img.resize(size, size).write('android/app/src/main/res/' + dir + '/ic_launcher_round.png');
+            });
+          });
+          "
       - name: Generate Keystore
         run: |
           keytool -genkeypair -v \
