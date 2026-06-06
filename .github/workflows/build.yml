@@ -28,10 +28,10 @@ jobs:
           cp -r images www/ 2>/dev/null || true
           cp -r fonts www/ 2>/dev/null || true
           cp -r sounds www/ 2>/dev/null || true
-      - name: Sync Capacitor
+      - name: Add and Sync Capacitor
         run: |
-          chmod +x node_modules/.bin/cap
-          node_modules/.bin/cap sync android
+          npx cap add android 2>/dev/null || true
+          npx cap sync android
       - name: Generate Keystore
         run: |
           keytool -genkeypair -v \
