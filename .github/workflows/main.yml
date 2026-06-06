@@ -1,4 +1,4 @@
-name: Build APK
+riname: Build APK
 on:
   push:
     branches: [ main ]
@@ -20,7 +20,7 @@ jobs:
       - name: Create assets directory
         run: mkdir -p android/app/src/main/assets
       - name: Sync Capacitor
-        run: npx cap sync android
+        run: ./node_modules/.bin/cap sync android
       - name: Build APK
         run: cd android && ./gradlew assembleDebug
       - name: Upload APK
