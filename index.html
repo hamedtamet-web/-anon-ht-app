@@ -2247,5 +2247,46 @@ if (!localStorage.getItem('welcomed')) {
   }, 3000);
 }
 </script>
+
+<script>
+// تتبع وقت الاستخدام
+let startTime = Date.now();
+window.addEventListener('beforeunload', () => {
+  let duration = Math.round((Date.now() - startTime) / 1000);
+  localStorage.setItem('last_session', duration);
+});
+
+// تتبع عدد الزيارات
+let visits = parseInt(localStorage.getItem('visits') || 0) + 1;
+localStorage.setItem('visits', visits);
+
+// عرض رسالة للمستخدمين القدامى
+if (visits === 10) {
+  setTimeout(() => {
+    alert('🎉 أنت من أكثر المستخدمين نشاطاً! شكراً لثقتك في Anon HT');
+  }, 3000);
+}
+</script>
+
+<script>
+// Dark mode تلقائي حسب نظام الهاتف
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  document.documentElement.setAttribute('data-theme', 'dark');
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+});
+</script>
+
+<script>
+// اهتزاز خفيف عند الضغط على الأزرار
+document.addEventListener('click', e => {
+  if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+    if (navigator.vibrate) {
+      navigator.vibrate(30);
+    }
+  }
+});
+</script>
 </body>
 </html>
