@@ -17,6 +17,8 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm install
+      - name: Create www directory
+        run: mkdir -p www && cp index.html www/ 2>/dev/null || echo "<html></html>" > www/index.html
       - name: Sync Capacitor
         run: |
           chmod +x node_modules/.bin/cap
