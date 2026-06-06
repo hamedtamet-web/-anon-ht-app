@@ -18,10 +18,11 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Sync Capacitor
-        run: npx cap sync android --inline
-      - name: Fix app name
+        run: node_modules/.bin/cap sync android
+      - name: Fix app name and icon
         run: |
           sed -i 's|<string name="app_name">.*</string>|<string name="app_name">Anon HT</string>|g' android/app/src/main/res/values/strings.xml
+          cp android/app/src/main/res/drawable/ic_launcher.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
       - name: Build APK
         run: |
           chmod +x android/gradlew
