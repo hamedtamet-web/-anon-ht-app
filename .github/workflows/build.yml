@@ -34,23 +34,13 @@ jobs:
           npx cap sync android
       - name: Generate App Icons
         run: |
-          npm install -g jimp
-          node -e "
-          const Jimp = require('jimp');
-          const sizes = {
-            'mipmap-mdpi': 48,
-            'mipmap-hdpi': 72,
-            'mipmap-xhdpi': 96,
-            'mipmap-xxhdpi': 144,
-            'mipmap-xxxhdpi': 192
-          };
-          Object.entries(sizes).forEach(([dir, size]) => {
-            Jimp.read('assets/logo.png').then(img => {
-              img.resize(size, size).write('android/app/src/main/res/' + dir + '/ic_launcher.png');
-              img.resize(size, size).write('android/app/src/main/res/' + dir + '/ic_launcher_round.png');
-            });
-          });
-          "
+          sudo apt-get install -y imagemagick
+          for dir in mipmap-mdpi:48 mipmap-hdpi:72 mipmap-xhdpi:96 mipmap-xxhdpi:144 mipmap-xxxhdpi:192; do
+            folder="${dir%%:*}"
+            size="${dir##*:}"
+            convert assets/logo.png -resize ${size}x${size} android/app/src/main/res/${folder}/ic_launcher.png
+            convert assets/logo.png -resize ${size}x${size} android/app/src/main/res/${folder}/ic_launcher_round.png
+          done
       - name: Generate Keystore
         run: |
           keytool -genkeypair -v \
