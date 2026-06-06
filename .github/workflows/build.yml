@@ -25,16 +25,25 @@ jobs:
         run: |
           chmod +x node_modules/.bin/cap
           node_modules/.bin/cap sync android
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
+      - name: Generate Keystore
+        run: |
+          keytool -genkeypair -v \
+            -keystore android/app/release.keystore \
+            -alias anonht \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass anonht123 \
+            -keypass anonht123 \
+            -dname "CN=AnonHT, OU=Dev, O=AnonHT, L=Cairo, S=Cairo, C=EG"
       - name: Build Signed APK
         run: |
           chmod +x android/gradlew
           cd android && ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/app/release.keystore \
-            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
-            -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
-            -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+            -Pandroid.injected.signing.store.password=anonht123 \
+            -Pandroid.injected.signing.key.alias=anonht \
+            -Pandroid.injected.signing.key.password=anonht123
       - name: Upload Signed APK
         uses: actions/upload-artifact@v4
         with:
