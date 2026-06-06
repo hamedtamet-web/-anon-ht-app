@@ -21,7 +21,9 @@ jobs:
         run: |
           sed -i 's|<string name="app_name">.*</string>|<string name="app_name">Anon HT</string>|g' android/app/src/main/res/values/strings.xml
       - name: Build APK
-        run: cd android && ./gradlew assembleDebug
+        run: |
+          chmod +x android/gradlew
+          cd android && ./gradlew assembleDebug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
