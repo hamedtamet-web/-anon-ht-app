@@ -17,6 +17,8 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm install
+      - name: Sync Capacitor
+        run: npx cap sync android --inline
       - name: Fix app name
         run: |
           sed -i 's|<string name="app_name">.*</string>|<string name="app_name">Anon HT</string>|g' android/app/src/main/res/values/strings.xml
