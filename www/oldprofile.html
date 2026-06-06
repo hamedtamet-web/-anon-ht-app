@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="seoTitle">الملف الشخصي | Anon</title>
+    <meta name="description" id="seoDesc" content="تصفّح ملف شخصي على منصة Anon — اطرح أسئلة مجهولة أو علنية واستمتع بالإجابات.">
+    <meta name="keywords" content="Anon, أسئلة مجهولة, سؤال وجواب, ملف شخصي, شاوت, anonymous questions">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Anon Platform">
+    <link rel="canonical" id="seoCanonical" href="">
+    <meta property="og:type" content="profile">
+    <meta property="og:site_name" content="Anon">
+    <meta property="og:title" id="ogTitle" content="الملف الشخصي | Anon">
+    <meta property="og:description" id="ogDesc" content="تصفّح ملف شخصي على منصة Anon.">
+    <meta property="og:image" id="ogImage" content="images/logo.png">
+    <meta property="og:url" id="ogUrl" content="">
+    <meta property="og:locale" content="ar_AR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twTitle" content="الملف الشخصي | Anon">
+    <meta name="twitter:description" id="twDesc" content="تصفّح ملف شخصي على منصة Anon.">
+    <meta name="twitter:image" id="twImage" content="images/logo.png">
+    <meta name="twitter:site" content="@AnonPlatform">
+    <script type="application/ld+json" id="schemaScript">{"@context":"https://schema.org","@type":"ProfilePage","name":"Anon Profile","url":"","description":"صفحة ملف شخصي على منصة Anon للأسئلة المجهولة","publisher":{"@type":"Organization","name":"Anon","logo":{"@type":"ImageObject","url":"images/logo.png"}}}</script>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <script>window.APP_CONFIG = window.APP_CONFIG || null;</script>
+    <script src="config.js" onerror="console.error('config.js غير موجود')"></script>
+    <script>
+        function initFirebase(){
+            if(typeof APP_CONFIG==='undefined'||!APP_CONFIG?.firebase){
+                document.body.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#050505;color:#fff;font-family:Cairo,sans-serif;text-align:center;padding:20px;"><div><i class="fa-solid fa-triangle-exclamation" style="font-size:40px;color:#f80566;margin-bottom:15px;display:block;"></i><p>خطأ في التهيئة</p></div></div>`;
+                return false;
+            }
+            if(!firebase.apps.length) firebase.initializeApp(APP_CONFIG.firebase);
+            return true;
+        }
+        const firebaseReady = initFirebase();
+        const auth = firebaseReady ? firebase.auth()      : null;
+        const db   = firebaseReady ? firebase.firestore() : null;
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <script src="ads.js?v=2" defer></script>
+
+    <style>
+        :root{
+            --primary:#f80566;--bg:#050505;--card:#0d0d0d;--border:rgba(255,255,255,0.06);
+            --gold:#ffcc00;--admin-red:#ff002b;--verify-blue:#00bfff;
+        }
+        *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;outline:none;}
+
+        body{
+            background:var(--bg);color:white;font-family:'Cairo',sans-serif;
+            margin:0;padding-bottom:100px;overflow-x:hidden;
+            contain: style;
+        }
+
+        /* ═══ SWAL ═══ */
+        .swal-popup{border-radius:24px!important;border:1px solid rgba(255,255,255,0.07)!important;box-shadow:0 20px 60px rgba(0,0,0,0.8)!important;backdrop-filter:blur(20px)!important;}
+        .swal-title{font-size:17px!important;font-weight:900!important;color:#fff!important;}
+        .swal-html{font-size:13px!important;color:#888!important;font-weight:600!important;line-height:1.6!important;}
+        .swal-confirm{background:linear-gradient(135deg,#f80566,#c0004e)!important;border-radius:50px!important;font-family:'Cairo',sans-serif!important;font-weight:800!important;font-size:13px!important;padding:10px 28px!important;box-shadow:0 4px 15px rgba(248,5,102,0.35)!important;border:none!important;}
+        .swal-confirm-danger{background:linear-gradient(135deg,#ff4b4b,#c00)!important;border-radius:50px!important;font-family:'Cairo',sans-serif!important;font-weight:800!important;font-size:13px!important;padding:10px 28px!important;box-shadow:0 4px 15px rgba(255,75,75,0.35)!important;border:none!important;}
+        .swal-cancel{background:rgba(255,255,255,0.06)!important;color:#aaa!important;border-radius:50px!important;font-family:'Cairo',sans-serif!important;font-weight:800!important;font-size:13px!important;padding:10px 28px!important;border:1px solid rgba(255,255,255,0.08)!important;}
+        .swal-input-field{background:#0e0e0e!important;border:1px solid rgba(255,255,255,0.08)!important;border-radius:14px!important;color:#fff!important;font-family:'Cairo',sans-serif!important;font-size:13px!important;}
+
+        /* ═══ HEADER ═══ */
+        header{
+            padding:10px 5%;display:flex;justify-content:space-between;align-items:center;
+            position:sticky;top:0;z-index:1000;
+            background:rgba(5,5,5,0.85);
+            backdrop-filter:blur(16px);
+            -webkit-backdrop-filter:blur(16px);
+            border-bottom:1px solid var(--border);
+        }
+        .logo-img{width:35px;height:auto;}
+        .lang-select{
+            background:rgba(255,255,255,0.05);border:1px solid var(--border);
+            color:white;padding:5px 10px;border-radius:50px;font-size:11px;font-weight:700;cursor:pointer;
+        }
+
+        /* ═══ LAYOUT ═══ */
+        .main-wrapper{max-width:600px;margin:0 auto;width:100%;position:relative;z-index:5;}
+
+        .cover-wrapper{
+            height:160px;background:#0a0a0a;position:relative;
+            border-bottom:1px solid var(--border);overflow:hidden;
+        }
+        .cover-wrapper.is-owner{cursor:pointer;}
+        .cover-img{width:100%;height:100%;object-fit:cover;display:none;}
+
+        .profile-main{margin:-55px auto 0;text-align:center;position:relative;z-index:10;padding:0 15px;}
+
+        .avatar-container{
+            width:110px;height:110px;margin:0 auto;border-radius:50%;
+            border:4px solid var(--bg);background:#111;position:relative;z-index:2;
+        }
+        .avatar-container.is-owner{cursor:pointer;}
+        .avatar-container::after{
+            content:'';position:absolute;bottom:-2px;left:0;
+            width:100%;height:55px;
+            border-bottom-left-radius:55px;border-bottom-right-radius:55px;
+            z-index:-1;filter:blur(8px);opacity:0.9;
+        }
+        .avatar-container.admin-glow::after{background-color:var(--admin-red);}
+        .avatar-container.verify-glow::after{background-color:var(--verify-blue);}
+        .avatar-img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+
+        .profile-username{font-size:12px;color:#555;font-weight:700;margin-top:3px;letter-spacing:0.3px;}
+        .profile-username span{color:#444;}
+
+        /* ═══ INTERACTION BAR ═══ */
+        .interaction-bar{display:none;align-items:center;justify-content:center;gap:10px;margin:15px 0;}
+        .interaction-bar.visible{display:flex;}
+        .follow-btn{padding:8px 30px;border-radius:50px;border:none;font-weight:800;font-family:'Cairo';cursor:pointer;font-size:13px;transition:background 0.25s,color 0.25s;}
+        .follow-btn.unfollowed{background:white;color:black;}
+        .follow-btn.followed{background:rgba(255,255,255,0.1);color:white;border:1px solid var(--border);}
+        .notify-btn{
+            width:38px;height:38px;border-radius:50%;border:1px solid var(--border);
+            background:rgba(255,255,255,0.05);color:#555;
+            display:none;align-items:center;justify-content:center;cursor:pointer;
+            transition:color 0.2s,border-color 0.2s,background 0.2s;font-size:14px;
+        }
+        .notify-btn.show{display:flex;}
+        .notify-btn.active{color:var(--gold);border-color:var(--gold);background:rgba(255,204,0,0.1);}
+
+        /* ═══ STATS ═══ */
+        .stats-bar{
+            display:inline-flex;background:rgba(255,255,255,0.03);
+            padding:8px 25px;border-radius:50px;border:1px solid var(--border);
+            gap:20px;margin:15px 0;
+        }
+        .stat-item{display:flex;flex-direction:column;align-items:center;min-width:50px;}
+        .stat-val{font-weight:900;font-size:13px;}
+        .stat-label{font-size:9px;color:#666;font-weight:700;}
+
+        /* ═══ ASK BOX ═══ */
+        .ask-container{
+            background:#0a0a0a;border-radius:25px;padding:20px;
+            margin:20px 15px;border:1px solid var(--border);
+            box-shadow:0 10px 30px rgba(0,0,0,0.4);
+        }
+        .ask-input{
+            width:100%;background:#0e0e0e;border:1px solid var(--border);
+            border-radius:15px;color:white;padding:15px;font-family:'Cairo';
+            resize:none;min-height:100px;font-size:14px;
+            transition:border-color 0.2s;
+        }
+        .ask-input:focus{border-color:rgba(248,5,102,0.3);}
+
+        .mode-switch-row{
+            display:flex;align-items:center;justify-content:space-between;
+            margin-bottom:12px;padding-bottom:12px;
+            border-bottom:1px solid rgba(255,255,255,0.05);
+        }
+        .mode-switch-wrapper{display:flex;align-items:center;gap:10px;}
+        .mode-label-anon{font-size:11px;font-weight:800;color:#888;transition:color 0.3s;}
+        .mode-label-public{font-size:11px;font-weight:800;color:#888;transition:color 0.3s;}
+        .mode-label-anon.active-label{color:var(--primary);}
+        .mode-label-public.active-label{color:#00bfff;}
+
+        .switch-toggle{position:relative;width:48px;height:26px;cursor:pointer;}
+        .switch-toggle input{opacity:0;width:0;height:0;position:absolute;}
+        .switch-slider{
+            position:absolute;inset:0;background:#1a1a1a;border-radius:50px;
+            border:1px solid rgba(255,255,255,0.08);transition:background 0.35s,border-color 0.35s;
+        }
+        .switch-slider::before{
+            content:'';position:absolute;width:20px;height:20px;border-radius:50%;
+            background:var(--primary);bottom:2px;right:3px;
+            transition:transform 0.35s,background 0.35s;
+            box-shadow:0 2px 6px rgba(248,5,102,0.5);
+        }
+        .switch-toggle input:checked+.switch-slider{background:#0a1a2a;border-color:rgba(0,191,255,0.2);}
+        .switch-toggle input:checked+.switch-slider::before{transform:translateX(-22px);background:#00bfff;box-shadow:0 2px 6px rgba(0,191,255,0.5);}
+        [dir="ltr"] .switch-slider::before{right:auto;left:3px;}
+        [dir="ltr"] .switch-toggle input:checked+.switch-slider::before{transform:translateX(22px);}
+
+        .mode-indicator-badge{
+            display:inline-flex;align-items:center;gap:5px;padding:4px 12px;
+            border-radius:50px;font-size:10px;font-weight:800;margin-bottom:10px;
+            transition:background 0.3s,color 0.3s,border-color 0.3s;
+        }
+        .mode-indicator-badge.anon-mode{background:rgba(248,5,102,0.1);color:var(--primary);border:1px solid rgba(248,5,102,0.2);}
+        .mode-indicator-badge.public-mode{background:rgba(0,191,255,0.08);color:#00bfff;border:1px solid rgba(0,191,255,0.15);}
+
+        .send-q-btn{
+            width:100%;margin-top:8px;padding:12px;border-radius:15px;
+            background:var(--primary);color:white;border:none;font-weight:800;
+            cursor:pointer;font-family:'Cairo';font-size:13px;
+            transition:opacity 0.2s,background 0.3s;
+        }
+        .send-q-btn:active{opacity:0.85;}
+        .send-q-btn.public-mode-btn{background:linear-gradient(135deg,#0055aa,#0099dd);}
+
+        .hint-text{
+            text-align:center;color:rgba(255,255,255,0.15);
+            font-size:10px;font-weight:800;margin-top:15px;
+            letter-spacing:2px;text-transform:uppercase;
+        }
+
+        /* ═══ TABS ═══ */
+        .nav-tabs{
+            display:flex;gap:8px;justify-content:center;
+            margin:20px 0;padding:0 15px;flex-wrap:wrap;
+        }
+        .tab-btn{
+            background:rgba(255,255,255,0.05);border:1px solid var(--border);
+            color:#777;padding:8px 18px;border-radius:50px;
+            font-size:11px;font-weight:700;cursor:pointer;font-family:'Cairo';
+            transition:background 0.2s,color 0.2s,border-color 0.2s;
+        }
+        .tab-btn.active{background:var(--primary);color:white;border-color:var(--primary);}
+        .tab-content{display:none;padding:0 15px;animation:fadeIn 0.3s ease;}
+        .tab-content.active{display:block;}
+
+        /* ═══ ANSWER CARD ═══ */
+        .ans-card{
+            background:var(--card);border-radius:24px;padding:22px;
+            margin-bottom:20px;border:1px solid var(--border);
+            animation:slideIn 0.4s ease;position:relative;overflow:visible;
+        }
+        .ans-card.dev-glow{border-color:rgba(255,0,43,0.3);box-shadow:0 0 20px rgba(255,0,43,0.12);}
+        .ans-card.user-glow{border-color:rgba(0,191,255,0.3);box-shadow:0 0 20px rgba(0,191,255,0.12);}
+        .ans-header{display:flex;align-items:center;gap:12px;margin-bottom:15px;}
+        .avatar-frame{width:45px;height:45px;border-radius:50%;position:relative;cursor:pointer;flex-shrink:0;}
+        .avatar-frame img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--bg);}
+        .avatar-frame.admin-glow::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--admin-red);filter:blur(6px);opacity:0.5;z-index:-1;}
+        .avatar-frame.verify-glow::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--verify-blue);filter:blur(6px);opacity:0.5;z-index:-1;}
+        .user-info-text{display:flex;flex-direction:column;flex:1;cursor:pointer;}
+        .ans-display-name{font-weight:800;font-size:14px;color:#fff;line-height:1.2;}
+        .ans-user-name-sub{font-weight:400;font-size:11px;color:#888;}
+        .ans-q{font-size:13px;color:#aaa;margin-bottom:12px;line-height:1.6;}
+        .ans-a{
+            font-size:15px;font-weight:700;color:#fff;
+            background:rgba(255,255,255,0.02);padding:15px;border-radius:15px;
+            border-right:4px solid var(--primary);word-break:break-word;
+        }
+        [dir="ltr"] .ans-a{border-right:none;border-left:4px solid var(--primary);}
+        .ans-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;}
+        .ans-actions{display:flex;gap:20px;}
+        .action-btn{
+            background:none;border:none;color:#666;font-size:13px;font-weight:700;
+            cursor:pointer;display:flex;align-items:center;gap:7px;
+            transition:color 0.2s;font-family:'Cairo';
+        }
+        .action-btn.liked{color:var(--primary);}
+        .ans-time-container{text-align:left;line-height:1.2;}
+        .ans-time{display:block;font-size:10px;color:var(--primary);font-weight:900;}
+        .ans-date-sub{display:block;font-size:9px;color:#555;font-weight:600;}
+
+        /* ═══ SHOUT CARD ═══ */
+        .shout-card{
+            background:var(--card);border-radius:22px;padding:18px;
+            margin-bottom:15px;border:1px solid var(--border);
+            position:relative;cursor:pointer;
+            transition:border-color 0.2s;
+        }
+        .shout-card:hover{border-color:rgba(248,5,102,0.25);}
+        .shout-card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+        .shout-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--border);}
+        .shout-owner-name{font-size:13px;font-weight:800;color:#fff;}
+        .shout-time{font-size:10px;color:#555;font-weight:700;}
+        .shout-text{font-size:14px;font-weight:700;color:#fff;line-height:1.6;margin-bottom:12px;word-break:break-word;}
+        .shout-footer{display:flex;justify-content:space-between;align-items:center;}
+        .shout-actions{display:flex;gap:14px;}
+        .shout-action-btn{
+            background:none;border:none;color:#555;font-size:11px;font-weight:700;
+            cursor:pointer;display:flex;align-items:center;gap:5px;
+            font-family:'Cairo';transition:color 0.2s;
+        }
+        .shout-action-btn:hover{color:#999;}
+        .shout-action-btn.liked{color:var(--primary);}
+
+        /* ═══ SHOUT MODAL ═══ */
+        .shout-modal-overlay{
+            position:fixed;inset:0;background:rgba(0,0,0,0.95);
+            z-index:2000;display:flex;flex-direction:column;
+            overflow:hidden;animation:fadeIn 0.2s ease;
+        }
+        .shout-modal{background:var(--bg);width:100%;max-width:600px;margin:auto;height:100%;display:flex;flex-direction:column;}
+        .shout-modal-header{
+            padding:14px 16px;border-bottom:1px solid var(--border);
+            display:flex;align-items:center;gap:12px;
+            position:sticky;top:0;background:var(--bg);z-index:10;
+        }
+        .shout-modal-back{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;font-family:'Cairo';}
+        .shout-modal-title{font-size:15px;font-weight:900;color:#fff;}
+        .shout-modal-body{flex:1;overflow-y:auto;padding:16px;}
+        .shout-original{background:#0a0a0a;border-radius:18px;padding:16px;margin-bottom:16px;border:1px solid var(--border);}
+        .shout-original-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+        .shout-original-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--border);}
+        .shout-original-sender{font-size:13px;font-weight:800;color:var(--primary);}
+        .shout-original-time{font-size:10px;color:#555;font-weight:700;}
+        .shout-original-text{font-size:15px;font-weight:700;color:#fff;line-height:1.6;margin:8px 0 12px;}
+        .shout-original-actions{display:flex;gap:14px;align-items:center;}
+        .shout-original-like-btn{background:none;border:none;color:#555;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Cairo';transition:color 0.2s;}
+        .shout-original-like-btn.liked{color:var(--primary);}
+        .shout-answer-box{background:#0a0a0a;border-radius:16px;padding:14px;margin-bottom:16px;border:1px solid rgba(248,5,102,0.2);}
+        .shout-answer-box-title{font-size:11px;font-weight:800;color:var(--primary);margin-bottom:10px;}
+        .shout-answer-input{width:100%;background:#0e0e0e;border:1px solid var(--border);border-radius:12px;color:white;padding:12px;font-family:'Cairo';resize:none;font-size:13px;min-height:80px;}
+        .shout-answer-send-btn{width:100%;margin-top:8px;padding:10px;border-radius:12px;background:var(--primary);color:white;border:none;font-weight:800;cursor:pointer;font-family:'Cairo';font-size:13px;}
+        .replies-section{margin-top:8px;}
+        .replies-title{font-size:11px;font-weight:800;color:#555;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+        .reply-card{background:#0a0a0a;border-radius:16px;padding:14px;margin-bottom:10px;border:1px solid var(--border);transition:border-color 0.2s;}
+        .reply-card:hover{border-color:rgba(248,5,102,0.2);}
+        .reply-card.is-answer{border-right:3px solid var(--primary);}
+        [dir="ltr"] .reply-card.is-answer{border-right:none;border-left:3px solid var(--primary);}
+        .reply-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+        .reply-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);}
+        .reply-sender-name{font-size:12px;font-weight:800;color:var(--primary);}
+        .reply-answer-badge{font-size:9px;font-weight:800;color:var(--primary);background:rgba(248,5,102,0.1);padding:2px 6px;border-radius:20px;margin-right:4px;}
+        [dir="ltr"] .reply-answer-badge{margin-right:0;margin-left:4px;}
+        .reply-time{font-size:10px;color:#555;font-weight:700;margin-right:auto;}
+        [dir="ltr"] .reply-time{margin-right:0;margin-left:auto;}
+        .reply-text{font-size:13px;color:#ddd;font-weight:600;line-height:1.5;word-break:break-word;}
+        .reply-actions{display:flex;gap:12px;margin-top:8px;align-items:center;}
+        .reply-like-btn{background:none;border:none;color:#555;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'Cairo';}
+        .reply-like-btn.liked{color:var(--primary);}
+        .reply-delete-btn{background:none;border:none;color:#333;font-size:11px;cursor:pointer;margin-right:auto;font-family:'Cairo';}
+        [dir="ltr"] .reply-delete-btn{margin-right:0;margin-left:auto;}
+        .reply-delete-btn:hover{color:#ff4b4b;}
+        .subreply-card{background:#111;border-radius:12px;padding:10px 12px;margin-bottom:8px;border:1px solid rgba(255,255,255,0.04);}
+        .subreply-header{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+        .subreply-avatar{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid var(--border);}
+        .subreply-sender-name{font-size:11px;font-weight:800;color:#aaa;}
+        .subreply-time{font-size:9px;color:#444;font-weight:700;margin-right:auto;}
+        [dir="ltr"] .subreply-time{margin-right:0;margin-left:auto;}
+        .subreply-text{font-size:12px;color:#bbb;font-weight:600;line-height:1.4;word-break:break-word;}
+        .subreply-actions{display:flex;gap:10px;margin-top:6px;}
+        .subreply-like-btn{background:none;border:none;color:#444;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;font-family:'Cairo';}
+        .subreply-like-btn.liked{color:var(--primary);}
+        .subreply-delete-btn{background:none;border:none;color:#333;font-size:10px;cursor:pointer;font-family:'Cairo';margin-right:auto;}
+        [dir="ltr"] .subreply-delete-btn{margin-right:0;margin-left:auto;}
+        .subreply-delete-btn:hover{color:#ff4b4b;}
+        .reply-input-area{padding:12px 16px;border-top:1px solid var(--border);background:var(--bg);display:flex;gap:10px;align-items:flex-end;position:sticky;bottom:0;}
+        .reply-input{flex:1;background:#0e0e0e;border:1px solid var(--border);border-radius:15px;color:white;padding:12px 15px;font-family:'Cairo';resize:none;font-size:13px;min-height:44px;max-height:120px;overflow-y:auto;}
+        .reply-send-btn{width:40px;height:40px;border-radius:50%;background:var(--primary);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
+        .subreply-input-area{display:flex;gap:8px;align-items:flex-end;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.04);}
+        .subreply-input{flex:1;background:#0a0a0a;border:1px solid var(--border);border-radius:12px;color:white;padding:8px 12px;font-family:'Cairo';resize:none;font-size:12px;min-height:36px;max-height:80px;overflow-y:auto;}
+        .subreply-send-btn{width:34px;height:34px;border-radius:50%;background:var(--primary);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
+        .subreplies-container{margin-top:10px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.04);}
+
+        /* ═══ BLOCKED SCREEN ═══ */
+        #blockedScreen{
+            display:none;flex-direction:column;align-items:center;justify-content:center;
+            text-align:center;padding:60px 30px;min-height:300px;
+        }
+        #blockedScreen i{font-size:50px;color:#333;margin-bottom:20px;}
+        #blockedScreen p{font-size:14px;color:#555;font-weight:700;line-height:1.8;}
+
+        /* ═══ ACCOUNT SECTION ═══ */
+        .account-card{background:rgba(10,10,10,0.8);border:1px solid var(--border);border-radius:25px;padding:20px;}
+        .info-label{font-size:10px;color:var(--primary);font-weight:800;display:block;margin-top:10px;}
+        .edit-input{
+            width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);
+            padding:12px;border-radius:12px;color:white;font-family:'Cairo';
+            margin-bottom:12px;font-size:12px;transition:border-color 0.2s;
+        }
+        .edit-input:focus{border-color:rgba(248,5,102,0.3);}
+        .readonly-field{color:#666;cursor:not-allowed;border-style:dashed;opacity:0.7;}
+        #userSecurityArea{display:none;flex-direction:row;gap:10px;margin-top:10px;}
+        #userSecurityArea.visible{display:flex;}
+
+        /* ═══ BOTTOM NAV ═══ */
+        .bottom-nav{
+            position:fixed;bottom:0;left:0;width:100%;
+            background:rgba(10,10,10,0.96);
+            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+            display:flex;justify-content:space-around;padding:12px 0;
+            border-top:1px solid var(--border);z-index:1000;
+        }
+        .nav-item{text-decoration:none;display:flex;flex-direction:column;align-items:center;color:#555;font-size:10px;font-weight:700;}
+        .nav-item i{font-size:20px;margin-bottom:4px;}
+        .nav-item.active{color:var(--primary);}
+        .badge-nav{
+            position:absolute;top:-5px;right:-5px;background:var(--primary);
+            color:white;font-size:9px;min-width:16px;height:16px;
+            border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #000;
+        }
+
+        /* ═══ BADGES ═══ */
+        .badge-icon{vertical-align:middle;display:none;cursor:pointer;}
+        .badge-icon.large{width:30px;height:30px;}
+        .badge-icon.small{width:15px;height:15px;}
+        img[src="images/admin-verified-logo.png"]{
+            display:inline-block;border-radius:50%;
+            filter:drop-shadow(0 0 4px rgba(255,0,43,0.6));
+            animation:admin-badge-pulse 2s infinite ease-in-out;
+        }
+        img[src="images/verified-logo.png"]{
+            display:inline-block;border-radius:50%;
+            filter:drop-shadow(0 0 4px rgba(0,191,255,0.5));
+            animation:user-badge-pulse 2s infinite ease-in-out;
+        }
+
+        /* ═══ ACTIONS MENU ═══ */
+        .profile-actions-menu{
+            display:none;position:absolute;left:0;top:45px;
+            background:rgba(15,15,15,0.97);
+            backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+            border:1px solid var(--border);border-radius:16px;padding:8px;
+            min-width:165px;z-index:1000;box-shadow:0 10px 35px rgba(0,0,0,0.9);
+            animation:fadeInMenu 0.2s ease-out;
+        }
+        .profile-actions-menu button{
+            width:100%;text-align:right;background:none;border:none;color:#fff;
+            padding:11px 14px;font-size:13px;cursor:pointer;font-family:'Cairo';
+            display:flex;align-items:center;justify-content:space-between;
+            border-radius:10px;transition:background-color 0.15s;
+        }
+        .profile-actions-menu button:hover{background:rgba(255,255,255,0.06);}
+        [dir="ltr"] .profile-actions-menu{left:auto;right:0;text-align:left;}
+        [dir="ltr"] .profile-actions-menu button{text-align:left;}
+
+        /* ═══ FILTER WARNING ═══ */
+        .filter-warning{
+            font-size:10px;font-weight:800;color:#ff9900;
+            background:rgba(255,153,0,0.08);border:1px solid rgba(255,153,0,0.2);
+            border-radius:8px;padding:4px 10px;margin-top:6px;
+            display:none;align-items:center;gap:5px;
+        }
+        .filter-warning.show{display:flex;}
+
+        /* ═══ SKELETON ═══ */
+        .skeleton{
+            background:linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%);
+            background-size:200% 100%;
+            animation:shimmer 1.5s infinite;border-radius:22px;
+        }
+        .skeleton-card{height:140px;margin-bottom:15px;}
+
+        /* ═══ EMPTY STATE ═══ */
+        .empty-state{text-align:center;padding:50px 20px;color:#444;}
+        .empty-state i{font-size:40px;margin-bottom:15px;display:block;}
+        .empty-state p{font-size:13px;font-weight:700;}
+
+        /* ═══ ANIMATIONS ═══ */
+        @keyframes admin-badge-pulse{
+            0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(255,0,43,0.6));opacity:0.9;}
+            50%{transform:scale(1.1);filter:drop-shadow(0 0 10px rgba(255,0,43,0.9));opacity:1;}
+        }
+        @keyframes user-badge-pulse{
+            0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(0,191,255,0.5));opacity:0.8;}
+            50%{transform:scale(1.1);filter:drop-shadow(0 0 10px rgba(0,191,255,0.8));opacity:1;}
+        }
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        @keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+        @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+        @keyframes fadeInMenu{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+
+        @media(max-width:600px){
+            .ans-card{padding:15px;border-radius:20px;}
+            .ans-a{font-size:14px;padding:12px;}
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="images/logo.png" class="logo-img" alt="Anon Logo" width="35" height="35">
+    <div style="display:flex;align-items:center;gap:10px;">
+        <select class="lang-select" id="langSelect" onchange="updateLanguage(this.value)">
+            <option value="ar">AR</option>
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+        </select>
+        <div style="background:rgba(255,204,0,0.1);padding:5px 12px;border-radius:50px;border:1px solid rgba(255,204,0,0.2);display:flex;align-items:center;gap:5px;">
+            <span id="userCoins" style="color:var(--gold);font-size:12px;font-weight:800;">0.00</span>
+            <i class="fa-solid fa-coins" style="color:var(--gold);font-size:10px;" aria-hidden="true"></i>
+        </div>
+        <div style="position:relative;">
+            <button onclick="toggleProfileActionsMenu()" aria-label="خيارات" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;">
+                <i class="fa-solid fa-ellipsis-v" aria-hidden="true"></i>
+            </button>
+            <div id="profileActionsMenu" class="profile-actions-menu" role="menu">
+                <button id="menuReportBtn" onclick="reportProfile()" role="menuitem">
+                    <span id="reportBtnText" data-key="report_btn">إبلاغ عن الحساب</span>
+                    <i class="fa-solid fa-user-shield" style="color:var(--primary);font-size:11px;" aria-hidden="true"></i>
+                </button>
+                <button id="menuBlockBtn" onclick="toggleBlockProfile()" role="menuitem">
+                    <span id="blockBtnText" data-key="block_btn">حظر</span>
+                    <i id="blockBtnIcon" class="fa-solid fa-ban" style="color:var(--admin-red);font-size:11px;" aria-hidden="true"></i>
+                </button>
+                <button onclick="copyProfileLink()" role="menuitem">
+                    <span data-key="copy_link">نسخ الرابط</span>
+                    <i class="fa-solid fa-link" style="color:#00bfff;font-size:11px;" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="main-wrapper">
+    <div class="cover-wrapper" id="coverWrapper">
+        <img src="" id="coverImg" class="cover-img" alt="غلاف الملف الشخصي" loading="lazy">
+    </div>
+    <div class="profile-main">
+        <div class="avatar-container" id="avatarBox">
+            <img src="images/user.png" id="avatarImg" class="avatar-img" alt="صورة الملف الشخصي" width="110" height="110">
+        </div>
+        <div style="margin-top:15px;display:flex;align-items:center;justify-content:center;gap:5px;">
+            <span id="displayName" style="font-size:24px;font-weight:900;">...</span>
+            <img src="images/admin-verified-logo.png" id="mainAdminBadge" class="badge-icon large" onclick="showVerificationMessage('admin')" alt="شارة المطور" style="display:none;">
+            <img src="images/verified-logo.png" id="mainUserBadge" class="badge-icon large" onclick="showVerificationMessage('user')" alt="شارة موثق" style="display:none;">
+        </div>
+        <div class="profile-username" id="displayUsername"></div>
+        <p id="displayBio" style="font-size:13px;color:#888;margin:8px 0;"></p>
+
+        <div class="interaction-bar" id="interactionBar">
+            <button id="btnFollow" class="follow-btn unfollowed" onclick="toggleFollow()">
+                <span id="followBtnText" data-key="follow_btn">متابعة</span>
+            </button>
+            <button id="btnNotify" class="notify-btn" onclick="toggleNotify()" aria-label="إشعارات">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item"><span class="stat-val" id="count-followers">0</span><span class="stat-label" data-key="followers">متابعون</span></div>
+            <div class="stat-item"><span class="stat-val" id="count-answers">0</span><span class="stat-label" data-key="answers">إجابات</span></div>
+            <div class="stat-item"><span class="stat-val" id="count-likes">0</span><span class="stat-label" data-key="likes">إعجابات</span></div>
+        </div>
+
+        <!-- صندوق السؤال للزوار -->
+        <div class="ask-container" id="visitorAskBox" style="display:none;">
+            <div class="mode-switch-row">
+                <div class="mode-indicator-badge anon-mode" id="modeIndicatorBadge">
+                    <i id="modeIndicatorIcon" class="fa-solid fa-user-secret" aria-hidden="true"></i>
+                    <span id="modeIndicatorText" data-key="anon_mode_text">مجهول الهوية</span>
+                </div>
+                <div class="mode-switch-wrapper">
+                    <span class="mode-label-anon active-label" id="labelAnon" data-key="anon_label">مجهول</span>
+                    <label class="switch-toggle" aria-label="تبديل وضع الإرسال">
+                        <input type="checkbox" id="questionModeSwitch" onchange="toggleQuestionMode()">
+                        <span class="switch-slider"></span>
+                    </label>
+                    <span class="mode-label-public" id="labelPublic" data-key="public_label">عام</span>
+                </div>
+            </div>
+            <textarea class="ask-input" id="qInput" data-placeholder="input_placeholder" placeholder="ماذا يدور في ذهنك؟" maxlength="500" oninput="onAskInputChange(this,'qFilterWarn')" aria-label="اكتب سؤالك"></textarea>
+            <div class="filter-warning" id="qFilterWarn" role="alert"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span id="qFilterWarnText"></span></div>
+            <button class="send-q-btn" id="sendQuestionBtn" onclick="sendQuestion()">
+                <span id="sendQuestionBtnText" data-key="send_anon">إرسال مجهول</span>
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!-- صندوق الشاوت لصاحب الحساب -->
+        <div class="ask-container" id="ownerShoutBox" style="display:none;">
+            <textarea class="ask-input" id="shoutInput" data-placeholder="shout_placeholder" placeholder="شاركنا ما يدور في ذهنك..." maxlength="500" oninput="onAskInputChange(this,'shoutFilterWarn')" aria-label="اكتب شاوتك"></textarea>
+            <div class="filter-warning" id="shoutFilterWarn" role="alert"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span id="shoutFilterWarnText"></span></div>
+            <div class="hint-text" data-key="hint_shout">إرسال شاوت عام</div>
+            <button class="send-q-btn" onclick="sendShout()">
+                <span data-key="send_btn_text">إرسال</span>
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- شاشة الحظر -->
+    <div id="blockedScreen">
+        <i class="fa-solid fa-ban" aria-hidden="true"></i>
+        <p id="blockedMsg">هذا الحساب حظرك أو قمت بحظره.<br>لا يمكنك مشاهدة المحتوى.</p>
+    </div>
+
+    <div id="mainContent">
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab(this,'tab-latest')" data-key="latest">الأحدث</button>
+            <button class="tab-btn" onclick="switchTab(this,'tab-featured')" data-key="featured">الأبرز</button>
+            <button class="tab-btn" id="shoutTabBtn" style="display:none;" onclick="switchTab(this,'tab-shouts')" data-key="shout_tab">شاوت</button>
+            <button class="tab-btn" id="accountTabBtn" style="display:none;" onclick="switchTab(this,'tab-account')" data-key="account">الحساب</button>
+        </div>
+
+        <div id="tab-latest" class="tab-content active">
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+        </div>
+        <div id="tab-featured" class="tab-content"></div>
+        <div id="tab-shouts" class="tab-content"></div>
+
+        <div id="tab-account" class="tab-content">
+            <div class="account-card">
+                <span class="info-label" data-key="name_label">الاسم الكامل</span>
+                <input type="text" class="edit-input" id="in-name" maxlength="60" autocomplete="name">
+                <span class="info-label" data-key="bio_label">نبذة عني (Bio)</span>
+                <textarea class="edit-input" id="in-bio" style="height:80px;resize:none;" maxlength="200"></textarea>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div>
+                        <span class="info-label" data-key="user_label">اسم المستخدم</span>
+                        <input type="text" class="edit-input readonly-field" id="read-username" readonly aria-readonly="true">
+                    </div>
+                    <div>
+                        <span class="info-label" data-key="phone_label">رقم الهاتف</span>
+                        <input type="text" class="edit-input readonly-field" id="in-phone" readonly aria-readonly="true">
+                    </div>
+                </div>
+                <span class="info-label" data-key="email_label">البريد الإلكتروني</span>
+                <input type="text" class="edit-input readonly-field" id="read-email" readonly aria-readonly="true" autocomplete="email">
+                <button onclick="saveData()" style="width:100%;padding:14px;border-radius:15px;background:var(--primary);color:white;border:none;font-weight:800;cursor:pointer;margin-top:10px;font-family:'Cairo';font-size:13px;transition:opacity 0.2s;" data-key="save_btn">حفظ التغييرات ✨</button>
+                <div id="adminArea" style="display:none;margin-top:15px;">
+                    <button onclick="location.href='admin.html'" style="width:100%;padding:12px;border-radius:15px;background:rgba(255,0,43,0.1);color:var(--admin-red);border:1px solid var(--admin-red);font-weight:700;cursor:pointer;font-family:'Cairo';" data-key="admin_btn">لوحة الإدارة (Admin)</button>
+                </div>
+                <div id="userSecurityArea">
+                    <button onclick="confirmDeactivate()" style="flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,0.05);color:var(--gold);border:1px solid var(--gold);font-size:11px;font-weight:700;font-family:'Cairo';" data-key="deactivate_btn">تعطيل الحساب</button>
+                    <button onclick="confirmDeleteAccount()" style="flex:1;padding:10px;border-radius:12px;background:rgba(255,0,0,0.05);color:#ff4b4b;border:1px solid #ff4b4b;font-size:11px;font-weight:700;font-family:'Cairo';" data-key="delete_btn">حذف الحساب</button>
+                </div>
+                <button onclick="auth.signOut().then(()=>location.href='signin.html')" style="background:none;border:none;color:#555;width:100%;margin-top:25px;font-weight:700;cursor:pointer;font-family:'Cairo';" data-key="logout_btn">تسجيل الخروج</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house" aria-hidden="true"></i><span data-key="nav_home">الرئيسية</span></a>
+    <a href="questions.html" class="nav-item" style="position:relative;">
+        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+        <span data-key="nav_qs">الأسئلة</span>
+        <div id="qBadgeNav" class="badge-nav" style="display:none;" aria-label="أسئلة جديدة">0</div>
+    </a>
+    <a href="quiet-corner.html" class="nav-item"><i class="fa-solid fa-leaf" aria-hidden="true"></i><span data-key="nav_skina">سكينة</span></a>
+    <a href="game.html" class="nav-item"><i class="fa-solid fa-ghost" aria-hidden="true"></i><span data-key="nav_tayf">طيف</span></a>
+    <a href="#" class="nav-item active" aria-current="page"><i class="fa-solid fa-user" aria-hidden="true"></i><span data-key="nav_profile">بروفايلي</span></a>
+</nav>
+
+<input type="file" id="avatarInput" hidden accept="image/jpeg,image/jpg,image/png,image/webp" aria-label="رفع صورة الملف الشخصي">
+<input type="file" id="coverInput" hidden accept="image/jpeg,image/jpg,image/png,image/webp" aria-label="رفع صورة الغلاف">
+
+<audio id="sndNotif"    src="sounds/notification.wav" preload="none"></audio>
+<audio id="sndQuestion" src="sounds/question.wav"     preload="none"></audio>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════════════════════════════
+   ModerationManager — Singleton مُحسَّن
+══════════════════════════════════════════════════════════════ */
+const ModerationManager = (() => {
+    const BAD_WORDS = {
+        ar: ["كلمة_سيئة_1","كلمة_سيئة_2"],
+        en: ["badword1","badword2"],
+        fr: ["motinterdit1","motinterdit2"]
+    };
+    const forbiddenSet = new Set(
+        Object.values(BAD_WORDS).flat().filter(w => w && w.trim()).map(w => w.trim().toLowerCase())
+    );
+    const patterns = [...forbiddenSet].map(word => ({
+        word,
+        regex: new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi')
+    }));
+
+    function cleanContent(text) {
+        if (!text) return text;
+        let result = text;
+        for (const {regex} of patterns) result = result.replace(regex, '****');
+        return result;
+    }
+    function containsBadWords(text) {
+        if (!text) return false;
+        const lower = text.toLowerCase();
+        for (const word of forbiddenSet) { if (lower.includes(word)) return true; }
+        return false;
+    }
+    return { cleanContent, containsBadWords };
+})();
+
+/* ══════════════════════════════════════
+   SWAL CONFIG
+══════════════════════════════════════ */
+const swalBase = {
+    background:'linear-gradient(145deg,#0d0d0d,#111)',
+    color:'#fff',fontFamily:'Cairo, sans-serif',
+    customClass:{
+        popup:'swal-popup',title:'swal-title',
+        htmlContainer:'swal-html',confirmButton:'swal-confirm',
+        cancelButton:'swal-cancel',input:'swal-input-field',
+    }
+};
+
+const toast = (icon, text, timer=1800) => Swal.fire({
+    ...swalBase,icon,text,timer,
+    toast:true,position:'bottom',showConfirmButton:false,timerProgressBar:true,
+    iconColor:icon==='success'?'#00e676':icon==='error'?'#f80566':icon==='warning'?'#ffcc00':'#fff',
+});
+
+const confirmDialog = (title, text='', confirmTxt='تأكيد', dangerMode=false) => Swal.fire({
+    ...swalBase,
+    icon:dangerMode?'warning':'question',
+    iconColor:dangerMode?'#ff4b4b':'#f80566',
+    title,text,showCancelButton:true,
+    confirmButtonText:confirmTxt,cancelButtonText:t('cancel_btn'),
+    customClass:{...swalBase.customClass,confirmButton:dangerMode?'swal-confirm-danger':'swal-confirm'}
+});
+
+/* ══════════════════════════════════════
+   TRANSLATIONS
+══════════════════════════════════════ */
+const translations = {
+    ar:{
+        followers:"متابعون",answers:"إجابات",likes:"إعجابات",
+        latest:"الأحدث",featured:"الأبرز",shout_tab:"شاوت",account:"الحساب",
+        name_label:"الاسم الكامل",bio_label:"نبذة عني (Bio)",
+        user_label:"اسم المستخدم",phone_label:"رقم الهاتف",email_label:"البريد الإلكتروني",
+        save_btn:"حفظ التغييرات ✨",admin_btn:"لوحة الإدارة (Admin)",
+        deactivate_btn:"تعطيل الحساب",delete_btn:"حذف الحساب",logout_btn:"تسجيل الخروج",
+        nav_home:"الرئيسية",nav_qs:"الأسئلة",nav_skina:"سكينة",nav_tayf:"طيف",nav_profile:"بروفايلي",
+        hint_shout:"إرسال شاوت عام",send_btn_text:"إرسال",
+        input_placeholder:"ماذا يدور في ذهنك؟",shout_placeholder:"شاركنا ما يدور في ذهنك...",
+        follow_btn:"متابعة",following_btn:"متابَع",
+        report_btn:"إبلاغ عن الحساب",block_btn:"حظر",unblock_btn:"إلغاء الحظر",copy_link:"نسخ الرابط",
+        no_answers:"لا توجد إجابات بعد",no_shouts:"لا توجد شاوت بعد",
+        upload_error_type:"نوع الملف غير مدعوم",upload_error_size:"حجم الصورة أكبر من 5MB",
+        uploading:"جاري الرفع...",upload_success:"تم تحديث الصورة ✨",upload_fail:"خطأ في الرفع",
+        shout_sent:"تم نشر الشاوت! 🎉",shout_empty:"اكتب شيئاً أولاً",
+        question_sent:"تم إرسال سؤالك! 📩",question_empty:"اكتب سؤالك أولاً",
+        shout_delete_confirm:"هل تريد حذف هذا الشاوت؟",shout_deleted:"تم الحذف",
+        answer_delete_confirm:"حذف الإجابة؟",answer_delete_desc:"لن تتمكن من استرجاعها لاحقاً.",
+        reply_placeholder:"اكتب ردك...",reply_sent:"تم إرسال الردّ ✨",reply_empty:"الردّ لا يكون فارغاً",
+        replies_title:"الردود",shout_detail_title:"الشاوت",anonymous:"مجهول",
+        no_reply_yet:"لا توجد ردود بعد، كن أول من يردّ!",
+        answer_label:"إجابة صاحب الصفحة",answer_placeholder:"اكتب إجابتك على هذا الشاوت...",
+        send_answer:"نشر الإجابة",answer_badge:"إجابة",subreply_placeholder:"رد على الإجابة...",
+        anon_label:"مجهول",public_label:"عام",
+        anon_mode_text:"مجهول الهوية",public_mode_text:"سؤال عام بإسمك",
+        send_anon:"إرسال مجهول",send_public:"إرسال كـ",
+        cancel_btn:"تراجع",
+        report_title:"🚩 إبلاغ عن الحساب",report_placeholder:"اكتب سبب الإبلاغ بوضوح...",
+        report_send:"إرسال البلاغ",report_success:"تم إرسال البلاغ بنجاح ✅",
+        copy_success:"تم نسخ رابط البروفايل 🔗",
+        delete_reply:"حذف الردّ؟",delete_subreply:"حذف الرد؟",delete_label:"حذف",
+        deactivate_title:"⚠️ تعطيل الحساب؟",
+        deactivate_text:"لن يظهر حسابك للآخرين مؤقتاً، يمكنك إعادة تفعيله لاحقاً.",
+        deactivate_confirm:"تعطيل",
+        delete_account_title:"🗑 حذف الحساب نهائياً؟",
+        delete_account_text:"هذا الإجراء لا يمكن التراجع عنه. ستُحذف جميع بياناتك بشكل دائم.",
+        delete_account_confirm:"حذف نهائي",
+        badge_admin:"👑 حساب المطوّر الرسمي ✅",badge_user:"✅ حساب موثّق",
+        name_empty:"الاسم لا يمكن أن يكون فارغاً ⚠️",save_success:"تم الحفظ بنجاح ✨",
+        send_error:"حدث خطأ أثناء الإرسال",generic_error:"حدث خطأ",ok_btn:"حسناً",
+        filter_warn:"يحتوي النص على كلمات غير مناسبة وستُستبدل تلقائياً",
+        blocked_msg:"قمت بحظر هذا الحساب أو قام بحظرك.<br>لا يمكنك مشاهدة المحتوى.",
+        rate_limit:"انتظر قليلاً قبل الإرسال مجدداً",
+        question_too_long:"السؤال طويل جداً (500 حرف كحد أقصى)",
+        text_too_long:"النص طويل جداً (500 حرف كحد أقصى)",
+        delete_image_fail:"لم يتمكن من حذف الصورة القديمة، تم الاستمرار في الرفع",
+    },
+    en:{
+        followers:"Followers",answers:"Answers",likes:"Likes",
+        latest:"Latest",featured:"Featured",shout_tab:"Shout",account:"Account",
+        name_label:"Full Name",bio_label:"Bio",user_label:"Username",phone_label:"Phone",email_label:"Email",
+        save_btn:"Save Changes ✨",admin_btn:"Admin Panel",
+        deactivate_btn:"Deactivate",delete_btn:"Delete Account",logout_btn:"Logout",
+        nav_home:"Home",nav_qs:"Inbox",nav_skina:"Quiet",nav_tayf:"Ghost",nav_profile:"Profile",
+        hint_shout:"Send Public Shout",send_btn_text:"Send",
+        input_placeholder:"What's on your mind?",shout_placeholder:"Share what's on your mind...",
+        follow_btn:"Follow",following_btn:"Following",
+        report_btn:"Report Account",block_btn:"Block",unblock_btn:"Unblock",copy_link:"Copy Link",
+        no_answers:"No answers yet",no_shouts:"No shouts yet",
+        upload_error_type:"Unsupported file type",upload_error_size:"Image exceeds 5MB",
+        uploading:"Uploading...",upload_success:"Image updated ✨",upload_fail:"Upload error",
+        shout_sent:"Shout posted! 🎉",shout_empty:"Write something first",
+        question_sent:"Question sent! 📩",question_empty:"Write your question first",
+        shout_delete_confirm:"Delete this shout?",shout_deleted:"Deleted",
+        answer_delete_confirm:"Delete Answer?",answer_delete_desc:"You won't be able to recover it.",
+        reply_placeholder:"Write your reply...",reply_sent:"Reply sent ✨",reply_empty:"Reply cannot be empty",
+        replies_title:"Replies",shout_detail_title:"Shout",anonymous:"Anonymous",
+        no_reply_yet:"No replies yet, be the first!",
+        answer_label:"Owner's Answer",answer_placeholder:"Write your answer to this shout...",
+        send_answer:"Post Answer",answer_badge:"Answer",subreply_placeholder:"Reply to the answer...",
+        anon_label:"Anon",public_label:"Public",
+        anon_mode_text:"Anonymous",public_mode_text:"Public question with your name",
+        send_anon:"Send Anonymously",send_public:"Send as",
+        cancel_btn:"Cancel",
+        report_title:"🚩 Report Account",report_placeholder:"Describe the reason clearly...",
+        report_send:"Send Report",report_success:"Report submitted ✅",
+        copy_success:"Profile link copied 🔗",
+        delete_reply:"Delete Reply?",delete_subreply:"Delete Reply?",delete_label:"Delete",
+        deactivate_title:"⚠️ Deactivate Account?",
+        deactivate_text:"Your account will be hidden temporarily. You can reactivate it later.",
+        deactivate_confirm:"Deactivate",
+        delete_account_title:"🗑 Permanently Delete Account?",
+        delete_account_text:"This cannot be undone. All your data will be permanently deleted.",
+        delete_account_confirm:"Delete Permanently",
+        badge_admin:"👑 Official Developer Account ✅",badge_user:"✅ Verified Account",
+        name_empty:"Name cannot be empty ⚠️",save_success:"Saved successfully ✨",
+        send_error:"An error occurred while sending",generic_error:"An error occurred",ok_btn:"OK",
+        filter_warn:"Text contains inappropriate words and will be replaced automatically",
+        blocked_msg:"You blocked this account or they blocked you.<br>Content is unavailable.",
+        rate_limit:"Please wait before sending again",
+        question_too_long:"Question too long (max 500 chars)",
+        text_too_long:"Text too long (max 500 chars)",
+        delete_image_fail:"Could not delete old image, continuing upload",
+    },
+    fr:{
+        followers:"Abonnés",answers:"Réponses",likes:"J'aime",
+        latest:"Récent",featured:"En vedette",shout_tab:"Shout",account:"Compte",
+        name_label:"Nom Complet",bio_label:"Bio",user_label:"Nom d'utilisateur",phone_label:"Téléphone",email_label:"E-mail",
+        save_btn:"Sauvegarder ✨",admin_btn:"Panneau Admin",
+        deactivate_btn:"Désactiver",delete_btn:"Supprimer le compte",logout_btn:"Déconnexion",
+        nav_home:"Accueil",nav_qs:"Messages",nav_skina:"Méditation",nav_tayf:"Fantôme",nav_profile:"Profil",
+        hint_shout:"Envoyer un Shout public",send_btn_text:"Envoyer",
+        input_placeholder:"À quoi pensez-vous?",shout_placeholder:"Partagez vos pensées...",
+        follow_btn:"Suivre",following_btn:"Abonné",
+        report_btn:"Signaler le compte",block_btn:"Bloquer",unblock_btn:"Débloquer",copy_link:"Copier le lien",
+        no_answers:"Aucune réponse",no_shouts:"Aucun shout",
+        upload_error_type:"Type non supporté",upload_error_size:"Image > 5MB",
+        uploading:"Envoi...",upload_success:"Image mise à jour ✨",upload_fail:"Erreur d'envoi",
+        shout_sent:"Shout publié! 🎉",shout_empty:"Écrivez quelque chose",
+        question_sent:"Question envoyée! 📩",question_empty:"Écrivez votre question",
+        shout_delete_confirm:"Supprimer ce shout?",shout_deleted:"Supprimé",
+        answer_delete_confirm:"Supprimer la réponse?",answer_delete_desc:"Vous ne pourrez pas la récupérer.",
+        reply_placeholder:"Votre réponse...",reply_sent:"Réponse envoyée ✨",reply_empty:"La réponse ne peut pas être vide",
+        replies_title:"Réponses",shout_detail_title:"Shout",anonymous:"Anonyme",
+        no_reply_yet:"Pas encore de réponses, soyez le premier!",
+        answer_label:"Réponse du propriétaire",answer_placeholder:"Écrivez votre réponse...",
+        send_answer:"Publier la réponse",answer_badge:"Réponse",subreply_placeholder:"Répondre...",
+        anon_label:"Anon",public_label:"Public",
+        anon_mode_text:"Anonyme",public_mode_text:"Question publique avec votre nom",
+        send_anon:"Envoyer anonymement",send_public:"Envoyer en tant que",
+        cancel_btn:"Annuler",
+        report_title:"🚩 Signaler le compte",report_placeholder:"Décrivez clairement la raison...",
+        report_send:"Envoyer le signalement",report_success:"Signalement envoyé ✅",
+        copy_success:"Lien du profil copié 🔗",
+        delete_reply:"Supprimer la réponse?",delete_subreply:"Supprimer?",delete_label:"Supprimer",
+        deactivate_title:"⚠️ Désactiver le compte?",
+        deactivate_text:"Votre compte sera temporairement masqué.",
+        deactivate_confirm:"Désactiver",
+        delete_account_title:"🗑 Supprimer définitivement?",
+        delete_account_text:"Cette action est irréversible.",
+        delete_account_confirm:"Supprimer définitivement",
+        badge_admin:"👑 Compte officiel du développeur ✅",badge_user:"✅ Compte vérifié",
+        name_empty:"Le nom ne peut pas être vide ⚠️",save_success:"Sauvegardé avec succès ✨",
+        send_error:"Une erreur s'est produite lors de l'envoi",generic_error:"Une erreur s'est produite",ok_btn:"OK",
+        filter_warn:"Le texte contient des mots inappropriés et sera remplacé automatiquement",
+        blocked_msg:"Vous avez bloqué ce compte ou il vous a bloqué.<br>Le contenu est indisponible.",
+        rate_limit:"Veuillez attendre avant d'envoyer à nouveau",
+        question_too_long:"Question trop longue (max 500 caractères)",
+        text_too_long:"Texte trop long (max 500 caractères)",
+        delete_image_fail:"Impossible de supprimer l'ancienne image, envoi en cours",
+    }
+};
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let currentProfileId = "";
+let currentLang      = "ar";
+let isOwner          = false;
+let isFollowing      = false;
+let isBlocked        = false;
+let iBlockedByThem   = false;
+let currentUserData  = null;
+let repliesListener  = null;
+let questionsListener= null;
+let followListener   = null;
+let blockListener    = null;
+let profileListener  = null;
+let isPublicMode     = false;
+let initialQuestionsLoaded = false;
+
+const RATE_LIMIT_MS = 10000;
+let lastQuestionSentAt = 0;
+let lastShoutSentAt    = 0;
+
+const CLD_AVATAR_PUBLIC_ID = uid => `anon_users/${uid}/avatar`;
+const CLD_COVER_PUBLIC_ID  = uid => `anon_users/${uid}/cover`;
+
+/* ══════════════════════════════════════
+   HELPERS
+══════════════════════════════════════ */
+const t = k => translations[currentLang]?.[k] ?? translations['ar']?.[k] ?? k;
+
+const _escEl = document.createElement('div');
+function escapeHtml(s) {
+    _escEl.textContent = String(s ?? '');
+    return _escEl.innerHTML;
+}
+
+function safeImgSrc(url, fallback='images/user.png') {
+    if (!url) return fallback;
+    try {
+        const u = new URL(url);
+        return u.protocol === 'https:' ? url : fallback;
+    } catch { return fallback; }
+}
+
+function sanitizeId(id) {
+    return (id || '').replace(/[^a-zA-Z0-9_-]/g, '');
+}
+
+const _fmt = {};
+function getFormatter(lang, opts) {
+    const key = lang + JSON.stringify(opts);
+    if (!_fmt[key]) _fmt[key] = new Intl.DateTimeFormat(lang === 'ar' ? 'ar-EG' : 'en-GB', opts);
+    return _fmt[key];
+}
+
+const formatDate = ts => {
+    if (!ts) return '';
+    return getFormatter(currentLang, {year:'numeric',month:'short',day:'numeric'}).format(new Date(ts.seconds * 1000));
+};
+const formatTime = ts => {
+    if (!ts) return '';
+    return getFormatter(currentLang, {hour:'2-digit',minute:'2-digit'}).format(new Date(ts.seconds * 1000));
+};
+
+function timeAgo(ts) {
+    if (!ts) return '';
+    const m = Math.floor((Date.now() - ts.seconds * 1000) / 60000);
+    if (m < 1)  return currentLang === 'ar' ? 'الآن' : 'Now';
+    if (m < 60) return currentLang === 'ar' ? m+'د'  : m+'m';
+    const h = Math.floor(m / 60);
+    if (h < 24) return currentLang === 'ar' ? h+'س'  : h+'h';
+    return currentLang === 'ar' ? Math.floor(h/24)+'ي' : Math.floor(h/24)+'d';
+}
+
+/* ══════════════════════════════════════
+   CLOUDINARY
+══════════════════════════════════════ */
+const ALLOWED_TYPES = new Set(['image/jpeg','image/jpg','image/png','image/webp']);
+
+function validateImageFile(f) {
+    if (!ALLOWED_TYPES.has(f.type)) { toast('error', t('upload_error_type')); return false; }
+    if (f.size > 5 * 1024 * 1024)  { toast('error', t('upload_error_size')); return false; }
+    return true;
+}
+
+async function uploadToCloudinary(file, type) {
+    if (!auth.currentUser || auth.currentUser.uid !== currentProfileId) return;
+    if (!validateImageFile(file)) return;
+
+    const uid        = auth.currentUser.uid;
+    const cloudName  = APP_CONFIG.cloudinary.cloudName;
+    const preset     = APP_CONFIG.cloudinary.uploadPreset;
+    const publicId   = type === 'avatar' ? `anon_users/${uid}/avatar` : `anon_users/${uid}/cover`;
+
+    Swal.fire({...swalBase, title:'⏳ '+t('uploading'), allowOutsideClick:false, showConfirmButton:false,
+        didOpen:()=>Swal.showLoading()});
+
+    try {
+        const formData = new FormData();
+        formData.append('file',            file);
+        formData.append('upload_preset',   preset);
+        formData.append('public_id',       publicId);
+
+        const res = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+            {method:'POST', body:formData}
+        );
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error?.message || 'Cloudinary error');
+        }
+
+        const data     = await res.json();
+        const freshUrl = `${data.secure_url}?v=${data.version || Date.now()}`;
+        const updateObj = {[type === 'avatar' ? 'avatarUrl' : 'coverUrl']: data.secure_url};
+
+        if (type === 'avatar') {
+            document.getElementById('avatarImg').src = freshUrl;
+        } else {
+            const c = document.getElementById('coverImg');
+            c.src = freshUrl;
+            c.style.display = 'block';
+        }
+
+        await db.collection('users').doc(uid).update(updateObj);
+        Swal.close();
+        toast('success', t('upload_success'));
+    } catch(e) {
+        console.error('Upload error:', e);
+        Swal.fire({
+            ...swalBase, icon:'error', iconColor:'#f80566',
+            title:'❌ '+t('upload_fail'), text:e.message, confirmButtonText:t('ok_btn')
+        });
+    }
+}
+
+document.getElementById('avatarInput').addEventListener('change', function(e){
+    const f = e.target.files[0]; if(f) uploadToCloudinary(f,'avatar'); this.value='';
+});
+document.getElementById('coverInput').addEventListener('change', function(e){
+    const f = e.target.files[0]; if(f) uploadToCloudinary(f,'cover'); this.value='';
+});
+
+/* ══════════════════════════════════════
+   SEO
+══════════════════════════════════════ */
+function updateSEO(name, bio, avatarUrl, username) {
+    const pageUrl = `${location.origin}${location.pathname}?id=${currentProfileId}`;
+    const desc    = bio
+        ? `${name} على Anon — ${bio.slice(0,120)}`
+        : `تصفّح ملف ${name} على منصة Anon وأرسل سؤالاً مجهولاً.`;
+    const img = avatarUrl || 'images/logo.png';
+    const full = `${name} (@${username}) | Anon`;
+
+    document.title                                          = full;
+    document.getElementById('seoTitle').textContent         = full;
+    document.getElementById('seoDesc').content              = desc;
+    document.getElementById('seoCanonical').href            = pageUrl;
+    ['ogTitle','twTitle'].forEach(id  => document.getElementById(id).content = full);
+    ['ogDesc','twDesc'].forEach(id    => document.getElementById(id).content = desc);
+    ['ogImage','twImage'].forEach(id  => document.getElementById(id).content = img);
+    document.getElementById('ogUrl').content                = pageUrl;
+
+    document.getElementById('schemaScript').textContent = JSON.stringify({
+        "@context":"https://schema.org","@type":"ProfilePage",
+        "name":`${name} | Anon`,"url":pageUrl,"description":desc,
+        "mainEntity":{"@type":"Person","name":name,"alternateName":`@${username}`,"image":img,"description":bio||''},
+        "publisher":{"@type":"Organization","name":"Anon","logo":{"@type":"ImageObject","url":`${location.origin}/images/logo.png`}}
+    });
+}
+
+/* ══════════════════════════════════════
+   BLOCK SCREEN
+══════════════════════════════════════ */
+function showBlockedScreen() {
+    document.getElementById('mainContent').style.display     = 'none';
+    document.getElementById('visitorAskBox').style.display   = 'none';
+    document.getElementById('ownerShoutBox').style.display   = 'none';
+    document.getElementById('blockedScreen').style.display   = 'flex';
+    document.getElementById('blockedMsg').innerHTML          = t('blocked_msg');
+}
+
+function hideBlockedScreen() {
+    document.getElementById('mainContent').style.display     = '';
+    document.getElementById('blockedScreen').style.display   = 'none';
+}
+
+/* ══════════════════════════════════════
+   MODERATION INPUT
+══════════════════════════════════════ */
+function onAskInputChange(textarea, warnId) {
+    const warn = document.getElementById(warnId);
+    if (!warn) return;
+    const has = ModerationManager.containsBadWords(textarea.value);
+    warn.classList.toggle('show', has);
+    if (has) {
+        const span = warn.querySelector('span');
+        if (span) span.textContent = t('filter_warn');
+    }
+}
+
+/* ══════════════════════════════════════
+   QUESTION MODE SWITCH
+══════════════════════════════════════ */
+function toggleQuestionMode() {
+    isPublicMode = document.getElementById('questionModeSwitch').checked;
+    const badge    = document.getElementById('modeIndicatorBadge');
+    const badgeIcon= document.getElementById('modeIndicatorIcon');
+    const badgeText= document.getElementById('modeIndicatorText');
+    const sendBtn  = document.getElementById('sendQuestionBtn');
+    const sendText = document.getElementById('sendQuestionBtnText');
+    const labelA   = document.getElementById('labelAnon');
+    const labelP   = document.getElementById('labelPublic');
+
+    if (isPublicMode) {
+        badge.className = 'mode-indicator-badge public-mode';
+        badgeIcon.className = 'fa-solid fa-user';
+        badgeText.textContent = t('public_mode_text');
+        sendBtn.className = 'send-q-btn public-mode-btn';
+        sendText.textContent = `${t('send_public')} @${currentUserData?.username||''}`;
+        labelA.classList.remove('active-label');
+        labelP.classList.add('active-label');
+    } else {
+        badge.className = 'mode-indicator-badge anon-mode';
+        badgeIcon.className = 'fa-solid fa-user-secret';
+        badgeText.textContent = t('anon_mode_text');
+        sendBtn.className = 'send-q-btn';
+        sendText.textContent = t('send_anon');
+        labelA.classList.add('active-label');
+        labelP.classList.remove('active-label');
+    }
+}
+
+/* ══════════════════════════════════════
+   SEND QUESTION
+══════════════════════════════════════ */
+async function sendQuestion() {
+    if (!auth.currentUser || isOwner) return;
+    if (isBlocked || iBlockedByThem) return;
+
+    const now = Date.now();
+    if (now - lastQuestionSentAt < RATE_LIMIT_MS) return toast('warning', t('rate_limit'));
+
+    const rawText = document.getElementById('qInput').value.trim();
+    if (!rawText)              return toast('warning', t('question_empty'));
+    if (rawText.length > 500)  return toast('warning', t('question_too_long'));
+
+    const cleanedText = ModerationManager.cleanContent(rawText);
+    lastQuestionSentAt = now;
+
+    try {
+        await db.collection('questions').add({
+            receiverId:     currentProfileId,
+            senderId:       isPublicMode ? auth.currentUser.uid : null,
+            senderName:     isPublicMode ? (currentUserData?.name     || t('anonymous')) : null,
+            senderUsername: isPublicMode ? (currentUserData?.username || '')             : null,
+            senderAvatar:   isPublicMode ? (currentUserData?.avatarUrl|| '')             : null,
+            isAnonymous:    !isPublicMode,
+            question:       cleanedText,
+            status:         'pending',
+            answer:         '',
+            likesCount:     0,
+            likedBy:        [],
+            createdAt:      firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('qInput').value = '';
+        document.getElementById('qFilterWarn')?.classList.remove('show');
+        toast('success', t('question_sent'));
+    } catch(e) {
+        console.error(e);
+        lastQuestionSentAt = 0;
+        toast('error', t('send_error'));
+    }
+}
+
+/* ══════════════════════════════════════
+   MENU
+══════════════════════════════════════ */
+function toggleProfileActionsMenu() {
+    const m = document.getElementById('profileActionsMenu');
+    const isOpen = m.style.display === 'block';
+    m.style.display = isOpen ? 'none' : 'block';
+}
+
+document.addEventListener('click', e => {
+    if (!e.target.closest('[onclick="toggleProfileActionsMenu()"]') &&
+        !e.target.closest('#profileActionsMenu')) {
+        document.getElementById('profileActionsMenu').style.display = 'none';
+    }
+}, true);
+
+/* ══════════════════════════════════════
+   TABS
+══════════════════════════════════════ */
+function switchTab(btn, tabId) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.nav-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+    if (tabId === 'tab-shouts')   loadShouts(currentProfileId);
+    if (tabId === 'tab-featured') loadFeaturedAnswers(currentProfileId);
+}
+
+/* ══════════════════════════════════════
+   AUTH
+══════════════════════════════════════ */
+auth.onAuthStateChanged(async user => {
+    if (!user) return (location.href = 'signin.html');
+
+    const meDoc = await db.collection('users').doc(user.uid).get();
+    currentUserData = meDoc.data() || {};
+
+    document.getElementById('userCoins').textContent = (currentUserData.anonCoins || 0).toFixed(2);
+    db.collection('users').doc(user.uid).onSnapshot(snap => {
+        const d = snap.data();
+        if (d) document.getElementById('userCoins').textContent = (d.anonCoins || 0).toFixed(2);
+    });
+
+    const rawId = new URLSearchParams(location.search).get('id') || user.uid;
+    currentProfileId = sanitizeId(rawId);
+    if (!currentProfileId) return (location.href = 'signin.html');
+
+    isOwner = (currentProfileId === user.uid);
+
+    if (!isOwner) {
+        await checkMutualBlock(user.uid, currentProfileId);
+    }
+
+    loadProfileData(currentProfileId, isOwner);
+
+    if (isOwner) {
+        document.getElementById('accountTabBtn').style.display = 'block';
+        document.getElementById('shoutTabBtn').style.display   = 'block';
+        document.getElementById('avatarBox').classList.add('is-owner');
+        document.getElementById('coverWrapper').classList.add('is-owner');
+        document.getElementById('avatarBox').addEventListener('click', () => document.getElementById('avatarInput').click());
+        document.getElementById('coverWrapper').addEventListener('click', () => document.getElementById('coverInput').click());
+        document.getElementById('interactionBar').classList.remove('visible');
+        document.getElementById('ownerShoutBox').style.display = 'block';
+        document.getElementById('visitorAskBox').style.display = 'none';
+    } else {
+        document.getElementById('interactionBar').classList.add('visible');
+        document.getElementById('visitorAskBox').style.display = (isBlocked || iBlockedByThem) ? 'none' : 'block';
+        document.getElementById('ownerShoutBox').style.display = 'none';
+        checkFollowStatus();
+        checkBlockStatus(currentProfileId);
+    }
+
+    listenToPendingQuestions(user.uid);
+
+    currentLang = localStorage.getItem('lang') || 'ar';
+    document.getElementById('langSelect').value = currentLang;
+    updateLanguage(currentLang);
+});
+
+/* ══════════════════════════════════════
+   CHECK MUTUAL BLOCK
+══════════════════════════════════════ */
+async function checkMutualBlock(myUid, profileId) {
+    try {
+        const [myBlockDoc, theirBlockDoc] = await Promise.all([
+            db.collection('users').doc(myUid).collection('blocked').doc(profileId).get(),
+            db.collection('users').doc(profileId).collection('blocked').doc(myUid).get()
+        ]);
+        isBlocked      = myBlockDoc.exists;
+        iBlockedByThem = theirBlockDoc.exists;
+
+        if (isBlocked || iBlockedByThem) {
+            showBlockedScreen();
+        }
+    } catch(e) {
+        console.error('checkMutualBlock error:', e);
+    }
+}
+
+/* ══════════════════════════════════════
+   PENDING QUESTIONS LISTENER
+══════════════════════════════════════ */
+function listenToPendingQuestions(uid) {
+    if (questionsListener) { questionsListener(); questionsListener = null; }
+    initialQuestionsLoaded = false;
+    questionsListener = db.collection('questions')
+        .where('receiverId', '==', uid)
+        .where('status', '==', 'pending')
+        .onSnapshot(snap => {
+            const badge = document.getElementById('qBadgeNav');
+            if (!snap.empty) {
+                badge.style.display = 'flex';
+                badge.textContent   = snap.size;
+                if (initialQuestionsLoaded) {
+                    snap.docChanges().forEach(change => {
+                        if (change.type === 'added') {
+                            document.getElementById('sndQuestion')?.play().catch(()=>{});
+                        }
+                    });
+                }
+            } else {
+                badge.style.display = 'none';
+            }
+            initialQuestionsLoaded = true;
+        });
+}
+
+/* ══════════════════════════════════════
+   FOLLOW NOTIFICATION
+══════════════════════════════════════ */
+async function sendFollowNotification(followerUid, profileOwnerUid) {
+    try {
+        const followerDoc  = await db.collection('users').doc(followerUid).get();
+        const followerData = followerDoc.data() || {};
+        await db.collection('notifications').add({
+            receiverId:       profileOwnerUid,
+            senderId:         followerUid,
+            senderName:       followerData.name       || t('anonymous'),
+            senderUsername:   followerData.username   || '',
+            senderAvatar:     followerData.avatarUrl  || '',
+            isSenderVerified: !!(followerData.isVerified || followerData.isPremium),
+            type:             'follow',
+            contentId:        followerUid,
+            isRead:           false,
+            timestamp:        firebase.firestore.FieldValue.serverTimestamp()
+        });
+    } catch(e) { console.error('sendFollowNotification:', e); }
+}
+
+/* ══════════════════════════════════════
+   LANGUAGE
+══════════════════════════════════════ */
+function updateLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-key]').forEach(el => {
+        const v = translations[lang]?.[el.dataset.key];
+        if (v) el.textContent = v;
+    });
+    document.querySelectorAll('[data-placeholder]').forEach(el => {
+        const v = translations[lang]?.[el.dataset.placeholder];
+        if (v) el.placeholder = v;
+    });
+
+    const bb = document.getElementById('blockBtnText');
+    if (bb) bb.textContent = isBlocked ? t('unblock_btn') : t('block_btn');
+
+    const followSpan = document.getElementById('followBtnText');
+    if (followSpan) followSpan.textContent = isFollowing ? t('following_btn') : t('follow_btn');
+
+    if (!isOwner) toggleQuestionMode();
+
+    if (isBlocked || iBlockedByThem) {
+        const el = document.getElementById('blockedMsg');
+        if (el) el.innerHTML = t('blocked_msg');
+    }
+}
+
+/* ══════════════════════════════════════
+   COPY LINK
+══════════════════════════════════════ */
+function copyProfileLink() {
+    const url = `${location.origin}${location.pathname}?id=${currentProfileId}`;
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.resolve().then(()=>{
+        const el = document.createElement('textarea');
+        el.value = url; document.body.appendChild(el); el.select();
+        document.execCommand('copy'); document.body.removeChild(el);
+    })).then(() => toast('success', t('copy_success')));
+    document.getElementById('profileActionsMenu').style.display = 'none';
+}
+
+/* ══════════════════════════════════════
+   FOLLOW / NOTIFY
+══════════════════════════════════════ */
+function checkFollowStatus() {
+    if (!auth.currentUser) return;
+    if (followListener) { followListener(); followListener = null; }
+
+    followListener = db.collection('users').doc(currentProfileId)
+        .collection('followers').doc(auth.currentUser.uid)
+        .onSnapshot(doc => {
+            isFollowing = doc.exists;
+            const btnF  = document.getElementById('btnFollow');
+            const btnN  = document.getElementById('btnNotify');
+            if (btnF) {
+                const span = document.getElementById('followBtnText');
+                if (span) span.textContent = isFollowing ? t('following_btn') : t('follow_btn');
+                btnF.className = isFollowing ? 'follow-btn followed' : 'follow-btn unfollowed';
+            }
+            if (btnN) {
+                btnN.classList.toggle('show', isFollowing);
+                btnN.classList.toggle('active', isFollowing && !!(doc.data()?.notifications));
+            }
+        });
+}
+
+async function toggleFollow() {
+    if (!auth.currentUser || isOwner) return;
+    if (isBlocked || iBlockedByThem) return;
+    const uid = auth.currentUser.uid;
+    const ref = db.collection('users').doc(currentProfileId).collection('followers').doc(uid);
+    if (isFollowing) {
+        await ref.delete();
+        await db.collection('users').doc(currentProfileId).update({
+            followersCount: firebase.firestore.FieldValue.increment(-1)
+        });
+    } else {
+        await ref.set({followedAt:firebase.firestore.FieldValue.serverTimestamp(), notifications:false});
+        await db.collection('users').doc(currentProfileId).update({
+            followersCount: firebase.firestore.FieldValue.increment(1)
+        });
+        await sendFollowNotification(uid, currentProfileId);
+    }
+}
+
+async function toggleNotify() {
+    if (!auth.currentUser || isOwner || !isFollowing) return;
+    const ref = db.collection('users').doc(currentProfileId)
+        .collection('followers').doc(auth.currentUser.uid);
+    const doc = await ref.get();
+    await ref.update({notifications:!(doc.exists && doc.data().notifications)});
+}
+
+/* ══════════════════════════════════════
+   BLOCK
+══════════════════════════════════════ */
+function checkBlockStatus(profileId) {
+    if (!auth.currentUser) return;
+    if (blockListener) { blockListener(); blockListener = null; }
+
+    blockListener = db.collection('users').doc(auth.currentUser.uid)
+        .collection('blocked').doc(profileId)
+        .onSnapshot(async doc => {
+            isBlocked = doc.exists;
+            const bt = document.getElementById('blockBtnText');
+            const bi = document.getElementById('blockBtnIcon');
+            if (bt) bt.textContent = isBlocked ? t('unblock_btn') : t('block_btn');
+            if (bi) bi.className  = isBlocked ? 'fa-solid fa-check' : 'fa-solid fa-ban';
+
+            if (auth.currentUser) {
+                const theirBlock = await db.collection('users').doc(profileId)
+                    .collection('blocked').doc(auth.currentUser.uid).get();
+                iBlockedByThem = theirBlock.exists;
+            }
+
+            if (isBlocked || iBlockedByThem) {
+                showBlockedScreen();
+            } else {
+                hideBlockedScreen();
+                document.getElementById('visitorAskBox').style.display = 'block';
+            }
+        });
+}
+
+async function toggleBlockProfile() {
+    if (!auth.currentUser) return;
+    const ref = db.collection('users').doc(auth.currentUser.uid)
+        .collection('blocked').doc(currentProfileId);
+    if (isBlocked) {
+        await ref.delete();
+    } else {
+        await ref.set({blockedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    }
+    document.getElementById('profileActionsMenu').style.display = 'none';
+}
+
+/* ══════════════════════════════════════
+   REPORT
+══════════════════════════════════════ */
+async function reportProfile() {
+    if (!auth.currentUser) return;
+    const {value:reason} = await Swal.fire({
+        ...swalBase,
+        title:t('report_title'),input:'textarea',
+        inputPlaceholder:t('report_placeholder'),
+        showCancelButton:true,
+        confirmButtonText:t('report_send'),cancelButtonText:t('cancel_btn'),
+    });
+    if (!reason || !reason.trim()) return;
+    await db.collection('reports').add({
+        reportedUser:currentProfileId,
+        reportedBy:auth.currentUser.uid,
+        reason:reason.trim().slice(0,500),
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    toast('success', t('report_success'));
+    document.getElementById('profileActionsMenu').style.display = 'none';
+}
+
+/* ══════════════════════════════════════
+   SAVE DATA
+══════════════════════════════════════ */
+async function saveData() {
+    if (!auth.currentUser || !isOwner) return;
+    const name = document.getElementById('in-name').value.trim();
+    const bio  = document.getElementById('in-bio').value.trim();
+    if (!name) return toast('warning', t('name_empty'));
+    const safeName = name.slice(0, 60);
+    const safeBio  = bio.slice(0, 200);
+    await db.collection('users').doc(auth.currentUser.uid).update({name:safeName, bio:safeBio});
+    toast('success', t('save_success'));
+}
+
+/* ══════════════════════════════════════
+   LOAD PROFILE
+══════════════════════════════════════ */
+function loadProfileData(uid, own) {
+    if (profileListener) { profileListener(); profileListener = null; }
+
+    profileListener = db.collection('users').doc(uid).onSnapshot(doc => {
+        const data = doc.data(); if (!data) return;
+
+        const av = document.getElementById('avatarBox');
+        av.classList.remove('admin-glow','verify-glow');
+
+        document.getElementById('displayBio').textContent = data.bio || '';
+        document.getElementById('count-followers').textContent = (data.followersCount || 0).toLocaleString();
+
+        const usernameEl = document.getElementById('displayUsername');
+        usernameEl.textContent = '';
+        if (data.username) {
+            const atSpan   = document.createElement('span'); atSpan.textContent   = '@';
+            const nameSpan = document.createElement('span'); nameSpan.textContent = data.username;
+            usernameEl.appendChild(atSpan); usernameEl.appendChild(nameSpan);
+        }
+
+        if (data.avatarUrl) {
+            const src = safeImgSrc(data.avatarUrl) + (data.avatarUpdatedAt ? `?v=${data.avatarUpdatedAt}` : '');
+            document.getElementById('avatarImg').src = src;
+        }
+        if (data.coverUrl) {
+            const c = document.getElementById('coverImg');
+            c.src = safeImgSrc(data.coverUrl) + (data.coverUpdatedAt ? `?v=${data.coverUpdatedAt}` : '');
+            c.style.display = 'block';
+        }
+
+        const ma = document.getElementById('mainAdminBadge');
+        const mu = document.getElementById('mainUserBadge');
+        ma.style.display = mu.style.display = 'none';
+
+        const uname = (data.username || '').toUpperCase();
+        if (uname === 'HT') {
+            ma.style.display = 'inline-block';
+            av.classList.add('admin-glow');
+            if (own) {
+                document.getElementById('adminArea').style.display = 'block';
+                document.getElementById('userSecurityArea').classList.remove('visible');
+            }
+        } else {
+            if (data.isPremium) { mu.style.display = 'inline-block'; av.classList.add('verify-glow'); }
+            if (own) document.getElementById('userSecurityArea').classList.add('visible');
+        }
+
+        document.getElementById('displayName').textContent = data.name || '';
+
+        updateSEO(data.name||'', data.bio||'', data.avatarUrl||'', data.username||'');
+
+        const rR = document.getElementById('menuReportBtn');
+        const bR = document.getElementById('menuBlockBtn');
+        if (own) {
+            if (rR) rR.style.display = 'none';
+            if (bR) bR.style.display = 'none';
+            document.getElementById('in-name').value       = data.name || '';
+            document.getElementById('in-bio').value        = data.bio  || '';
+            document.getElementById('read-username').value = '@'+(data.username||'');
+            document.getElementById('in-phone').value      = data.phone || '';
+            document.getElementById('read-email').value    = data.email || '';
+        } else {
+            if (rR) rR.style.display = 'block';
+            if (bR) bR.style.display = 'block';
+        }
+
+        loadAnswers(uid);
+        calculateTotalLikes(uid);
+    });
+}
+
+/* ══════════════════════════════════════
+   LOAD ANSWERS
+══════════════════════════════════════ */
+async function loadAnswers(uid) {
+    const tab = document.getElementById('tab-latest');
+    tab.innerHTML = '<div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>';
+
+    try {
+        const ownerSnap = await db.collection('users').doc(uid).get();
+        const ownerData = ownerSnap.exists ? ownerSnap.data() : {};
+
+        db.collection('answers')
+            .where('userId','==',uid)
+            .orderBy('answeredAt','desc')
+            .limit(50)
+            .onSnapshot(snap => {
+                tab.innerHTML = '';
+                if (snap.empty) {
+                    tab.innerHTML = `<div class="empty-state"><i class="fa-regular fa-comment-dots" aria-hidden="true"></i><p>${escapeHtml(t('no_answers'))}</p></div>`;
+                    document.getElementById('count-answers').textContent = 0;
+                    return;
+                }
+                const frag = document.createDocumentFragment();
+                let cnt = 0;
+                snap.forEach(d => { cnt++; frag.appendChild(buildAnswerCard(d.id, d.data(), ownerData)); });
+                tab.appendChild(frag);
+                document.getElementById('count-answers').textContent = cnt.toLocaleString();
+                if (typeof AdsManager !== 'undefined') AdsManager.injectAds(tab);
+            });
+    } catch(e) {
+        console.error('loadAnswers:', e);
+        tab.innerHTML = `<div class="empty-state"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><p>${escapeHtml(t('generic_error'))}</p></div>`;
+    }
+}
+
+async function loadFeaturedAnswers(uid) {
+    const tab = document.getElementById('tab-featured');
+    if (tab.dataset.loaded) return;
+    tab.innerHTML = '<div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>';
+
+    try {
+        const ownerSnap = await db.collection('users').doc(uid).get();
+        const ownerData = ownerSnap.exists ? ownerSnap.data() : {};
+
+        const snap = await db.collection('answers')
+            .where('userId','==',uid)
+            .limit(100)
+            .get();
+
+        tab.innerHTML = '';
+        if (snap.empty) {
+            tab.innerHTML = `<div class="empty-state"><i class="fa-regular fa-star" aria-hidden="true"></i><p>${escapeHtml(t('no_answers'))}</p></div>`;
+            return;
+        }
+
+        const docs = [];
+        snap.forEach(d => docs.push({id:d.id, data:d.data()}));
+        docs.sort((a,b) => (b.data.likes?.length||0) - (a.data.likes?.length||0));
+
+        const frag = document.createDocumentFragment();
+        docs.slice(0,20).forEach(d => frag.appendChild(buildAnswerCard(d.id, d.data, ownerData)));
+        tab.appendChild(frag);
+        tab.dataset.loaded = '1';
+    } catch(e) { console.error('loadFeaturedAnswers:', e); }
+}
+
+/* ══════════════════════════════════════
+   BUILD ANSWER CARD
+══════════════════════════════════════ */
+function buildAnswerCard(id, data, ownerData) {
+    const likesArr   = data.likes || [];
+    const liked      = !!(auth.currentUser && likesArr.includes(auth.currentUser.uid));
+    const likesCount = likesArr.length;
+
+    const username       = (ownerData.username || '').toLowerCase();
+    const isDev          = username === 'ht';
+    const isVerified     = !!(ownerData.isPremium || ownerData.isVerified);
+    const cardGlowClass  = isDev ? 'dev-glow' : (isVerified ? 'user-glow' : '');
+    const avatarGlowClass= isDev ? 'admin-glow' : (isVerified ? 'verify-glow' : '');
+
+    const div = document.createElement('div');
+    div.className = `ans-card ${cardGlowClass}`;
+
+    const header = document.createElement('div'); header.className = 'ans-header';
+
+    const avatarFrame = document.createElement('div');
+    avatarFrame.className = `avatar-frame ${avatarGlowClass}`;
+    avatarFrame.setAttribute('role','button');
+    avatarFrame.setAttribute('tabindex','0');
+    avatarFrame.onclick = () => location.href = `profile.html?id=${currentProfileId}`;
+    const avImg = document.createElement('img');
+    avImg.src = safeImgSrc(ownerData.avatarUrl);
+    avImg.alt = ownerData.name || '';
+    avImg.loading = 'lazy';
+    avImg.onerror = () => { avImg.src = 'images/user.png'; };
+    avatarFrame.appendChild(avImg);
+
+    const userInfoText = document.createElement('div');
+    userInfoText.className = 'user-info-text';
+    userInfoText.onclick = () => location.href = `profile.html?id=${currentProfileId}`;
+
+    const nameRow = document.createElement('div');
+    nameRow.style.cssText = 'display:flex;align-items:center;gap:5px;flex-wrap:wrap;';
+    const displayNameSpan = document.createElement('span');
+    displayNameSpan.className = 'ans-display-name';
+    displayNameSpan.textContent = ownerData.name || t('anonymous');
+    nameRow.appendChild(displayNameSpan);
+
+    if (isDev) {
+        const adminBadge = document.createElement('img');
+        adminBadge.src='images/admin-verified-logo.png'; adminBadge.style.height='14px'; adminBadge.alt='';
+        nameRow.appendChild(adminBadge);
+        const devLabel = document.createElement('span');
+        devLabel.style.cssText='font-size:9px;background:var(--admin-red);padding:1px 5px;border-radius:4px;';
+        devLabel.innerHTML='<i class="fa-solid fa-code" aria-hidden="true"></i> المطور';
+        nameRow.appendChild(devLabel);
+    } else if (isVerified) {
+        const verBadge = document.createElement('img');
+        verBadge.src='images/verified-logo.png'; verBadge.style.height='14px'; verBadge.alt='';
+        nameRow.appendChild(verBadge);
+    }
+
+    const userNameSub = document.createElement('span');
+    userNameSub.className = 'ans-user-name-sub';
+    userNameSub.textContent = username ? `@${username}` : '';
+    userInfoText.appendChild(nameRow); userInfoText.appendChild(userNameSub);
+    header.appendChild(avatarFrame); header.appendChild(userInfoText);
+
+    const headerActions = document.createElement('div');
+    headerActions.style.cssText = 'display:flex;align-items:center;gap:12px;';
+    if (isOwner) {
+        const delBtn = document.createElement('button');
+        delBtn.setAttribute('aria-label','حذف الإجابة');
+        delBtn.style.cssText='background:none;border:none;color:#333;font-size:13px;cursor:pointer;transition:color 0.2s;padding:4px;';
+        delBtn.innerHTML='<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+        delBtn.onmouseenter = () => delBtn.style.color='#ff4b4b';
+        delBtn.onmouseleave = () => delBtn.style.color='#333';
+        delBtn.onclick = () => deleteAnswer(id, data.questionId);
+        headerActions.appendChild(delBtn);
+    }
+    header.appendChild(headerActions);
+
+    const qDiv = document.createElement('div'); qDiv.className = 'ans-q';
+    qDiv.textContent = data.questionText || '';
+
+    const aDiv = document.createElement('div'); aDiv.className = 'ans-a';
+    aDiv.textContent = data.reply || '';
+
+    const footer  = document.createElement('div'); footer.className  = 'ans-footer';
+    const actions = document.createElement('div'); actions.className = 'ans-actions';
+
+    const likeBtn = document.createElement('button');
+    likeBtn.className = 'action-btn'+(liked?' liked':'');
+    likeBtn.setAttribute('aria-label', 'إعجاب');
+    likeBtn.onclick = () => toggleLike(id, likeBtn, data.userId||currentProfileId);
+    const likeIcon  = document.createElement('i');
+    likeIcon.className = liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+    likeIcon.setAttribute('aria-hidden','true');
+    const likeCount = document.createElement('span'); likeCount.textContent = likesCount;
+    likeBtn.appendChild(likeIcon); likeBtn.appendChild(likeCount);
+    actions.appendChild(likeBtn);
+
+    const replyBtn = document.createElement('button');
+    replyBtn.className = 'action-btn';
+    replyBtn.setAttribute('aria-label','الردود');
+    replyBtn.innerHTML='<i class="fa-regular fa-comment" aria-hidden="true"></i> <span>الردود</span>';
+    replyBtn.onclick = () => location.href = `thread.html?id=${id}`;
+    actions.appendChild(replyBtn);
+
+    const timeTs = data.answeredAt;
+    const timeContainer = document.createElement('div'); timeContainer.className='ans-time-container';
+    const timeSpan = document.createElement('span'); timeSpan.className='ans-time'; timeSpan.textContent=formatTime(timeTs);
+    const dateSpan = document.createElement('span'); dateSpan.className='ans-date-sub'; dateSpan.textContent=formatDate(timeTs);
+    timeContainer.appendChild(timeSpan); timeContainer.appendChild(dateSpan);
+
+    footer.appendChild(actions); footer.appendChild(timeContainer);
+    div.appendChild(header); div.appendChild(qDiv); div.appendChild(aDiv); div.appendChild(footer);
+    return div;
+}
+
+/* ══════════════════════════════════════
+   TOGGLE LIKE
+══════════════════════════════════════ */
+async function toggleLike(id, btn, ownerId) {
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+    const ref = db.collection('answers').doc(id);
+
+    try {
+        const snap  = await ref.get();
+        const likes = snap.data()?.likes || [];
+        const liked = likes.includes(uid);
+
+        if (liked) {
+            await ref.update({likes: firebase.firestore.FieldValue.arrayRemove(uid)});
+            btn.classList.remove('liked');
+            const icon = btn.querySelector('i');
+            const cnt  = btn.querySelector('span');
+            if (icon) icon.className = 'fa-regular fa-heart';
+            if (cnt)  cnt.textContent = Math.max(0, parseInt(cnt.textContent||'0') - 1);
+        } else {
+            await ref.update({likes: firebase.firestore.FieldValue.arrayUnion(uid)});
+            btn.classList.add('liked');
+            const icon = btn.querySelector('i');
+            const cnt  = btn.querySelector('span');
+            if (icon) icon.className = 'fa-solid fa-heart';
+            if (cnt)  cnt.textContent = parseInt(cnt.textContent||'0') + 1;
+
+            if (ownerId && ownerId !== uid) {
+                try {
+                    const meDoc  = await db.collection('users').doc(uid).get();
+                    const meData = meDoc.data() || {};
+                    await db.collection('notifications').add({
+                        receiverId:       ownerId,
+                        senderId:         uid,
+                        senderName:       meData.name       || t('anonymous'),
+                        senderUsername:   meData.username   || '',
+                        senderAvatar:     meData.avatarUrl  || '',
+                        isSenderVerified: !!(meData.isVerified || meData.isPremium),
+                        type:             'like',
+                        contentId:        id,
+                        isRead:           false,
+                        timestamp:        firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.error('like notification:', e); }
+            }
+        }
+    } catch(e) { console.error('toggleLike:', e); }
+}
+
+/* ══════════════════════════════════════
+   DELETE ANSWER
+══════════════════════════════════════ */
+async function deleteAnswer(answerId, questionId) {
+    if (!auth.currentUser || !isOwner) return;
+    const res = await confirmDialog(t('answer_delete_confirm'), t('answer_delete_desc'), t('delete_label'), true);
+    if (!res.isConfirmed) return;
+
+    const batch = db.batch();
+    batch.delete(db.collection('answers').doc(answerId));
+    if (questionId) {
+        batch.update(db.collection('questions').doc(questionId), {status:'pending'});
+    }
+    batch.update(db.collection('users').doc(auth.currentUser.uid), {
+        answersCount: firebase.firestore.FieldValue.increment(-1)
+    });
+    await batch.commit();
+}
+
+/* ══════════════════════════════════════
+   TOTAL LIKES
+══════════════════════════════════════ */
+async function calculateTotalLikes(uid) {
+    try {
+        const snap = await db.collection('answers').where('userId','==',uid).get();
+        let total = 0;
+        snap.forEach(d => { total += (d.data().likes?.length||0); });
+        document.getElementById('count-likes').textContent = total.toLocaleString();
+    } catch(e) { console.error('calculateTotalLikes:', e); }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SEND SHOUT — النسخة المُحدَّثة مع fan-out للمتابعين
+   - يُرسَل لكل متابع (receiverId) وثيقة مستقلة
+   - لو مفيش متابعين يُحفظ كـ receiverId = '__public__'
+   - answeredAt: null (لم يُرَد عليه بعد)
+   - isAnonymous: false دائماً للشاوت
+══════════════════════════════════════════════════════════════════ */
+async function sendShout() {
+    if (!auth.currentUser || !isOwner) return;
+
+    const now = Date.now();
+    if (now - lastShoutSentAt < RATE_LIMIT_MS) return toast('warning', t('rate_limit'));
+
+    const rawText = document.getElementById('shoutInput').value.trim();
+    if (!rawText)             return toast('warning', t('shout_empty'));
+    if (rawText.length > 500) return toast('warning', t('text_too_long'));
+
+    const cleanedText = ModerationManager.cleanContent(rawText);
+    lastShoutSentAt = now;
+
+    try {
+        // ① جيب قائمة المتابعين
+        const followersSnap = await db
+            .collection('users')
+            .doc(currentProfileId)
+            .collection('followers')
+            .get();
+
+        const followerIds = followersSnap.docs.map(d => d.id);
+
+        // ② البيانات المشتركة للشاوت
+        const baseShoutData = {
+            ownerId:        currentProfileId,
+            senderId:       auth.currentUser.uid,
+            senderName:     currentUserData?.name       || t('anonymous'),
+            senderUsername: currentUserData?.username   || '',
+            senderAvatar:   currentUserData?.avatarUrl  || '',
+            text:           cleanedText,
+            isAnonymous:    false,
+            likesCount:     0,
+            likedBy:        [],
+            repliesCount:   0,
+            answeredAt:     null,
+            createdAt:      firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (followerIds.length === 0) {
+            // لو مفيش متابعين: احفظ شاوت بـ receiverId = '__public__'
+            await db.collection('shouts').add({
+                ...baseShoutData,
+                receiverId: '__public__'
+            });
+        } else {
+            // ③ Firestore batch — لكل متابع وثيقة منفصلة (fan-out)
+            // Batch محدود بـ 500 عملية — نقسّم على chunks لو المتابعون كتير
+            const BATCH_LIMIT = 490;
+            for (let i = 0; i < followerIds.length; i += BATCH_LIMIT) {
+                const chunk = followerIds.slice(i, i + BATCH_LIMIT);
+                const batch = db.batch();
+                chunk.forEach(receiverId => {
+                    const ref = db.collection('shouts').doc();
+                    batch.set(ref, { ...baseShoutData, receiverId });
+                });
+                await batch.commit();
+            }
+        }
+
+        document.getElementById('shoutInput').value = '';
+        document.getElementById('shoutFilterWarn')?.classList.remove('show');
+        toast('success', t('shout_sent'));
+
+        // حدّث تاب الشاوت لو ظاهر
+        if (document.getElementById('tab-shouts').classList.contains('active')) {
+            loadShouts(currentProfileId);
+        }
+
+    } catch(e) {
+        console.error('sendShout error:', e);
+        lastShoutSentAt = 0;
+        toast('error', t('send_error'));
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   LOAD SHOUTS — يعرض شاوتات صاحب الصفحة بدون تكرار
+   (نفس الشاوت المُوزَّع قد يظهر في وثائق متعددة — نُزيل التكرار)
+══════════════════════════════════════════════════════════════════ */
+async function loadShouts(uid) {
+    const tab = document.getElementById('tab-shouts');
+    tab.innerHTML = '<div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>';
+
+    try {
+        const snap = await db.collection('shouts')
+            .where('ownerId', '==', uid)
+            .orderBy('createdAt', 'desc')
+            .limit(30)
+            .get();
+
+        tab.innerHTML = '';
+        if (snap.empty) {
+            tab.innerHTML = `<div class="empty-state"><i class="fa-regular fa-comment-dots" aria-hidden="true"></i><p>${escapeHtml(t('no_shouts'))}</p></div>`;
+            return;
+        }
+
+        // إزالة التكرارات — نفس النص في نفس الثانية = نفس الشاوت المُوزَّع
+        const seen   = new Set();
+        const unique = [];
+        snap.forEach(d => {
+            const key = (d.data().text || '') + '_' + (d.data().createdAt?.seconds || '');
+            if (!seen.has(key)) {
+                seen.add(key);
+                unique.push({ id: d.id, data: d.data() });
+            }
+        });
+
+        const frag = document.createDocumentFragment();
+        unique.forEach(item => frag.appendChild(buildShoutCard(item.id, item.data)));
+        tab.appendChild(frag);
+
+    } catch(e) { console.error('loadShouts:', e); }
+}
+
+/* ══════════════════════════════════════
+   BUILD SHOUT CARD
+══════════════════════════════════════ */
+function buildShoutCard(id, data) {
+    const div = document.createElement('div'); div.className = 'shout-card';
+    div.onclick = () => openShoutModal(id);
+    const liked = !!(auth.currentUser && (data.likedBy||[]).includes(auth.currentUser.uid));
+
+    const cardHeader = document.createElement('div'); cardHeader.className = 'shout-card-header';
+    const img = document.createElement('img');
+    img.src = safeImgSrc(data.senderAvatar); img.className='shout-avatar'; img.alt=''; img.loading='lazy';
+    img.onerror = () => { img.src='images/user.png'; };
+    const nameWrap = document.createElement('div');
+    const nameEl = document.createElement('div'); nameEl.className='shout-owner-name'; nameEl.textContent=data.senderName||t('anonymous');
+    const timeEl = document.createElement('div'); timeEl.className='shout-time'; timeEl.textContent=timeAgo(data.createdAt);
+    nameWrap.appendChild(nameEl); nameWrap.appendChild(timeEl);
+    cardHeader.appendChild(img); cardHeader.appendChild(nameWrap);
+
+    const textEl = document.createElement('div'); textEl.className='shout-text'; textEl.textContent=data.text||'';
+
+    const footer  = document.createElement('div'); footer.className='shout-footer';
+    const actions = document.createElement('div'); actions.className='shout-actions';
+
+    const likeBtn = document.createElement('button');
+    likeBtn.className='shout-action-btn'+(liked?' liked':'');
+    likeBtn.setAttribute('aria-label','إعجاب');
+    likeBtn.onclick = e => { e.stopPropagation(); likeShout(id, likeBtn); };
+    likeBtn.innerHTML=`<i class="fa-${liked?'solid':'regular'} fa-heart" aria-hidden="true"></i> ${data.likesCount||0}`;
+    actions.appendChild(likeBtn);
+
+    const replyBtn = document.createElement('button'); replyBtn.className='shout-action-btn';
+    replyBtn.setAttribute('aria-label','ردود');
+    replyBtn.onclick = e => { e.stopPropagation(); openShoutModal(id); };
+    replyBtn.innerHTML=`<i class="fa-regular fa-comment" aria-hidden="true"></i> ${data.repliesCount||0}`;
+    actions.appendChild(replyBtn);
+
+    if (isOwner) {
+        const delBtn = document.createElement('button'); delBtn.className='shout-action-btn';
+        delBtn.setAttribute('aria-label','حذف الشاوت');
+        delBtn.onclick = e => { e.stopPropagation(); deleteShout(id); };
+        delBtn.innerHTML='<i class="fa-regular fa-trash-can" aria-hidden="true"></i>';
+        actions.appendChild(delBtn);
+    }
+
+    footer.appendChild(actions);
+    div.appendChild(cardHeader); div.appendChild(textEl); div.appendChild(footer);
+    return div;
+}
+
+/* ══════════════════════════════════════
+   LIKE / DELETE SHOUT
+══════════════════════════════════════ */
+async function likeShout(id, btn) {
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+    const ref = db.collection('shouts').doc(id);
+    const snap = await ref.get();
+    const likesCount = snap.data()?.likesCount || 0;
+    const liked = (snap.data()?.likedBy||[]).includes(uid);
+
+    if (liked) {
+        const n = Math.max(0, likesCount-1);
+        await ref.update({likedBy:firebase.firestore.FieldValue.arrayRemove(uid), likesCount:n});
+        btn.classList.remove('liked');
+        btn.innerHTML=`<i class="fa-regular fa-heart" aria-hidden="true"></i> ${n}`;
+    } else {
+        const n = likesCount+1;
+        await ref.update({likedBy:firebase.firestore.FieldValue.arrayUnion(uid), likesCount:n});
+        btn.classList.add('liked');
+        btn.innerHTML=`<i class="fa-solid fa-heart" aria-hidden="true"></i> ${n}`;
+    }
+}
+
+async function deleteShout(id) {
+    if (!auth.currentUser || !isOwner) return;
+    const res = await confirmDialog('🗑 '+t('shout_delete_confirm'),'',t('delete_label'),true);
+    if (!res.isConfirmed) return;
+    await db.collection('shouts').doc(id).delete();
+    loadShouts(currentProfileId);
+}
+
+/* ══════════════════════════════════════
+   SHOUT MODAL
+══════════════════════════════════════ */
+async function openShoutModal(shoutId) {
+    const shoutDoc = await db.collection('shouts').doc(shoutId).get();
+    if (!shoutDoc.exists) return;
+    const sd = shoutDoc.data();
+    const liked = !!(auth.currentUser && (sd.likedBy||[]).includes(auth.currentUser.uid));
+    const isPageOwner = auth.currentUser?.uid === currentProfileId;
+
+    const overlay = document.createElement('div');
+    overlay.className='shout-modal-overlay'; overlay.id='shoutModalOverlay';
+    overlay.setAttribute('role','dialog'); overlay.setAttribute('aria-modal','true');
+
+    const modal = document.createElement('div'); modal.className='shout-modal';
+
+    const modalHeader = document.createElement('div'); modalHeader.className='shout-modal-header';
+    const backBtn = document.createElement('button');
+    backBtn.className='shout-modal-back'; backBtn.textContent='←';
+    backBtn.setAttribute('aria-label','رجوع'); backBtn.onclick=closeShoutModal;
+    const modalTitle = document.createElement('span');
+    modalTitle.className='shout-modal-title'; modalTitle.textContent=t('shout_detail_title');
+    modalHeader.appendChild(backBtn); modalHeader.appendChild(modalTitle);
+
+    const modalBody = document.createElement('div'); modalBody.className='shout-modal-body'; modalBody.id='shoutModalBody';
+
+    const original = document.createElement('div'); original.className='shout-original';
+    const origHeader = document.createElement('div'); origHeader.className='shout-original-header';
+    const origImg = document.createElement('img');
+    origImg.src=safeImgSrc(sd.senderAvatar); origImg.className='shout-original-avatar'; origImg.alt=''; origImg.loading='lazy';
+    origImg.onerror=()=>{ origImg.src='images/user.png'; };
+    const origInfo = document.createElement('div');
+    const origSender = document.createElement('div'); origSender.className='shout-original-sender'; origSender.textContent=sd.senderName||t('anonymous');
+    const origTime   = document.createElement('div'); origTime.className='shout-original-time'; origTime.textContent=timeAgo(sd.createdAt);
+    origInfo.appendChild(origSender); origInfo.appendChild(origTime);
+    origHeader.appendChild(origImg); origHeader.appendChild(origInfo);
+
+    const origText = document.createElement('div'); origText.className='shout-original-text'; origText.textContent=sd.text||'';
+    const origActions = document.createElement('div'); origActions.className='shout-original-actions';
+    const origLikeBtn = document.createElement('button');
+    origLikeBtn.className='shout-original-like-btn'+(liked?' liked':''); origLikeBtn.id='shoutLikeBtn';
+    origLikeBtn.setAttribute('aria-label','إعجاب');
+    origLikeBtn.onclick=()=>likeShoutInModal(shoutId);
+    origLikeBtn.innerHTML=`<i class="fa-${liked?'solid':'regular'} fa-heart" aria-hidden="true"></i> ${sd.likesCount||0}`;
+    origActions.appendChild(origLikeBtn);
+    original.appendChild(origHeader); original.appendChild(origText); original.appendChild(origActions);
+    modalBody.appendChild(original);
+
+    if (isPageOwner) {
+        const ansBox = document.createElement('div'); ansBox.className='shout-answer-box';
+        const ansTitle = document.createElement('div'); ansTitle.className='shout-answer-box-title'; ansTitle.textContent=t('answer_label');
+        const ansInput = document.createElement('textarea');
+        ansInput.className='shout-answer-input'; ansInput.id='shoutAnswerInput';
+        ansInput.placeholder=t('answer_placeholder'); ansInput.maxLength=500;
+        const ansSendBtn = document.createElement('button');
+        ansSendBtn.className='shout-answer-send-btn'; ansSendBtn.textContent=t('send_answer');
+        ansSendBtn.onclick=()=>postShoutAnswer(shoutId);
+        ansBox.appendChild(ansTitle); ansBox.appendChild(ansInput); ansBox.appendChild(ansSendBtn);
+        modalBody.appendChild(ansBox);
+    }
+
+    const repliesSection = document.createElement('div'); repliesSection.className='replies-section';
+    const repliesTitle = document.createElement('div'); repliesTitle.className='replies-title'; repliesTitle.textContent=t('replies_title');
+    const repliesContainer = document.createElement('div'); repliesContainer.id='repliesContainer';
+    repliesContainer.innerHTML='<div class="skeleton skeleton-card" style="height:80px;"></div>';
+    repliesSection.appendChild(repliesTitle); repliesSection.appendChild(repliesContainer);
+    modalBody.appendChild(repliesSection);
+
+    const replyInputArea = document.createElement('div'); replyInputArea.className='reply-input-area';
+    const replyInput = document.createElement('textarea');
+    replyInput.className='reply-input'; replyInput.id='replyInput';
+    replyInput.placeholder=t('reply_placeholder'); replyInput.maxLength=300;
+    replyInput.setAttribute('aria-label','اكتب ردك');
+    const replySendBtn = document.createElement('button');
+    replySendBtn.className='reply-send-btn'; replySendBtn.setAttribute('aria-label','إرسال الرد');
+    replySendBtn.innerHTML='<i class="fa-solid fa-paper-plane" aria-hidden="true"></i>';
+    replySendBtn.onclick=()=>sendReply(shoutId);
+    replyInputArea.appendChild(replyInput); replyInputArea.appendChild(replySendBtn);
+
+    modal.appendChild(modalHeader); modal.appendChild(modalBody); modal.appendChild(replyInputArea);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    document.body.style.overflow='hidden';
+    loadReplies(shoutId);
+}
+
+function closeShoutModal() {
+    if (repliesListener) { repliesListener(); repliesListener=null; }
+    const el = document.getElementById('shoutModalOverlay');
+    if (el) el.remove();
+    document.body.style.overflow='';
+}
+
+async function likeShoutInModal(id) {
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+    const ref = db.collection('shouts').doc(id);
+    const snap = await ref.get();
+    const likesCount = snap.data()?.likesCount||0;
+    const liked = (snap.data()?.likedBy||[]).includes(uid);
+    const btn = document.getElementById('shoutLikeBtn');
+
+    if (liked) {
+        const n=Math.max(0,likesCount-1);
+        await ref.update({likedBy:firebase.firestore.FieldValue.arrayRemove(uid),likesCount:n});
+        btn.classList.remove('liked'); btn.innerHTML=`<i class="fa-regular fa-heart" aria-hidden="true"></i> ${n}`;
+    } else {
+        const n=likesCount+1;
+        await ref.update({likedBy:firebase.firestore.FieldValue.arrayUnion(uid),likesCount:n});
+        btn.classList.add('liked'); btn.innerHTML=`<i class="fa-solid fa-heart" aria-hidden="true"></i> ${n}`;
+    }
+}
+
+async function postShoutAnswer(shoutId) {
+    if (!auth.currentUser || !isOwner) return;
+    const input = document.getElementById('shoutAnswerInput');
+    const rawText = input?.value.trim(); if (!rawText) return;
+    const cleanedText = ModerationManager.cleanContent(rawText);
+    await db.collection('shouts').doc(shoutId).collection('replies').add({
+        senderId:auth.currentUser.uid, senderName:currentUserData?.name||'',
+        senderAvatar:currentUserData?.avatarUrl||'', text:cleanedText, isAnswer:true,
+        likesCount:0, likedBy:[], createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await db.collection('shouts').doc(shoutId).update({repliesCount:firebase.firestore.FieldValue.increment(1)});
+    if (input) input.value='';
+}
+
+function loadReplies(shoutId) {
+    const container = document.getElementById('repliesContainer'); if (!container) return;
+    if (repliesListener) { repliesListener(); repliesListener=null; }
+    repliesListener = db.collection('shouts').doc(shoutId).collection('replies')
+        .orderBy('createdAt','asc')
+        .onSnapshot(snap => {
+            const c=document.getElementById('repliesContainer'); if (!c) return;
+            c.innerHTML='';
+            if (snap.empty) {
+                c.innerHTML=`<div class="empty-state" style="padding:20px 0;"><i class="fa-regular fa-comment" style="font-size:24px;" aria-hidden="true"></i><p>${escapeHtml(t('no_reply_yet'))}</p></div>`;
+                return;
+            }
+            snap.forEach(d=>c.appendChild(buildReplyCard(d.id,d.data(),shoutId)));
+        });
+}
+
+function buildReplyCard(id, data, shoutId) {
+    const div=document.createElement('div');
+    div.className='reply-card'+(data.isAnswer?' is-answer':'');
+    const liked=!!(auth.currentUser&&(data.likedBy||[]).includes(auth.currentUser.uid));
+    const canDel=!!(auth.currentUser&&(auth.currentUser.uid===data.senderId||auth.currentUser.uid===currentProfileId));
+
+    const replyHeader=document.createElement('div'); replyHeader.className='reply-header';
+    const rImg=document.createElement('img');
+    rImg.src=safeImgSrc(data.senderAvatar); rImg.className='reply-avatar'; rImg.alt=''; rImg.loading='lazy';
+    rImg.onerror=()=>{rImg.src='images/user.png';};
+    replyHeader.appendChild(rImg);
+
+    if (data.isAnswer) {
+        const badge=document.createElement('span'); badge.className='reply-answer-badge'; badge.textContent=t('answer_badge');
+        replyHeader.appendChild(badge);
+    }
+
+    const senderName=document.createElement('span'); senderName.className='reply-sender-name'; senderName.textContent=data.senderName||t('anonymous');
+    const replyTime=document.createElement('span'); replyTime.className='reply-time'; replyTime.textContent=timeAgo(data.createdAt);
+    replyHeader.appendChild(senderName); replyHeader.appendChild(replyTime);
+
+    const replyText=document.createElement('div'); replyText.className='reply-text'; replyText.textContent=data.text||'';
+    const replyActions=document.createElement('div'); replyActions.className='reply-actions';
+
+    const likeBtn=document.createElement('button');
+    likeBtn.className='reply-like-btn'+(liked?' liked':'');
+    likeBtn.setAttribute('aria-label','إعجاب');
+    likeBtn.onclick=()=>likeReply(shoutId,id,likeBtn);
+    likeBtn.innerHTML=`<i class="fa-${liked?'solid':'regular'} fa-heart" aria-hidden="true"></i> ${data.likesCount||0}`;
+    replyActions.appendChild(likeBtn);
+
+    if (canDel) {
+        const delBtn=document.createElement('button'); delBtn.className='reply-delete-btn';
+        delBtn.setAttribute('aria-label','حذف الرد');
+        delBtn.onclick=()=>deleteReply(shoutId,id);
+        delBtn.innerHTML='<i class="fa-regular fa-trash-can" aria-hidden="true"></i>';
+        replyActions.appendChild(delBtn);
+    }
+
+    const subrepliesContainer=document.createElement('div');
+    subrepliesContainer.className='subreplies-container'; subrepliesContainer.id=`subreplies-${id}`;
+    const subreplyInputArea=document.createElement('div'); subreplyInputArea.className='subreply-input-area';
+    const subreplyInput=document.createElement('textarea');
+    subreplyInput.className='subreply-input'; subreplyInput.id=`subreply-input-${id}`;
+    subreplyInput.placeholder=t('subreply_placeholder'); subreplyInput.maxLength=200;
+    const subreplySendBtn=document.createElement('button'); subreplySendBtn.className='subreply-send-btn';
+    subreplySendBtn.setAttribute('aria-label','إرسال');
+    subreplySendBtn.innerHTML='<i class="fa-solid fa-paper-plane" aria-hidden="true"></i>';
+    subreplySendBtn.onclick=()=>sendSubreply(shoutId,id);
+    subreplyInputArea.appendChild(subreplyInput); subreplyInputArea.appendChild(subreplySendBtn);
+
+    div.appendChild(replyHeader); div.appendChild(replyText); div.appendChild(replyActions);
+    div.appendChild(subrepliesContainer); div.appendChild(subreplyInputArea);
+    loadSubreplies(shoutId,id,subrepliesContainer);
+    return div;
+}
+
+async function likeReply(shoutId, replyId, btn) {
+    if (!auth.currentUser) return;
+    const uid=auth.currentUser.uid;
+    const ref=db.collection('shouts').doc(shoutId).collection('replies').doc(replyId);
+    const snap=await ref.get();
+    const current=snap.data()?.likesCount||0;
+    const liked=(snap.data()?.likedBy||[]).includes(uid);
+
+    if (liked) {
+        const n=Math.max(0,current-1);
+        await ref.update({likedBy:firebase.firestore.FieldValue.arrayRemove(uid),likesCount:n});
+        btn.classList.remove('liked'); btn.innerHTML=`<i class="fa-regular fa-heart" aria-hidden="true"></i> ${n}`;
+    } else {
+        const n=current+1;
+        await ref.update({likedBy:firebase.firestore.FieldValue.arrayUnion(uid),likesCount:n});
+        btn.classList.add('liked'); btn.innerHTML=`<i class="fa-solid fa-heart" aria-hidden="true"></i> ${n}`;
+    }
+}
+
+async function deleteReply(shoutId, replyId) {
+    const res=await confirmDialog(t('delete_reply'),'',t('delete_label'),true);
+    if (!res.isConfirmed) return;
+    await db.collection('shouts').doc(shoutId).collection('replies').doc(replyId).delete();
+    await db.collection('shouts').doc(shoutId).update({repliesCount:firebase.firestore.FieldValue.increment(-1)});
+}
+
+async function sendReply(shoutId) {
+    if (!auth.currentUser) return;
+    const input=document.getElementById('replyInput');
+    const rawText=input?.value.trim(); if (!rawText) return toast('warning',t('reply_empty'));
+    const cleanedText=ModerationManager.cleanContent(rawText);
+    await db.collection('shouts').doc(shoutId).collection('replies').add({
+        senderId:auth.currentUser.uid, senderName:currentUserData?.name||t('anonymous'),
+        senderAvatar:currentUserData?.avatarUrl||'', text:cleanedText, isAnswer:false,
+        likesCount:0, likedBy:[], createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await db.collection('shouts').doc(shoutId).update({repliesCount:firebase.firestore.FieldValue.increment(1)});
+    if (input) input.value='';
+}
+
+function loadSubreplies(shoutId, replyId, container) {
+    db.collection('shouts').doc(shoutId).collection('replies').doc(replyId)
+        .collection('subreplies').orderBy('createdAt','asc')
+        .onSnapshot(snap => {
+            if (!container) return;
+            container.innerHTML='';
+            snap.forEach(d => {
+                const s=d.data();
+                const liked=!!(auth.currentUser&&(s.likedBy||[]).includes(auth.currentUser.uid));
+                const canDel=!!(auth.currentUser&&(auth.currentUser.uid===s.senderId||auth.currentUser.uid===currentProfileId));
+                const el=document.createElement('div'); el.className='subreply-card';
+                const sh=document.createElement('div'); sh.className='subreply-header';
+                const sImg=document.createElement('img');
+                sImg.src=safeImgSrc(s.senderAvatar); sImg.className='subreply-avatar'; sImg.alt=''; sImg.loading='lazy';
+                sImg.onerror=()=>{sImg.src='images/user.png';};
+                const sName=document.createElement('span'); sName.className='subreply-sender-name'; sName.textContent=s.senderName||t('anonymous');
+                const sTime=document.createElement('span'); sTime.className='subreply-time'; sTime.textContent=timeAgo(s.createdAt);
+                sh.appendChild(sImg); sh.appendChild(sName); sh.appendChild(sTime);
+                const sText=document.createElement('div'); sText.className='subreply-text'; sText.textContent=s.text||'';
+                const sActions=document.createElement('div'); sActions.className='subreply-actions';
+                const sLikeBtn=document.createElement('button');
+                sLikeBtn.className='subreply-like-btn'+(liked?' liked':'');
+                sLikeBtn.setAttribute('aria-label','إعجاب');
+                sLikeBtn.onclick=()=>likeSubreply(shoutId,replyId,d.id,sLikeBtn);
+                sLikeBtn.innerHTML=`<i class="fa-${liked?'solid':'regular'} fa-heart" aria-hidden="true"></i> ${s.likesCount||0}`;
+                sActions.appendChild(sLikeBtn);
+                if (canDel) {
+                    const sDelBtn=document.createElement('button'); sDelBtn.className='subreply-delete-btn';
+                    sDelBtn.setAttribute('aria-label','حذف');
+                    sDelBtn.onclick=()=>deleteSubreply(shoutId,replyId,d.id);
+                    sDelBtn.innerHTML='<i class="fa-regular fa-trash-can" aria-hidden="true"></i>';
+                    sActions.appendChild(sDelBtn);
+                }
+                el.appendChild(sh); el.appendChild(sText); el.appendChild(sActions);
+                container.appendChild(el);
+            });
+        });
+}
+
+async function sendSubreply(shoutId, replyId) {
+    if (!auth.currentUser) return;
+    const input=document.getElementById(`subreply-input-${replyId}`);
+    const rawText=input?.value.trim(); if (!rawText) return;
+    const cleanedText=ModerationManager.cleanContent(rawText);
+    await db.collection('shouts').doc(shoutId).collection('replies').doc(replyId)
+        .collection('subreplies').add({
+            senderId:auth.currentUser.uid, senderName:currentUserData?.name||t('anonymous'),
+            senderAvatar:currentUserData?.avatarUrl||'', text:cleanedText,
+            likesCount:0, likedBy:[], createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+    if (input) input.value='';
+}
+
+async function likeSubreply(shoutId, replyId, subId, btn) {
+    if (!auth.currentUser) return;
+    const uid=auth.currentUser.uid;
+    const ref=db.collection('shouts').doc(shoutId).collection('replies').doc(replyId).collection('subreplies').doc(subId);
+    const snap=await ref.get();
+    const current=snap.data()?.likesCount||0;
+    const liked=(snap.data()?.likedBy||[]).includes(uid);
+
+    if (liked) {
+        const n=Math.max(0,current-1);
+        await ref.update({likedBy:firebase.firestore.FieldValue.arrayRemove(uid),likesCount:n});
+        btn.classList.remove('liked'); btn.innerHTML=`<i class="fa-regular fa-heart" aria-hidden="true"></i> ${n}`;
+    } else {
+        const n=current+1;
+        await ref.update({likedBy:firebase.firestore.FieldValue.arrayUnion(uid),likesCount:n});
+        btn.classList.add('liked'); btn.innerHTML=`<i class="fa-solid fa-heart" aria-hidden="true"></i> ${n}`;
+    }
+}
+
+async function deleteSubreply(shoutId, replyId, subId) {
+    const res=await confirmDialog(t('delete_subreply'),'',t('delete_label'),true);
+    if (!res.isConfirmed) return;
+    await db.collection('shouts').doc(shoutId).collection('replies').doc(replyId)
+        .collection('subreplies').doc(subId).delete();
+}
+
+/* ══════════════════════════════════════
+   ACCOUNT ACTIONS
+══════════════════════════════════════ */
+async function confirmDeactivate() {
+    const res=await confirmDialog(t('deactivate_title'),t('deactivate_text'),t('deactivate_confirm'),true);
+    if (!res.isConfirmed||!auth.currentUser) return;
+    await db.collection('users').doc(auth.currentUser.uid).update({isDeactivated:true});
+    auth.signOut().then(()=>location.href='signin.html');
+}
+
+async function confirmDeleteAccount() {
+    const res=await Swal.fire({
+        ...swalBase,icon:'error',iconColor:'#ff4b4b',
+        title:t('delete_account_title'),text:t('delete_account_text'),
+        showCancelButton:true,
+        confirmButtonText:t('delete_account_confirm'),cancelButtonText:t('cancel_btn'),
+        customClass:{...swalBase.customClass,confirmButton:'swal-confirm-danger'}
+    });
+    if (!res.isConfirmed||!auth.currentUser) return;
+    await db.collection('users').doc(auth.currentUser.uid).delete();
+    await auth.currentUser.delete();
+    location.href='signin.html';
+}
+
+function showVerificationMessage(type) {
+    toast('success', type==='admin' ? t('badge_admin') : t('badge_user'), 2500);
+}
+</script>
+<script src="/onesignal-notify.js"></script>
+</body>
+</html>
