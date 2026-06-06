@@ -19,8 +19,15 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm install
-      - name: Create www
-        run: mkdir -p www && echo "<html></html>" > www/index.html
+      - name: Copy web files to www
+        run: |
+          mkdir -p www
+          cp *.html www/ 2>/dev/null || true
+          cp *.js www/ 2>/dev/null || true
+          cp *.json www/ 2>/dev/null || true
+          cp -r images www/ 2>/dev/null || true
+          cp -r fonts www/ 2>/dev/null || true
+          cp -r sounds www/ 2>/dev/null || true
       - name: Sync Capacitor
         run: |
           chmod +x node_modules/.bin/cap
