@@ -2210,5 +2210,42 @@ async function giftCoinsInFeed(answerId, answerOwnerId, btn) {
 <script>
 window.addEventListener('load',function(){setTimeout(function(){var l=document.getElementById('app-loader');l.style.opacity='0';setTimeout(function(){l.style.display='none'},500)},800)});
 </script>
+
+<script>
+let startY = 0;
+let pulling = false;
+const threshold = 80;
+
+document.addEventListener('touchstart', e => {
+  if (window.scrollY === 0) {
+    startY = e.touches[0].clientY;
+    pulling = true;
+  }
+});
+
+document.addEventListener('touchend', e => {
+  if (pulling) {
+    let diff = e.changedTouches[0].clientY - startY;
+    if (diff > threshold) {
+      location.reload();
+    }
+  }
+  pulling = false;
+});
+</script>
+
+<script>
+if (!localStorage.getItem('welcomed')) {
+  setTimeout(() => {
+    if (Notification.permission === 'granted') {
+      new Notification('مرحباً بك في Anon HT! 🎉', {
+        body: 'ابدأ الآن واسأل بشكل مجهول',
+        icon: '/images/logo.png'
+      });
+    }
+    localStorage.setItem('welcomed', '1');
+  }, 3000);
+}
+</script>
 </body>
 </html>
