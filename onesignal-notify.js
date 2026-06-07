@@ -191,3 +191,12 @@ async function notifyPersonalAnswer(receiverId, senderName, senderPhoto) {
     const t = getLangTexts(lang);
     await sendPushNotification(receiverId, t.personal_answer_title, t.personal_answer_msg(senderName), 'https://anonht.com/questions.html', senderPhoto);
 }
+
+// تسجيل المستخدم في OneSignal تلقائياً في كل الصفحات
+if (typeof firebase !== "undefined") {
+    firebase.auth().onAuthStateChanged(async (user) => {
+        if (user && typeof OneSignal !== "undefined") {
+            await OneSignal.login(user.uid);
+        }
+    });
+}
