@@ -1073,7 +1073,8 @@ async function sendQuestion() {
             createdAt:      firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        document.getElementById('qInput').value = '';
+        await notifyNewQuestion(currentProfileId, senderName || t('anonymous'), senderAvatar || '');
+        document.getElementById("qInput").value = "";
         document.getElementById('qFilterWarn')?.classList.remove('show');
         toast('success', t('question_sent'));
     } catch(e) {
