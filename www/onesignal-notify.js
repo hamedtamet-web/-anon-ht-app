@@ -89,3 +89,12 @@ async function notifyNewComment(receiverId, senderName, senderPhoto) {
         senderPhoto
     );
 }
+
+// تسجيل المستخدم في OneSignal
+if (typeof firebase !== "undefined") {
+    firebase.auth().onAuthStateChanged(async (user) => {
+        if (user && typeof OneSignal !== "undefined") {
+            await OneSignal.login(user.uid);
+        }
+    });
+}

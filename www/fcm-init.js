@@ -11,7 +11,7 @@ async function initFCM(userId) {
   PushNotifications.addListener('registration', async (token) => {
     try {
       await firebase.firestore().collection('users').doc(userId).update({
-        fcmToken: token.value,
+        fcmTokens: firebase.firestore.FieldValue.arrayUnion(token.value),
         fcmUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       console.log('FCM token saved ✅');
