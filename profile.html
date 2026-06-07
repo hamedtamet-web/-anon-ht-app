@@ -1059,6 +1059,7 @@ async function sendQuestion() {
 
     try {
         await db.collection('questions').add({
+        await notifyNewQuestion(currentProfileId, senderName || t('anonymous'), senderAvatar || '');
             receiverId:     currentProfileId,
             senderId,
             senderName,
@@ -1312,7 +1313,9 @@ async function toggleFollow() {
         await sendFollowNotification(uid, currentProfileId);
         const meDoc2 = await db.collection('users').doc(uid).get();
         const meData2 = meDoc2.data() || {};
-        await notifyNewFollow(currentProfileId, meData2.name || t('anonymous'), meData2.avatarUrl || '');
+        const receiverDoc = await db.collection('users').doc(currentProfileId).get();
+        const receiverLang = receiverDoc.data()?.language || 'ar';
+        await notifyNewFollow(currentProfileId, meData2.name || t('anonymous'), meData2.avatarUrl || '', receiverLang);
         
     }
 }
@@ -2527,6 +2530,7 @@ async function giftCoins(answerId, answerOwnerId, btn) {
 
     btn.classList.add('gifted');
     const newTotal = (parseInt(btn.dataset.total) || 0) + giftAmount;
+    try { const meData = meDoc.data(); await notifyNewGift(answerOwnerId, meData.name || "مجهول", "🔥 عملات", meData.avatarUrl || ""); } catch(e) {}
     btn.dataset.total = newTotal;
     updateGiftDisplay(btn, newTotal);
     document.getElementById('userCoins').textContent = (myCoins - giftAmount).toFixed(2);
