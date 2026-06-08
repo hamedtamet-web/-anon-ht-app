@@ -222,6 +222,15 @@ header{position:sticky;top:0;z-index:100;background:rgba(5,5,5,.85);backdrop-fil
 .nav-item:hover{color:#888;}
 .badge-nav{position:absolute;top:-5px;right:-5px;background:var(--primary);color:white;font-size:9px;min-width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #000;font-weight:900;}
 </style>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "71cc9b86-54ef-4716-b23e-9cbbae53d39d",
+    });
+  });
+</script>
 </head>
 <body>
 <div class="bg-orbs">
@@ -761,8 +770,6 @@ async function submitOrder() {
   ده
   const btn = document.getElementById('submitBtn');
   if (btn.disabled) return;
-
-  var btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
 
@@ -847,6 +854,5 @@ auth.onAuthStateChanged(async function(user) {
   await fetchRates();
 });
 </script>
-<script src="/onesignal-notify.js"></script>
 </body>
 </html>
