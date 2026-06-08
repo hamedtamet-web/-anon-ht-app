@@ -22,12 +22,7 @@ function shouldShowAds(userData) {
     return true;
 }
 
-    if (document.querySelector(`script[src="${ADS_CONFIG.adsterra.socialBar}"]`)) return;
-    const s = document.createElement('script');
-    s.src = ADS_CONFIG.adsterra.socialBar;
-    s.async = true;
-    document.body.appendChild(s);
-}
+
 
 function createAdsterraBanner(size, onLoad) {
     const isLarge = size === '300x250';
