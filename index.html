@@ -761,12 +761,30 @@
     font-size:13px;font-weight:900;color:var(--gold);
 }
 .coins-amount img{width:16px;height:16px;border-radius:50%;}
-    </style>
+    .card-menu-btn{background:none;border:none;color:#555;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;transition:.2s;}
+.card-menu-btn:hover{color:#aaa;background:rgba(255,255,255,.05);}
+.card-menu{position:absolute;top:30px;left:0;background:#111;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:6px;display:none;flex-direction:column;gap:4px;z-index:100;min-width:130px;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.card-menu.show{display:flex;}
+.card-menu-item{background:none;border:none;color:#aaa;font-family:"Cairo";font-size:13px;font-weight:700;padding:9px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:9px;text-align:right;width:100%;transition:.2s;}
+.card-menu-item:hover{background:rgba(255,255,255,.05);color:white;}
+.share-item i{color:#f80566;}
+.report-item i{color:#ff4444;}
+.delete-item i{color:#ff4444;}
+</style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9442350195298931"
      crossorigin="anonymous"></script>
      
      <script async src="https://fundingchoicesmessages.google.com/i/pub-9442350195298931?ers=1"></script><script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
      
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "71cc9b86-54ef-4716-b23e-9cbbae53d39d",
+    });
+  });
+</script>
 </head>
 <body>
 
@@ -1147,11 +1165,15 @@ const renderFeed = (forceLang = null) => {
                             </div>
                             <span class="ans-user-name">@${safe(username)}</span>
                         </div>
-                        <div style="display:flex;align-items:center;gap:12px;">
-                            ${!isMyPost ? `<i class="fa-solid fa-flag report-btn"
-                                onclick="reportContent('${safe(doc.id)}','${safe(d.userId)}')"></i>` : ''}
-                            ${isMyPost  ? `<i class="fa-solid fa-trash-can delete-btn"
-                                onclick="deleteAnswer('${safe(doc.id)}','${safe(d.questionId||'')}')"></i>` : ''}
+                        <div style="position:relative;">
+                            <button class="card-menu-btn" onclick="toggleCardMenu('${safe(doc.id)}')">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+                            <div class="card-menu" id="menu-${safe(doc.id)}">
+                                <button class="card-menu-item share-item" onclick="shareAnswer('${safe(doc.id)}','${safe(d.questionText)}','${safe(d.reply)}','${safe(u.name||d.name||"")}');toggleCardMenu('${safe(doc.id)}')"><i class="fa-solid fa-share-nodes"></i> شارك</button>
+                                ${!isMyPost ? `<button class="card-menu-item report-item" onclick="reportContent('${safe(doc.id)}','${safe(d.userId)}');toggleCardMenu('${safe(doc.id)}')"><i class="fa-solid fa-flag"></i> بلّغ</button>` : ''}
+                                ${isMyPost ? `<button class="card-menu-item delete-item" onclick="deleteAnswer('${safe(doc.id)}','${safe(d.questionId||"")}');toggleCardMenu('${safe(doc.id)}')"><i class="fa-solid fa-trash-can"></i> احذف</button>` : ''}
+                            </div>
                         </div>
                     </div>
                     <div class="ans-q">${safe(d.questionText)}</div>
@@ -1976,6 +1998,15 @@ async function claimVipReward(missionId, weekKey, amount) {
     font-weight: 800;
 }
 
+.card-menu-btn{background:none;border:none;color:#555;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;transition:.2s;}
+.card-menu-btn:hover{color:#aaa;background:rgba(255,255,255,.05);}
+.card-menu{position:absolute;top:30px;left:0;background:#111;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:6px;display:none;flex-direction:column;gap:4px;z-index:100;min-width:130px;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.card-menu.show{display:flex;}
+.card-menu-item{background:none;border:none;color:#aaa;font-family:"Cairo";font-size:13px;font-weight:700;padding:9px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:9px;text-align:right;width:100%;transition:.2s;}
+.card-menu-item:hover{background:rgba(255,255,255,.05);color:white;}
+.share-item i{color:#f80566;}
+.report-item i{color:#ff4444;}
+.delete-item i{color:#ff4444;}
 </style>
 
 <script>
@@ -2197,198 +2228,62 @@ async function giftCoinsInFeed(answerId, answerOwnerId, btn) {
 }
 
 </script>
-<script src="fcm-init.js"></script>
-<script src="/onesignal-notify.js"></script>
-
-<div id="app-loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity 0.5s ease;">
-  <img src="/images/logo.png" style="width:120px;animation:pulse 1.5s infinite">
-  <div style="margin-top:20px;color:#f80566;font-size:14px">جاري التحميل...</div>
-</div>
-<style>
-@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:0.8}}
-</style>
-<script>
-window.addEventListener('load',function(){setTimeout(function(){var l=document.getElementById('app-loader');l.style.opacity='0';setTimeout(function(){l.style.display='none'},500)},800)});
-</script>
-
-<script>
-let startY = 0;
-let pulling = false;
-const threshold = 80;
-
-document.addEventListener('touchstart', e => {
-  if (window.scrollY === 0) {
-    startY = e.touches[0].clientY;
-    pulling = true;
-  }
+<script src="fcm-init.js">
+function toggleCardMenu(id){
+    const m=document.getElementById("menu-"+id);
+    document.querySelectorAll(".card-menu.show").forEach(el=>{if(el.id!=="menu-"+id)el.classList.remove("show")});
+    m.classList.toggle("show");
+}
+document.addEventListener("click",e=>{
+    if(!e.target.closest(".card-menu-btn")&&!e.target.closest(".card-menu"))
+        document.querySelectorAll(".card-menu.show").forEach(el=>el.classList.remove("show"));
 });
-
-document.addEventListener('touchend', e => {
-  if (pulling) {
-    let diff = e.changedTouches[0].clientY - startY;
-    if (diff > threshold) {
-      location.reload();
+function shareAnswer(id,question,answer,name){
+    const canvas=document.createElement("canvas");
+    canvas.width=1080;canvas.height=1920;
+    const ctx=canvas.getContext("2d");
+    ctx.fillStyle="#050505";ctx.fillRect(0,0,1080,1920);
+    const grad=ctx.createRadialGradient(540,200,0,540,200,800);
+    grad.addColorStop(0,"rgba(248,5,102,0.15)");grad.addColorStop(1,"transparent");
+    ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1920);
+    ctx.fillStyle="#0d0d0d";roundRect(ctx,80,300,920,1200,40);ctx.fill();
+    ctx.strokeStyle="rgba(248,5,102,0.3)";ctx.lineWidth=2;roundRect(ctx,80,300,920,1200,40);ctx.stroke();
+    ctx.fillStyle="#f80566";ctx.font="bold 48px Cairo,Arial";ctx.textAlign="center";
+    ctx.fillText("AnonHT",540,220);
+    ctx.fillStyle="#aaaaaa";ctx.font="38px Cairo,Arial";
+    wrapText(ctx,"❓ "+question,540,450,820,55);
+    ctx.strokeStyle="rgba(248,5,102,0.4)";ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(120,650);ctx.lineTo(960,650);ctx.stroke();
+    ctx.fillStyle="#ffffff";ctx.font="bold 42px Cairo,Arial";
+    wrapText(ctx,answer,540,780,820,60);
+    ctx.fillStyle="#f80566";ctx.font="bold 36px Cairo,Arial";
+    ctx.fillText("— "+(name||"مجهول"),540,1380);
+    ctx.fillStyle="#555";ctx.font="32px Cairo,Arial";
+    ctx.fillText("anonht.com",540,1460);
+    canvas.toBlob(blob=>{
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement("a");
+        a.href=url;a.download="anonht-share.png";a.click();
+        URL.revokeObjectURL(url);
+    },"image/png");
+}
+function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+    ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);
+    ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);
+    ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+    const words=text.split(" ");let line="";let currentY=y;
+    for(let i=0;i<words.length;i++){
+        const testLine=line+words[i]+" ";
+        if(ctx.measureText(testLine).width>maxWidth&&i>0){
+            ctx.fillText(line,x,currentY);line=words[i]+" ";currentY+=lineHeight;
+        }else{line=testLine;}
     }
-  }
-  pulling = false;
-});
-</script>
-
-<script>
-if (!localStorage.getItem('welcomed')) {
-  setTimeout(() => {
-    if (Notification.permission === 'granted') {
-      new Notification('مرحباً بك في Anon HT! 🎉', {
-        body: 'ابدأ الآن واسأل بشكل مجهول',
-        icon: '/images/logo.png'
-      });
-    }
-    localStorage.setItem('welcomed', '1');
-  }, 3000);
+    ctx.fillText(line,x,currentY);
 }
-</script>
-
-<script>
-// تتبع وقت الاستخدام
-let startTime = Date.now();
-window.addEventListener('beforeunload', () => {
-  let duration = Math.round((Date.now() - startTime) / 1000);
-  localStorage.setItem('last_session', duration);
-});
-
-// تتبع عدد الزيارات
-let visits = parseInt(localStorage.getItem('visits') || 0) + 1;
-localStorage.setItem('visits', visits);
-
-// عرض رسالة للمستخدمين القدامى
-if (visits === 10) {
-  setTimeout(() => {
-    alert('🎉 أنت من أكثر المستخدمين نشاطاً! شكراً لثقتك في Anon HT');
-  }, 3000);
-}
-</script>
-
-<script>
-// Dark mode تلقائي حسب نظام الهاتف
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  document.documentElement.setAttribute('data-theme', 'dark');
-}
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-  document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-});
-</script>
-
-<script>
-// اهتزاز خفيف عند الضغط على الأزرار
-document.addEventListener('click', e => {
-  if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
-    if (navigator.vibrate) {
-      navigator.vibrate(30);
-    }
-  }
-});
-</script>
-
-<script>
-// Preload الصفحات المهمة
-const pages = ['/questions.html', '/profile.html', '/notifications.html'];
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    pages.forEach(page => {
-      const link = document.createElement('link');
-      link.rel = 'prefetch';
-      link.href = page;
-      document.head.appendChild(link);
-    });
-  }, 2000);
-});
-</script>
-
-<div id="offline-bar" style="
-  display:none;
-  position:fixed;
-  top:0;left:0;
-  width:100%;
-  padding:8px;
-  background:#f80566;
-  color:white;
-  text-align:center;
-  font-size:13px;
-  z-index:99999;">
-  📵 لا يوجد اتصال بالإنترنت
-</div>
-
-<script>
-window.addEventListener('online', () => {
-  document.getElementById('offline-bar').style.display = 'none';
-  location.reload();
-});
-window.addEventListener('offline', () => {
-  document.getElementById('offline-bar').style.display = 'block';
-});
-</script>
-
-<style>
-.no-copy {
-  -webkit-user-select: none;
-  user-select: none;
-}
-</style>
-<script>
-document.addEventListener('contextmenu', e => e.preventDefault());
-</script>
-
-<script>
-// تحقق من تحديثات كل 30 دقيقة
-setInterval(() => {
-  fetch('/version.json?t=' + Date.now())
-    .then(r => r.json())
-    .then(data => {
-      const current = localStorage.getItem('app_version');
-      if (current && current !== data.version) {
-        if (confirm('يوجد تحديث جديد! هل تريد التحديث الآن؟')) {
-          location.reload(true);
-        }
-      }
-      localStorage.setItem('app_version', data.version);
-    }).catch(() => {});
-}, 1800000);
-</script>
-
-<script>
-// منع النوافذ المنبثقة والإعلانات
-window.open = function() { return null; };
-window.alert = function() { return null; };
-window.confirm = function() { return true; };
-
-// منع فتح روابط خارجية
-document.addEventListener('click', function(e) {
-  const a = e.target.closest('a');
-  if (a && a.target === '_blank') {
-    e.preventDefault();
-    e.stopPropagation();
-    window.location.href = a.href;
-  }
-}, true);
-
-// منع النوافذ المنبثقة من الإعلانات
-const observer = new MutationObserver(mutations => {
-  mutations.forEach(m => {
-    m.addedNodes.forEach(node => {
-      if (node.nodeType === 1) {
-        const style = window.getComputedStyle(node);
-        if (style.position === 'fixed' || style.position === 'absolute') {
-          const zIndex = parseInt(style.zIndex);
-          if (zIndex > 9000 && !node.id.includes('app-') && !node.id.includes('offline')) {
-            node.remove();
-          }
-        }
-      }
-    });
-  });
-});
-
-observer.observe(document.body, { childList: true, subtree: true });
 </script>
 </body>
 </html>

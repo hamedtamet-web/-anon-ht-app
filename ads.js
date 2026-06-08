@@ -22,7 +22,6 @@ function shouldShowAds(userData) {
     return true;
 }
 
-function loadAdsterraSocialBar() {
     if (document.querySelector(`script[src="${ADS_CONFIG.adsterra.socialBar}"]`)) return;
     const s = document.createElement('script');
     s.src = ADS_CONFIG.adsterra.socialBar;
@@ -78,6 +77,7 @@ function createAdsterraBanner(size, onLoad) {
 
     const scriptInvoke = document.createElement('script');
     scriptInvoke.type = 'text/javascript';
+    scriptInvoke.src = `https://assistedtogether.com/${key}/invoke.js`;
 
     scriptInvoke.onload = () => {
         wrapper.style.display = 'flex';
@@ -104,7 +104,6 @@ const AdsManager = {
         this._initialized = true;
         this._showAds = shouldShowAds(userData);
         if (this._showAds) {
-            loadAdsterraSocialBar();
             this.injectStaticAd('AD_LOGIN_BOTTOM');
             this.injectStaticAd('AD_PROFILE_TOP');
             const topBanner = document.getElementById('topAdBanner');
@@ -130,16 +129,27 @@ const AdsManager = {
         cards.forEach((card, i) => {
             const pos = i + 1;
 
-            if (pos % 6 === 0) {
+            if (pos % 8 === 0) {
                 const b = createAdsterraBanner('300x250');
                 card.after(b);
 
-            } else if (pos % 3 === 0) {
+            } else if (pos % 99 === 0) {
                 const b = createAdsterraBanner('320x50');
                 card.after(b);
             }
 
-            if (pos % 9 === 0) {
+            if (pos % 4 === 0) {
+                const ipScript = document.createElement('script');
+                ipScript.dataset.zone = '11116179';
+                ipScript.src = 'https://nap5k.com/tag.min.js';
+                ipScript.async = true;
+                const ipWrapper = document.createElement('div');
+                ipWrapper.style.cssText = 'margin:10px 0;border-radius:18px;overflow:hidden;display:block;';
+                ipWrapper.appendChild(ipScript);
+                card.after(ipWrapper);
+            }
+
+            if (pos % 12 === 0) {
                 const wrapper = document.createElement('div');
                 wrapper.style.cssText = `
                     display:none;
