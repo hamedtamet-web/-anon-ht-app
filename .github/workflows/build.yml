@@ -63,7 +63,7 @@ jobs:
             -dname "CN=AnonHT, OU=Dev, O=AnonHT, L=Cairo, S=Cairo, C=EG"
       - name: Build Signed APK
         run: |
-          chmod +x android/gradlew
+          chmod +x android/gradlew || true
           cd android && ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/app/release.keystore \
             -Pandroid.injected.signing.store.password=anonht123 \
