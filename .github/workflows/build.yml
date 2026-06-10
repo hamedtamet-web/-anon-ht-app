@@ -30,7 +30,7 @@ jobs:
           cp -r sounds www/ 2>/dev/null || true
       - name: Add and Sync Capacitor
         run: |
-          npx cap add android 2>/dev/null || true
+          npx cap add android
           npx cap sync android
       - name: Generate App Icons
         run: |
