@@ -3,20 +3,22 @@
   "name": "إسأل وأجب وشارك كل ما تحب بحرية ..",
   "icons": [
     {
-      "src": "images/logo1.png",
+      "src": "/assets/icon.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
-      "src": "images/logo2.png",
+      "src": "/assets/icon.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#f80566",
-  "background_color": "#050505",
+  "theme_color": "#000000",
+  "background_color": "#000000",
   "orientation": "portrait",
   "lang": "ar",
   "dir": "rtl",

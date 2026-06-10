@@ -41,6 +41,7 @@
 
 <!-- ══ CANONICAL ══ -->
 <link rel="canonical" href="https://anonht.com/">
+<link rel="apple-touch-icon" href="/assets/icon.png">
 
 <!-- ══ HREFLANG ══ -->
 <link rel="alternate" hreflang="ar" href="https://anonht.com/">
@@ -115,7 +116,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Anon HT">
-    <link rel="apple-touch-icon" href="images/logo.png">
     <link rel="icon" type="image/png" href="images/logo.png">
 <link rel="preconnect" href="https://www.gstatic.com">
 <link rel="preconnect" href="https://firestore.googleapis.com">
@@ -2302,5 +2302,5 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight){
 }
 </script>
 <script src="butterfly.js"></script>
-</body>
+<div id="splash-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;z-index:99999;transition:opacity 0.5s ease"><img src="/assets/splash.png" style="max-width:100%;max-height:100%;object-fit:contain"></div><script>window.addEventListener("load",function(){setTimeout(function(){var s=document.getElementById("splash-screen");s.style.opacity="0";setTimeout(function(){s.style.display="none"},500)},5000)})</script></body>
 </html>
