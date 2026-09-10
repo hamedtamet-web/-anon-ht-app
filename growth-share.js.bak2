@@ -75,13 +75,13 @@ async function ghBuildShareCanvas(question, answer, name, username, avatarUrl) {
     const cardX = 64, cardW = 952;
     const cardY = headerH;
 
-    const padTop = 64;
-    const qIconGap = 62;
-    const sepGap = 40;
-    const aLabelGap = 46;
-    const aStartGap = 116;
-    const nameGap = 78;
-    const cardBottomPad = 46;
+    const padTop = 66;
+    const qIconGap = 58;
+    const sepGap = 42;
+    const aLabelGap = 52;
+    const aStartGap = 60;
+    const nameGap = 54;
+    const cardBottomPad = 44;
 
     const qBlockH = (qLines.length - 1) * qLineH;
     const aBlockH = (aLines.length - 1) * aLineH;
@@ -125,22 +125,19 @@ async function ghBuildShareCanvas(question, answer, name, username, avatarUrl) {
     // ═══ الشعار ═══
     const logoY = 108, logoR = 44;
     if (logoImg) {
-        const outerGlow = ctx.createRadialGradient(540,logoY,logoR*0.9,540,logoY,logoR*1.6);
-        outerGlow.addColorStop(0,"rgba(248,5,102,0.4)"); outerGlow.addColorStop(1,"transparent");
-        ctx.fillStyle = outerGlow;
-        ctx.beginPath(); ctx.arc(540,logoY,logoR*1.6,0,Math.PI*2); ctx.fill();
-
-        ctx.fillStyle = "#0d0d10";
-        ctx.beginPath(); ctx.arc(540,logoY,logoR,0,Math.PI*2); ctx.fill();
-
-        const logoPad = 9;
-        ghDrawCircularImage(ctx, logoImg, 540, logoY, logoR - logoPad);
+        const ring = ctx.createRadialGradient(540,logoY,logoR*0.5,540,logoY,logoR*1.7);
+        ring.addColorStop(0,"rgba(248,5,102,0.5)"); ring.addColorStop(1,"transparent");
+        ctx.fillStyle = ring; ctx.beginPath(); ctx.arc(540,logoY,logoR*1.7,0,Math.PI*2); ctx.fill();
 
         ctx.save();
-        ctx.shadowColor = "rgba(248,5,102,0.75)"; ctx.shadowBlur = 14;
-        ctx.strokeStyle = "rgba(248,5,102,0.65)"; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(540,logoY,logoR,0,Math.PI*2); ctx.stroke();
+        ctx.shadowColor = "rgba(248,5,102,0.75)"; ctx.shadowBlur = 28;
+        ghDrawCircularImage(ctx, logoImg, 540, logoY, logoR);
         ctx.restore();
+
+        const ringGrad = ctx.createLinearGradient(540-logoR,logoY-logoR,540+logoR,logoY+logoR);
+        ringGrad.addColorStop(0,"#f80566"); ringGrad.addColorStop(1,"rgba(248,5,102,0.2)");
+        ctx.strokeStyle = ringGrad; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(540,logoY,logoR,0,Math.PI*2); ctx.stroke();
     }
 
     ctx.textAlign = "center";
@@ -256,67 +253,27 @@ async function ghBuildShareCanvas(question, answer, name, username, avatarUrl) {
 }
 async function ghShareAnswerCard(question, answer, name, username, avatarUrl) {
     const canvas = await ghBuildShareCanvas(question, answer, name, username, avatarUrl);
-    const shareText = 'اسألني أنت كمان 👀 anonht.com/' + (username || '');
-
-    const isNativeApp = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-
-    if (isNativeApp && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem && window.Capacitor.Plugins.Share) {
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 0.95));
+    const file = new File([blob], 'anonht-answer.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-            const { Filesystem, Share } = window.Capacitor.Plugins;
-            const dataUrl = canvas.toDataURL('image/png', 0.95);
-            const base64Data = dataUrl.split(',')[1];
-            const fileName = `anonht-answer-${Date.now()}.png`;
-
-            const writeResult = await Filesystem.writeFile({
-                path: fileName,
-                data: base64Data,
-                directory: 'CACHE'
-            });
-
-            await Share.share({
+            await navigator.share({
+                files: [file],
                 title: 'Anon HT',
-                text: shareText,
-                url: writeResult.uri,
-                dialogTitle: 'شارك إجابتك'
+                text: 'اسألني أنت كمان 👀 anonht.com/' + (username||'')
             });
             return;
-        } catch (e) {
-            const msg = (e && e.message) || '';
-            if (/cancel/i.test(msg)) return;
-            console.warn('Capacitor share failed, falling back:', e);
-        }
-    }
-
-    const ua = navigator.userAgent || '';
-    const looksLikeRestrictedWebView = /; wv\)/.test(ua) || (/Android/.test(ua) && !window.chrome);
-
-    if (!looksLikeRestrictedWebView) {
-        try {
-            const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 0.95));
-            const file = new File([blob], 'anonht-answer.png', { type: 'image/png' });
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    files: [file],
-                    title: 'Anon HT',
-                    text: shareText
-                });
-                return;
-            }
         } catch(e) {
             if (e.name === 'AbortError') return;
-            console.warn('navigator.share failed, falling back:', e.name, e.message);
+            console.error('navigator.share failed:', e.name, e.message);
         }
     }
-
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = 'anonht-answer.jpg';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    a.href = url; a.download = 'anonht-answer.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
 }
-
 function showGrowthSharePrompt(question, answer, name, username, avatarUrl) {
     const old = document.getElementById('ghSharePrompt');
     if (old) old.remove();

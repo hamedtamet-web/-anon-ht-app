@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zukksh — لوحة التحكم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0d;
+    --card:#1a1815;
+    --card-2:#211e19;
+    --gold:#c9a35d;
+    --gold-soft:#a98a4d;
+    --ivory:#ece6d8;
+    --ivory-dim:#a89f8e;
+    --wine:#7a1f24;
+    --wine-bright:#9c272d;
+    --amber:#d68a2c;
+    --amber-bg: rgba(214,138,44,0.10);
+    --green:#5a8f5e;
+    --line: rgba(201,163,93,0.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{ overflow-x:hidden; width:100%; }
+  body{
+    background:var(--ink);
+    color:var(--ivory);
+    font-family:'Cairo',sans-serif;
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+    width:100%;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:repeating-linear-gradient(115deg, rgba(201,163,93,0.02) 0px, rgba(201,163,93,0.02) 1px, transparent 1px, transparent 26px);
+    pointer-events:none;
+  }
+
+  #loginScreen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; position:relative; z-index:1; }
+  .login-card{
+    width:100%; max-width:360px; background:linear-gradient(180deg, var(--card), #15130f);
+    border:1px solid var(--line); border-radius:18px; padding:34px 26px;
+    box-shadow:0 30px 60px -25px rgba(0,0,0,0.7); text-align:center;
+  }
+  .login-mark{ width:54px; height:54px; margin:0 auto 18px; border:1.5px solid var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .login-mark svg{ width:24px; height:24px; }
+  .login-card h1{ font-size:24px; font-weight:900; letter-spacing:1px; direction:ltr; margin-bottom:4px; }
+  .login-card h1 span{ color:var(--gold); }
+  .login-sub{ font-size:12.5px; color:var(--ivory-dim); margin-bottom:26px; letter-spacing:.5px; }
+  .login-card input{
+    width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--line); border-radius:10px; padding:14px;
+    color:var(--ivory); font-family:'Cairo',sans-serif; font-size:15px; font-weight:600; text-align:center;
+    margin-bottom:14px;
+  }
+  .login-card input#pwInput{ letter-spacing:3px; }
+  .login-card input#barberEmailInput{ direction:ltr; letter-spacing:normal; }
+  .login-card input:focus{ outline:none; border-color:var(--gold); }
+  .login-card input:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .login-btn{
+    width:100%; background:linear-gradient(180deg, var(--wine-bright), var(--wine)); color:var(--ivory);
+    border:none; border-radius:10px; padding:14px; font-family:'Cairo',sans-serif; font-weight:900; font-size:15px;
+    cursor:pointer; transition:filter .2s, transform .15s;
+  }
+  .login-btn:hover{ filter:brightness(1.08); }
+  .login-btn:active{ transform:scale(.98); }
+  .login-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  .login-btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .login-err{ color:#d6694a; font-size:12.5px; margin-top:12px; font-weight:700; min-height:16px; }
+
+  #dashboard{ display:none; position:relative; z-index:1; }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; padding:18px 20px;
+    border-bottom:1px solid var(--line); position:sticky; top:0; background:rgba(13,13,13,0.92);
+    backdrop-filter:blur(6px); z-index:5;
+  }
+  .topbar .brand{ font-size:18px; font-weight:900; letter-spacing:1px; direction:ltr; }
+  .topbar .brand span{ color:var(--gold); }
+  .icon-btn{
+    background:none; border:1px solid var(--line); color:var(--ivory-dim); padding:8px 10px; border-radius:8px;
+    font-family:'Cairo',sans-serif; font-size:12.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;
+  }
+  .icon-btn:hover{ border-color:var(--gold-soft); color:var(--ivory); }
+  .icon-btn svg{ width:14px; height:14px; }
+  .icon-btn.spinning svg{ animation:spin 0.8s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .content{ max-width:560px; margin:0 auto; padding:20px; }
+
+  .stats-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:18px; }
+  .stat{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 8px; text-align:center; }
+  .stat .n{ font-size:26px; font-weight:900; color:var(--gold); line-height:1; }
+  .stat .l{ font-size:11px; color:var(--ivory-dim); font-weight:700; margin-top:6px; }
+
+  .search-row{ margin-bottom:14px; position:relative; }
+  .search-row input{
+    width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 40px 12px 14px;
+    color:var(--ivory); font-family:'Cairo',sans-serif; font-size:14px; font-weight:600;
+  }
+  .search-row input:focus{ outline:none; border-color:var(--gold); }
+  .search-row input:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .search-row svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--ivory-dim); pointer-events:none; }
+  .search-clear{
+    position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none;
+    color:var(--ivory-dim); cursor:pointer; font-size:16px; padding:4px 8px; display:none;
+  }
+  .search-clear.show{ display:block; }
+
+  .filter-row{ display:flex; gap:8px; margin-bottom:18px; overflow-x:auto; }
+  .filter-chip{
+    flex:0 0 auto; border:1px solid var(--line); background:var(--card); color:var(--ivory-dim);
+    padding:9px 16px; border-radius:20px; font-size:12.5px; font-weight:700; cursor:pointer; transition:.2s;
+  }
+  .filter-chip.active{ border-color:var(--gold); background:rgba(201,163,93,0.12); color:var(--gold); }
+  .filter-chip:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .section-label{ font-size:12px; font-weight:700; color:var(--ivory-dim); letter-spacing:1px; text-transform:uppercase; margin:22px 0 10px; }
+
+  .bcard{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 16px;
+    margin-bottom:12px; position:relative; transition:border-color .2s;
+  }
+  .bcard.urgent{ border-color:rgba(214,138,44,0.55); background:linear-gradient(180deg, var(--amber-bg), var(--card) 60%); }
+  .bcard.done{ opacity:.5; }
+
+  .bcard-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+  .bcard-name{ font-size:16px; font-weight:900; color:var(--ivory); }
+  .bcard-service{ font-size:12.5px; color:var(--gold-soft); font-weight:700; margin-top:3px; }
+  .bcard-time{ text-align:left; direction:ltr; font-weight:900; font-size:16px; color:var(--ivory); white-space:nowrap; }
+  .bcard-date{ font-size:11px; color:var(--ivory-dim); font-weight:700; text-align:left; margin-top:2px; }
+
+  .urgent-tag{
+    display:inline-flex; align-items:center; gap:5px; background:var(--amber); color:#1a1304; font-size:11px;
+    font-weight:900; padding:4px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .urgent-tag::before{ content:""; width:6px; height:6px; background:#1a1304; border-radius:50%; animation:pulse 1.4s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+  .bcard-actions{ display:flex; gap:8px; margin-top:12px; }
+  .bcard-row{ display:flex; gap:10px; align-items:stretch; }
+  .reorder-col{ display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
+  .reorder-btn{
+    width:32px; flex:1; min-height:24px; background:rgba(0,0,0,0.25); border:1px solid var(--line);
+    color:var(--gold-soft); border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.15s;
+  }
+  .reorder-btn:hover{ border-color:var(--gold); color:var(--gold); background:rgba(201,163,93,0.1); }
+  .reorder-btn:disabled{ opacity:.25; cursor:not-allowed; }
+  .reorder-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .reorder-btn svg{ width:14px; height:14px; }
+  .bcard-main{ flex:1; min-width:0; }
+  .wa-btn{
+    flex:1; display:flex; align-items:center; justify-content:center; gap:8px;
+    background:linear-gradient(180deg, #2bb673, #229a5f); color:#fff; border:none; border-radius:10px;
+    padding:11px; font-family:'Cairo',sans-serif; font-weight:900; font-size:13.5px; cursor:pointer;
+    text-decoration:none; transition:filter .2s, transform .15s;
+  }
+  .wa-btn:hover{ filter:brightness(1.08); }
+  .wa-btn:active{ transform:scale(.97); }
+  .wa-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .wa-btn svg{ width:16px; height:16px; flex-shrink:0; }
+
+  .done-btn{
+    background:none; border:1px solid var(--line); color:var(--ivory-dim); border-radius:10px; padding:11px 14px;
+    font-family:'Cairo',sans-serif; font-weight:700; font-size:13px; cursor:pointer;
+  }
+  .done-btn:hover{ border-color:var(--gold-soft); color:var(--ivory); }
+  .done-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .delete-btn{
+    background:none; border:1px solid rgba(122,31,36,0.5); color:#d6694a; border-radius:10px; padding:11px 14px;
+    font-family:'Cairo',sans-serif; font-weight:700; font-size:13px; cursor:pointer;
+  }
+  .delete-btn:hover{ border-color:var(--wine-bright); background:rgba(122,31,36,0.12); }
+  .delete-btn:focus-visible{ outline:2px solid var(--wine-bright); outline-offset:2px; }
+
+  .bcard-phone{ font-size:12px; color:var(--ivory-dim); direction:ltr; text-align:right; margin-top:8px; letter-spacing:.5px; }
+
+  .empty-state{ text-align:center; padding:50px 20px; color:var(--ivory-dim); }
+  .empty-state .ico{ font-size:34px; margin-bottom:14px; opacity:.5; }
+  .empty-state p{ font-size:13.5px; line-height:1.8; }
+
+  .loading-row{ text-align:center; padding:16px; color:var(--ivory-dim); font-size:13px; }
+  .error-row{ text-align:center; padding:14px; color:#d6694a; font-size:12.5px; font-weight:700; line-height:1.8; }
+
+  /* ===== RESPONSIVE BREAKPOINTS ===== */
+  @media (min-width: 640px){
+    .content{ max-width:640px; padding:28px 24px; }
+    .stats-row{ gap:14px; }
+    .stat{ padding:20px 10px; }
+  }
+  @media (min-width: 1024px){
+    body{ display:flex; flex-direction:column; align-items:center; }
+    #dashboard{ width:100%; }
+    .topbar > div:first-child, .content{ max-width:760px; margin:0 auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  }
+</style>
+    <script src="img-protect.js?v=1"></script>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#c9a35d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+    </div>
+    <h1>ZUK<span>K</span>SH</h1>
+    <div class="login-sub">دخول الحلاق</div>
+    <input type="email" id="barberEmailInput" placeholder="الإيميل" autocomplete="username">
+    <input type="password" id="pwInput" placeholder="••••••" autocomplete="current-password">
+    <button class="login-btn" id="loginBtn">دخول</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="brand">ZUK<span>K</span>SH</div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span id="barberLabel" style="font-size:12.5px; color:var(--ivory-dim); font-weight:700;"></span>
+      <button class="icon-btn" id="refreshBtn" title="تحديث" aria-label="تحديث">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+      </button>
+      <button class="icon-btn" id="logoutBtn">خروج</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="stats-row">
+      <div class="stat"><div class="n" id="statToday">0</div><div class="l">النهارده</div></div>
+      <div class="stat"><div class="n" id="statUrgent">0</div><div class="l">قرب موعده</div></div>
+      <div class="stat"><div class="n" id="statTotal">0</div><div class="l">الإجمالي</div></div>
+    </div>
+
+    <div class="search-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <input type="text" id="searchInput" placeholder="دوّر بالاسم أو رقم الموبايل...">
+      <button class="search-clear" id="searchClear" aria-label="مسح البحث">×</button>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-chip active" data-filter="all">الكل</div>
+      <div class="filter-chip" data-filter="today">النهارده</div>
+      <div class="filter-chip" data-filter="urgent">قرب موعده</div>
+      <div class="filter-chip" data-filter="done">خلصت</div>
+    </div>
+
+    <div id="bookingsList"></div>
+
+  </div>
+</div>
+
+<!-- ===== Firebase ===== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, query, where, getDocs, getDoc, doc, updateDoc, deleteDoc, writeBatch, serverTimestamp, Timestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import {
+    getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAvlEYAp13qdoBTZ9xls3pAkD_mMo0drqA",
+    authDomain: "zukksh-salon.firebaseapp.com",
+    projectId: "zukksh-salon",
+    storageBucket: "zukksh-salon.firebasestorage.app",
+    messagingSenderId: "895738393945",
+    appId: "1:895738393945:web:d4413d07daeb927dfb0848"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  setPersistence(auth, browserLocalPersistence).catch(err => console.error('persistence setup failed', err));
+
+  window.__zukksh = {
+    db, collection, query, where, getDocs, getDoc, doc, updateDoc, deleteDoc, writeBatch, serverTimestamp, Timestamp,
+    auth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+  };
+</script>
+
+<script type="module">
+  // ===== LOGIN (Firebase Authentication) =====
+  const loginScreen = document.getElementById('loginScreen');
+  const dashboard = document.getElementById('dashboard');
+  const emailInput = document.getElementById('barberEmailInput');
+  const pwInput = document.getElementById('pwInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginErr = document.getElementById('loginErr');
+
+  let currentBarber = null; // { id, name } — id is the Firebase Auth uid
+  let authReady = false;
+
+  const AUTH_ERROR_MESSAGES = {
+    'auth/invalid-email': 'الإيميل مش صحيح',
+    'auth/user-not-found': 'الإيميل أو كلمة السر غلط',
+    'auth/wrong-password': 'الإيميل أو كلمة السر غلط',
+    'auth/invalid-credential': 'الإيميل أو كلمة السر غلط',
+    'auth/too-many-requests': 'محاولات كتير غلط، حاول تاني بعد شوية',
+    'auth/network-request-failed': 'مشكلة في الاتصال، حاول تاني'
+  };
+
+  async function tryLogin(){
+    const typedEmail = emailInput.value.trim();
+    const typedPw = pwInput.value;
+    if(!typedEmail || !typedPw){
+      loginErr.textContent = 'اكتب الإيميل وكلمة السر';
+      return;
+    }
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'جاري الدخول...';
+    loginErr.textContent = '';
+
+    try{
+      const { auth, signInWithEmailAndPassword } = window.__zukksh;
+      await signInWithEmailAndPassword(auth, typedEmail, typedPw);
+      // onAuthStateChanged below picks up the signed-in user and loads the dashboard
+    } catch(err){
+      console.error(err);
+      loginErr.textContent = AUTH_ERROR_MESSAGES[err.code] || 'حصلت مشكلة، حاول تاني';
+      pwInput.value = '';
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'دخول';
+    }
+  }
+
+  loginBtn.addEventListener('click', tryLogin);
+  [emailInput, pwInput].forEach(inp => inp.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') tryLogin();
+  }));
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    try{
+      await window.__zukksh.signOut(window.__zukksh.auth);
+    } catch(err){
+      console.error(err);
+    }
+  });
+
+  // fetch this barber's display name from barbers_public, where the document ID
+  // is expected to match the Firebase Auth uid
+  async function loadBarberProfile(uid){
+    const { db, doc, getDoc } = window.__zukksh;
+    const snap = await getDoc(doc(db, "barbers_public", uid));
+    if(!snap.exists()){
+      throw new Error('no barbers_public profile for uid ' + uid);
+    }
+    return snap.data();
+  }
+
+  function showDashboard(){
+    loginScreen.style.display = 'none';
+    dashboard.style.display = 'block';
+    document.getElementById('barberLabel').textContent = currentBarber.name;
+    renderBookings();
+  }
+
+  function showLogin(){
+    dashboard.style.display = 'none';
+    loginScreen.style.display = 'flex';
+    pwInput.value = '';
+  }
+
+  const { auth, onAuthStateChanged } = window.__zukksh;
+  onAuthStateChanged(auth, async (user) => {
+    authReady = true;
+    if(!user){
+      currentBarber = null;
+      showLogin();
+      return;
+    }
+    try{
+      const profile = await loadBarberProfile(user.uid);
+      currentBarber = { id: user.uid, name: profile.name || 'الحلاق' };
+      showDashboard();
+    } catch(err){
+      console.error(err);
+      loginErr.textContent = 'الحساب متسجل بس مفيش بروفايل ليه في قاعدة البيانات';
+      await window.__zukksh.signOut(auth);
+    }
+  });
+
+  // ===== DATA =====
+  async function getBookings(){
+    const { db, collection, query, where, getDocs } = window.__zukksh;
+    const q = query(collection(db, "bookings"), where("barberId", "==", currentBarber.id));
+    const snap = await getDocs(q);
+    const list = [];
+    snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+    return list;
+  }
+
+  async function markDone(bookingId){
+    const { db, doc, updateDoc, serverTimestamp } = window.__zukksh;
+    await updateDoc(doc(db, "bookings", bookingId), { status: 'done', doneAt: serverTimestamp() });
+  }
+
+  async function deleteBooking(bookingId){
+    const { db, doc, deleteDoc } = window.__zukksh;
+    await deleteDoc(doc(db, "bookings", bookingId));
+  }
+
+  async function sweepExpiredDone(bookings){
+    const { db, doc, deleteDoc } = window.__zukksh;
+    const now = Date.now();
+    const expired = bookings.filter(b => {
+      if(b.status !== 'done' || !b.doneAt) return false;
+      const doneMs = b.doneAt.toMillis ? b.doneAt.toMillis() : new Date(b.doneAt).getTime();
+      return (now - doneMs) > 60 * 60 * 1000;
+    });
+    if(expired.length === 0) return bookings;
+    await Promise.all(expired.map(b => deleteDoc(doc(db, "bookings", b.id)).catch(err => console.error('sweep delete failed', b.id, err))));
+    const expiredIds = new Set(expired.map(b => b.id));
+    return bookings.filter(b => !expiredIds.has(b.id));
+  }
+
+  async function moveBooking(list, bookingId, direction){
+    const idx = list.findIndex(b => b.id === bookingId);
+    if(idx === -1) return;
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if(swapIdx < 0 || swapIdx >= list.length) return;
+
+    const a = list[idx];
+    const b = list[swapIdx];
+    const aOrder = (typeof a.order === 'number') ? a.order : idx;
+    const bOrder = (typeof b.order === 'number') ? b.order : swapIdx;
+
+    const { db, doc, writeBatch } = window.__zukksh;
+    const batch = writeBatch(db);
+    batch.update(doc(db, "bookings", a.id), { order: bOrder });
+    batch.update(doc(db, "bookings", b.id), { order: aOrder });
+    await batch.commit();
+  }
+
+  function parseTimeToHours(timeStr){
+    const isPM = timeStr.includes('م');
+    let clean = timeStr.replace(/[^\d:]/g, '');
+    let [h, m] = clean.split(':').map(Number);
+    if(isPM && h !== 12) h += 12;
+    if(!isPM && h === 12) h = 0;
+    return { h, m: m || 0 };
+  }
+
+  function getBookingDateTime(b){
+    const { h, m } = parseTimeToHours(b.time);
+    const d = new Date(b.date + 'T00:00:00');
+    d.setHours(h, m, 0, 0);
+    return d;
+  }
+
+  function isToday(dateStr){
+    const today = new Date().toISOString().slice(0,10);
+    return dateStr === today;
+  }
+
+  function isUrgent(b){
+    if(b.status === 'done') return false;
+    const dt = getBookingDateTime(b);
+    const now = new Date();
+    const diffMin = (dt - now) / 60000;
+    return diffMin > -30 && diffMin <= 120;
+  }
+
+  function buildWaLink(b){
+    const dayLabel = new Date(b.date + 'T00:00:00').toLocaleDateString('ar-EG', { weekday:'long', day:'numeric', month:'long' });
+    const msg = `أهلاً ${b.name} 👋\nده تذكير من صالون Zukksh\nموعدك مع ${currentBarber.name} ${dayLabel} الساعة ${b.time}\nمستنيينك! ✂️`;
+    let phone = b.phone.replace(/\D/g,'');
+    if(phone.startsWith('0')) phone = '2' + phone;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  }
+
+  // ===== RENDER =====
+  let currentFilter = 'all';
+  let currentSearch = '';
+  let lastBookingsCache = [];
+
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFilter = chip.dataset.filter;
+      applyFiltersAndRender();
+    });
+  });
+
+  const searchInput = document.getElementById('searchInput');
+  const searchClear = document.getElementById('searchClear');
+  searchInput.addEventListener('input', () => {
+    currentSearch = searchInput.value.trim();
+    searchClear.classList.toggle('show', currentSearch.length > 0);
+    applyFiltersAndRender();
+  });
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    currentSearch = '';
+    searchClear.classList.remove('show');
+    applyFiltersAndRender();
+  });
+
+  const refreshBtn = document.getElementById('refreshBtn');
+  refreshBtn.addEventListener('click', () => renderBookings());
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  async function renderBookings(){
+    const list = document.getElementById('bookingsList');
+    list.innerHTML = `<div class="loading-row" style="padding:30px 0;">جاري تحميل الحجوزات...</div>`;
+    refreshBtn.classList.add('spinning');
+
+    try{
+      let bookings = await getBookings();
+      bookings = await sweepExpiredDone(bookings);
+      lastBookingsCache = bookings;
+    } catch(err){
+      console.error(err);
+      list.innerHTML = `<div class="error-row">معرفناش نجيب الحجوزات. تأكد من الاتصال.</div>`;
+      refreshBtn.classList.remove('spinning');
+      return;
+    }
+
+    applyFiltersAndRender();
+    refreshBtn.classList.remove('spinning');
+  }
+
+  function applyFiltersAndRender(){
+    const bookings = lastBookingsCache;
+    const list = document.getElementById('bookingsList');
+
+    const active = bookings.filter(b => b.status !== 'done');
+    active.sort((a, b) => {
+      const ao = typeof a.order === 'number' ? a.order : null;
+      const bo = typeof b.order === 'number' ? b.order : null;
+      if(ao !== null && bo !== null) return ao - bo;
+      if(ao !== null) return -1;
+      if(bo !== null) return 1;
+      return getBookingDateTime(a) - getBookingDateTime(b);
+    });
+
+    const doneList = bookings.filter(b => b.status === 'done');
+    doneList.sort((a, b) => getBookingDateTime(b) - getBookingDateTime(a));
+
+    document.getElementById('statToday').textContent = active.filter(b => isToday(b.date)).length;
+    document.getElementById('statUrgent').textContent = active.filter(isUrgent).length;
+    document.getElementById('statTotal').textContent = bookings.length;
+
+    let visible = active;
+    if(currentFilter === 'today') visible = active.filter(b => isToday(b.date));
+    if(currentFilter === 'urgent') visible = active.filter(isUrgent);
+    if(currentFilter === 'done') visible = doneList;
+
+    if(currentSearch){
+      const q = currentSearch.toLowerCase();
+      const qDigits = currentSearch.replace(/\D/g,'');
+      visible = visible.filter(b => {
+        const nameMatch = b.name && b.name.toLowerCase().includes(q);
+        const phoneMatch = qDigits.length > 0 && b.phone && b.phone.replace(/\D/g,'').includes(qDigits);
+        return nameMatch || phoneMatch;
+      });
+    }
+
+    list.innerHTML = '';
+
+    if(visible.length === 0){
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="ico">✂️</div>
+          <p>${currentSearch ? 'مفيش نتايج للبحث ده' : 'مفيش حجوزات هنا دلوقتي'}</p>
+        </div>`;
+      return;
+    }
+
+    const isQueueView = (currentFilter === 'all' && !currentSearch);
+
+    visible.forEach((b, i) => {
+      const urgent = isUrgent(b);
+      const dayLabel = new Date(b.date + 'T00:00:00').toLocaleDateString('ar-EG', { weekday:'short', day:'numeric', month:'short' });
+
+      const card = document.createElement('div');
+      card.className = 'bcard' + (urgent ? ' urgent' : '') + (b.status === 'done' ? ' done' : '');
+
+      const reorderHtml = isQueueView ? `
+        <div class="reorder-col">
+          <button type="button" class="reorder-btn" data-move="up" data-id="${b.id}" ${i === 0 ? 'disabled' : ''} aria-label="قدّم في الطابور">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+          </button>
+          <button type="button" class="reorder-btn" data-move="down" data-id="${b.id}" ${i === visible.length - 1 ? 'disabled' : ''} aria-label="أخّر في الطابور">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+        </div>` : '';
+
+      card.innerHTML = `
+        <div class="bcard-row">
+          ${reorderHtml}
+          <div class="bcard-main">
+            ${urgent ? '<div class="urgent-tag">قرب الموعد</div>' : ''}
+            <div class="bcard-top">
+              <div>
+                <div class="bcard-name">${escapeHtml(b.name)}</div>
+                <div class="bcard-service">${escapeHtml(b.service)}</div>
+              </div>
+              <div>
+                <div class="bcard-time">${b.time}</div>
+                <div class="bcard-date">${dayLabel}</div>
+              </div>
+            </div>
+            <div class="bcard-phone">${escapeHtml(b.phone)}</div>
+            <div class="bcard-actions">
+              <a class="wa-btn" href="${buildWaLink(b)}" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.36c1.37.74 2.93 1.16 4.62 1.16 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.06c-1.51 0-2.92-.4-4.15-1.1l-.3-.17-3.07.78.82-3-.2-.31a8.04 8.04 0 0 1-1.24-4.35c0-4.45 3.62-8.07 8.14-8.07 4.45 0 8.07 3.62 8.07 8.07 0 4.52-3.62 8.15-8.07 8.15zm4.45-6.07c-.24-.12-1.45-.71-1.67-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.78.95-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.41-.55-.42-.14-.01-.3-.01-.46-.01-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>
+                رسالة واتساب
+              </a>
+              ${b.status !== 'done'
+                ? `<button class="done-btn" data-id="${b.id}">تمت</button>`
+                : `<button class="delete-btn" data-id="${b.id}">حذف</button>`}
+            </div>
+          </div>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    document.querySelectorAll('.done-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        btn.textContent = '...';
+        try{
+          await markDone(btn.dataset.id);
+          renderBookings();
+        } catch(err){
+          console.error(err);
+          btn.disabled = false;
+          btn.textContent = 'تمت';
+        }
+      });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const card = btn.closest('.bcard');
+        const nameEl = card ? card.querySelector('.bcard-name') : null;
+        const personName = nameEl ? nameEl.textContent : 'الحجز ده';
+        const sure = confirm(`متأكد إنك عايز تمسح حجز "${personName}" نهائيًا؟`);
+        if(!sure) return;
+
+        btn.disabled = true;
+        btn.textContent = '...';
+        try{
+          await deleteBooking(btn.dataset.id);
+          renderBookings();
+        } catch(err){
+          console.error(err);
+          btn.disabled = false;
+          btn.textContent = 'حذف';
+        }
+      });
+    });
+
+    document.querySelectorAll('.reorder-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const direction = btn.dataset.move;
+        document.querySelectorAll('.reorder-btn').forEach(b => b.disabled = true);
+        try{
+          await moveBooking(visible, id, direction);
+          renderBookings();
+        } catch(err){
+          console.error(err);
+          renderBookings();
+        }
+      });
+    });
+  }
+
+  // refresh every 60s to keep "urgent" status accurate while the page is open
+  setInterval(() => {
+    if(dashboard.style.display === 'block') renderBookings();
+  }, 60000);
+</script>
+
+</body>
+</html>

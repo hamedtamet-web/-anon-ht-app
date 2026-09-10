@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta name="referrer" content="no-referrer-when-downgrade" />
+<meta name="referrer" content="no-referrer-when-downgrade" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام الإحالة — Anon HT</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="images/favicon-32.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="100271050.js"></script>
+<style>
+:root {
+  --primary: #f80566;
+  --primary-dim: rgba(248,5,102,0.12);
+  --primary-glow: rgba(248,5,102,0.25);
+  --card-bg: rgba(12,12,16,0.82);
+  --border: rgba(255,255,255,0.08);
+  --text-sub: #aaa;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #050505;
+  color: #f0f0f0;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+body::before {
+  content:''; position:fixed; inset:0;
+  background: rgba(0,0,0,0.88); z-index:-1;
+}
+
+/* HEADER */
+.ref-header {
+  background: linear-gradient(135deg, rgba(248,5,102,0.15), rgba(12,12,16,0.95));
+  border-bottom: 1px solid rgba(248,5,102,0.2);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(20px);
+}
+.ref-back {
+  width: 38px; height: 38px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #fff;
+  transition: 0.2s; text-decoration: none;
+}
+.ref-back:hover { background: var(--primary-dim); border-color: var(--primary); }
+.ref-header-title { font-size: 16px; font-weight: 900; color: #fff; }
+.ref-header-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+
+/* HERO */
+.ref-hero {
+  margin: 20px 16px;
+  background: linear-gradient(135deg, rgba(248,5,102,0.12), rgba(12,12,16,0.9));
+  border: 1px solid rgba(248,5,102,0.25);
+  border-radius: 24px; padding: 24px 20px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.ref-hero::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at 50% 0%, rgba(248,5,102,0.1), transparent 70%);
+  pointer-events: none;
+}
+.ref-hero-icon { font-size: 52px; margin-bottom: 12px; display: block; }
+.ref-hero-title { font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 6px; }
+.ref-hero-sub { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+
+/* STATS */
+.ref-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin: 0 16px 20px;
+}
+.ref-stat {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 18px; padding: 16px 10px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.ref-stat:hover { border-color: rgba(248,5,102,0.3); }
+.ref-stat-num {
+  font-size: 22px; font-weight: 900;
+  color: var(--primary); display: block; margin-bottom: 4px;
+}
+.ref-stat-label { font-size: 10px; color: #555; }
+
+/* LINK BOX */
+.ref-link-box {
+  margin: 0 16px 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 18px;
+}
+.ref-link-title {
+  font-size: 13px; font-weight: 800; color: #fff;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.ref-link-display {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(248,5,102,0.2);
+  border-radius: 14px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.ref-link-text {
+  flex: 1; font-size: 12px; color: var(--primary);
+  font-weight: 700; word-break: break-all;
+  direction: ltr; text-align: left;
+}
+.ref-copy-btn {
+  background: linear-gradient(135deg, var(--primary), #c4024e);
+  color: #fff; border: none; border-radius: 10px;
+  padding: 8px 14px; font-size: 12px; font-weight: 800;
+  cursor: pointer; font-family: 'Cairo', sans-serif;
+  white-space: nowrap; transition: 0.2s;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+.ref-copy-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px var(--primary-glow); }
+.ref-share-btns {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.ref-share-btn {
+  flex: 1; min-width: 80px;
+  padding: 10px 8px; border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: #ccc; font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: 'Cairo', sans-serif;
+  transition: 0.2s; display: flex; align-items: center;
+  justify-content: center; gap: 5px;
+}
+.ref-share-btn:hover { border-color: var(--primary); background: var(--primary-dim); color: #fff; }
+
+/* HOW IT WORKS */
+.ref-how {
+  margin: 0 16px 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 18px;
+}
+.ref-how-title {
+  font-size: 13px; font-weight: 800; color: #fff;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.ref-steps { display: flex; flex-direction: column; gap: 12px; }
+.ref-step {
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.ref-step-num {
+  width: 32px; height: 32px; min-width: 32px;
+  background: var(--primary-dim);
+  border: 1px solid rgba(248,5,102,0.3);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900; color: var(--primary);
+}
+.ref-step-text { flex: 1; }
+.ref-step-title { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+.ref-step-sub { font-size: 11px; color: var(--text-sub); line-height: 1.6; }
+
+/* INVITED LIST */
+.ref-list {
+  margin: 0 16px 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+}
+.ref-list-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ref-list-title {
+  font-size: 13px; font-weight: 800; color: #fff;
+  display: flex; align-items: center; gap: 8px;
+}
+.ref-list-badge {
+  background: var(--primary); color: #fff;
+  font-size: 10px; font-weight: 800;
+  padding: 2px 8px; border-radius: 50px;
+}
+.ref-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.2s;
+}
+.ref-item:last-child { border-bottom: none; }
+.ref-item:hover { background: rgba(255,255,255,0.02); }
+.ref-item-avatar {
+  width: 40px; height: 40px; min-width: 40px;
+  border-radius: 50%;
+  background: var(--primary-
+cat >> referral.html << 'HTMLEOF'
+dim); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; overflow: hidden;
+}
+.ref-item-avatar img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+.ref-item-info { flex: 1; min-width: 0; }
+.ref-item-name {
+  font-size: 13px; font-weight: 800; color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ref-item-date { font-size: 11px; color: #555; margin-top: 2px; }
+.ref-item-coins {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.2);
+  border-radius: 50px; padding: 4px 10px;
+  font-size: 12px; font-weight: 800; color: #FFD700;
+  white-space: nowrap;
+}
+.ref-item-status {
+  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  border-radius: 50px; white-space: nowrap;
+}
+.status-pending { background: rgba(255,165,0,0.1); color: #FFA500; border: 1px solid rgba(255,165,0,0.2); }
+.status-done { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+
+.ref-empty {
+  padding: 40px 20px; text-align: center;
+  color: #555; font-size: 13px;
+}
+.ref-empty-icon { font-size: 40px; margin-bottom: 10px; display: block; }
+
+/* LOADER */
+.ref-loader {
+  display: flex; align-items: center; justify-content: center;
+  padding: 30px;
+}
+.ref-loader-spin {
+  width: 28px; height: 28px;
+  border: 3px solid rgba(255,255,255,0.08);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* TOAST */
+#refToast {
+  position: fixed; top: 20px; left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: rgba(16,16,16,0.97);
+  border-radius: 16px; padding: 12px 18px;
+  font-size: 13px; font-weight: 700; color: #fff;
+  z-index: 99999; opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(20px);
+  font-family: 'Cairo', sans-serif;
+}
+#refToast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+</style>
+    <script src="img-protect.js?v=1"></script>
+</head>
+<body>
+
+<div id="refToast"></div>
+
+<!-- HEADER -->
+<div class="ref-header">
+  <a href="javascript:history.back()" class="ref-back">←</a>
+  <div>
+    <div class="ref-header-title">🎁 نظام الإحالة</div>
+    <div class="ref-header-sub">ادعُ أصدقاءك واكسب كوينز</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="ref-hero">
+  <span class="ref-hero-icon">🎁</span>
+  <div class="ref-hero-title">اكسب 1000 كوين لكل صديق!</div>
+  <div class="ref-hero-sub">
+    شارك رابطك مع أصدقائك<br>
+    لما يسجلوا ويكونوا نشطين هتاخد 1000 كوين 🔥
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="ref-stats">
+  <div class="ref-stat">
+    <span class="ref-stat-num" id="totalInvited">0</span>
+    <div class="ref-stat-label">مدعو</div>
+  </div>
+  <div class="ref-stat">
+    <span class="ref-stat-num" id="totalConfirmed">0</span>
+    <div class="ref-stat-label">مؤكد</div>
+  </div>
+  <div class="ref-stat">
+    <span class="ref-stat-num" id="totalCoins">0</span>
+    <div class="ref-stat-label">كوين كسبت</div>
+  </div>
+</div>
+
+<!-- LINK BOX -->
+<div class="ref-link-box">
+  <div class="ref-link-title">🔗 رابط الدعوة الخاص بك</div>
+  <div class="ref-link-display">
+    <div class="ref-link-text" id="refLinkText">جاري التحميل...</div>
+    <button class="ref-copy-btn" onclick="copyRefLink()">نسخ</button>
+  </div>
+  <div class="ref-share-btns">
+    <button class="ref-share-btn" onclick="shareWhatsApp()">💬 واتساب</button>
+    <button class="ref-share-btn" onclick="shareTelegram()">✈️ تيليجرام</button>
+    <button class="ref-share-btn" onclick="shareNative()">📤 مشاركة</button>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="ref-how">
+  <div class="ref-how-title">⚡ كيف يعمل النظام؟</div>
+  <div class="ref-steps">
+    <div class="ref-step">
+      <div class="ref-step-num">1</div>
+      <div class="ref-step-text">
+        <div class="ref-step-title">شارك رابطك</div>
+        <div class="ref-step-sub">انسخ رابط الدعوة وشاركه مع أصدقائك</div>
+      </div>
+    </div>
+    <div class="ref-step">
+      <div class="ref-step-num">2</div>
+      <div class="ref-step-text">
+        <div class="ref-step-title">يسجلوا ويفعّلوا</div>
+        <div class="ref-step-sub">صديقك يسجل من رابطك ويفعّل إيميله</div>
+      </div>
+    </div>
+    <div class="ref-step">
+      <div class="ref-step-num">3</div>
+      <div class="ref-step-text">
+        <div class="ref-step-title">يكونوا نشطين 7 أيام</div>
+        <div class="ref-step-sub">لازم يستخدم المنصة فعلياً لمدة 7 أيام</div>
+      </div>
+    </div>
+    <div class="ref-step">
+      <div class="ref-step-num">4</div>
+      <div class="ref-step-text">
+        <div class="ref-step-title">تاخد 1000 كوين 🎉</div>
+        <div class="ref-step-sub">بيتضافوا تلقائياً لرصيدك فور التأكيد</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INVITED LIST -->
+<div class="ref-list">
+  <div class="ref-list-header">
+    <div class="ref-list-title">
+      👥 المدعوون
+      <span class="ref-list-badge" id="invitedBadge">0</span>
+    </div>
+  </div>
+  <div id="invitedList">
+    <div class="ref-loader"><div class="ref-loader-spin"></div></div>
+  </div>
+</div>
+
+<script>
+firebase.initializeApp(APP_CONFIG.firebase);
+const db   = firebase.firestore();
+const auth = firebase.auth();
+
+let currentUser = null;
+let refCode = null;
+
+function showToast(msg, duration = 3000) {
+  const t = document.getElementById('refToast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function copyRefLink() {
+  const link = document.getElementById('refLinkText').textContent;
+  navigator.clipboard.writeText(link).then(() => showToast('✅ تم نسخ الرابط!'));
+}
+
+function shareWhatsApp() {
+  const link = document.getElementById('refLinkText').textContent;
+  const text = encodeURIComponent(`انضم لـ Anon HT معايا واستقبل أسئلة مجهولة! 🕵️\n${link}`);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function shareTelegram() {
+  const link = document.getElementById('refLinkText').textContent;
+  const text = encodeURIComponent(`انضم لـ Anon HT معايا! 🕵️`);
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`, '_blank');
+}
+
+function shareNative() {
+  const link = document.getElementById('refLinkText').textContent;
+  if (navigator.share) {
+    navigator.share({ title: 'Anon HT', text: 'انضم معايا على Anon HT! 🕵️', url: link });
+  } else {
+    copyRefLink();
+  }
+}
+
+/* ══ DEVICE FINGERPRINT ══ */
+async function getDeviceFingerprint() {
+  const components = [
+    navigator.userAgent,
+    navigator.language,
+    screen.width + 'x' + screen.height,
+    screen.colorDepth,
+    new Date().getTimezoneOffset(),
+    navigator.hardwareConcurrency || 0,
+    navigator.deviceMemory || 0,
+    !!navigator.cookieEnabled,
+    window.devicePixelRatio || 1,
+  ];
+
+  // Canvas Fingerprint
+  try {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillStyle = '#f80566';
+    ctx.fillText('AnonHT🕵️', 2, 2);
+    components.push(canvas.toDataURL());
+  } catch(e) {}
+
+  const str = components.join('|');
+  // Simple hash
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(36);
+}
+
+/* ══ LOAD DATA ══ */
+async function loadReferralData(uid) {
+  try {
+    const userSnap = await db.collection('users').doc(uid).get();
+    const userData = userSnap.data();
+    refCode = userData.referralCode || uid.slice(0,8).toUpperCase();
+
+    const refLink = `https://anonht.com/signin.html?ref=${refCode}`;
+    document.getElementById('refLinkText').textContent = refLink;
+
+    // Load referrals
+    const snap = await db.collection('referrals')
+      .where('referrerId', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .limit(50)
+      .get();
+
+    let totalCoins = 0;
+    let confirmed = 0;
+    const list = document.getElementById('invitedList');
+    document.getElementById('invitedBadge').textContent = snap.size;
+    document.getElementById('totalInvited').textContent = snap.size;
+
+    if (snap.empty) {
+      list.innerHTML = `
+        <div class="ref-empty">
+          <span class="ref-empty-icon">👥</span>
+          لم تدعُ أحداً بعد!<br>
+          <span style="font-size:11px;color:#444;margin-top:6px;display:block;">شارك رابطك وابدأ تكسب كوينز</span>
+        </div>`;
+      document.getElementById('totalConfirmed').textContent = 0;
+      document.getElementById('totalCoins').textContent = 0;
+      return;
+    }
+
+    // Load invited users data
+    const userIds = snap.docs.map(d => d.data().referredId).filter(Boolean);
+    const userMap = {};
+    await Promise.all(userIds.map(async id => {
+      try {
+        const u = await db.collection('users').doc(id).get();
+        if (u.exists) userMap[id] = u.data();
+      } catch(e) {}
+    }));
+
+    let html = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      const u = userMap[d.referredId] || {};
+      const name = u.name || 'مستخدم';
+      const avatar = u.avatarUrl || u.avatar || '';
+      const avatarHtml = avatar
+        ? `<img src="${avatar}" alt="${name}" onerror="this.parentElement.innerHTML='🕵️'">`
+        : '🕵️';
+      const coins = d.coinsAwarded || 0;
+      const isConfirmed = d.status === 'confirmed';
+      const date = d.createdAt?.toDate
+        ? d.createdAt.toDate().toLocaleDateString('ar-EG', {year:'numeric',month:'short',day:'numeric'})
+        : '';
+
+      if (isConfirmed) { confirmed++; totalCoins += coins; }
+
+      html += `
+      <div class="ref-item">
+        <div class="ref-item-avatar">${avatarHtml}</div>
+        <div class="ref-item-info">
+          <div class="ref-item-name">${name}</div>
+          <div class="ref-item-date">📅 ${date}</div>
+        </div>
+        ${isConfirmed
+          ? `<div class="ref-item-coins">🪙 ${coins.toLocaleString()}</div>`
+          : ''}
+        <span class="ref-item-status ${isConfirmed ? 'status-done' : 'status-pending'}">
+          ${isConfirmed ? '✅ مؤكد' : '⏳ انتظار'}
+        </span>
+      </div>`;
+    });
+
+    list.innerHTML = html;
+    document.getElementById('totalConfirmed').textContent = confirmed;
+    document.getElementById('totalCoins').textContent = totalCoins.toLocaleString();
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('invitedList').innerHTML =
+      '<div class="ref-empty">⚠️ خطأ في التحميل</div>';
+  }
+}
+
+/* ══ HANDLE REF PARAM ON SIGNUP ══ */
+async function handleReferralOnSignup(newUserId) {
+  const urlRef = new URLSearchParams(window.location.search).get('ref');
+  if (!urlRef) return;
+
+  try {
+    const fingerprint = await getDeviceFingerprint();
+
+    // تحقق إن مفيش حساب تاني من نفس الـ fingerprint اتسجل بنفس الـ ref
+    const fpCheck = await db.collection('referral_fingerprints')
+      .where('fingerprint', '==', fingerprint)
+      .where('referralCode', '==', urlRef)
+      .limit(1).get();
+
+    if (!fpCheck.empty) {
+      console.log('Referral blocked: duplicate fingerprint');
+      return;
+    }
+
+    // جيب الـ referrer
+    const refSnap = await db.collection('users')
+      .where('referralCode', '==', urlRef)
+      .limit(1).get();
+
+    if (refSnap.empty) return;
+    const referrerId = refSnap.docs[0].id;
+
+    // منع الشخص يدعي نفسه
+    if (referrerId === newUserId) return;
+
+    // منع الـ referral chain
+    const newUserSnap = await db.collection('users').doc(newUserId).get();
+    const newUserData = newUserSnap.data();
+    if (newUserData?.referralCode === urlRef) return;
+
+    // سجل الـ fingerprint
+    await db.collection('referral_fingerprints').add({
+      fingerprint,
+      referralCode: urlRef,
+      referredId: newUserId,
+      referrerId,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // سجل الـ referral بحالة pending
+    await db.collection('referrals').add({
+      referrerId,
+      referredId: newUserId,
+      referralCode: urlRef,
+      status: 'pending',
+      coinsAwarded: 0,
+      fingerprint,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      activeSince: null,
+      confirmedAt: null
+    });
+
+    // حدّث بيانات المستخدم الجديد
+    await db.collection('users').doc(newUserId).update({
+      referredBy: referrerId,
+      referredByCode: urlRef
+    });
+
+  } catch(e) {
+    console.error('Referral error:', e);
+  }
+}
+
+/* ══ INIT ══ */
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    loadReferralData(user.uid);
+  } else {
+    // مش logged in - وجّهه للتسجيل مع الـ ref param
+    const ref = new URLSearchParams(window.location.search).get('ref');
+    window.location.href = ref ? `signin.html?ref=${ref}` : 'signin.html';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta name="referrer" content="no-referrer-when-downgrade" />
+<meta name="referrer" content="no-referrer-when-downgrade" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>شات | Anon HT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #07070b;
+      color: #fff;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ─── Header ─── */
+    #chat-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #0f0f18;
+      border-bottom: 1px solid #1e1e2e;
+      position: relative;
+      min-height: 62px;
+    }
+
+    #back-btn {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    #peer-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #1e1e2e;
+    }
+
+    #peer-info { flex: 1; }
+    #peer-name  { font-size: 15px; font-weight: 700; }
+    #peer-status { font-size: 11px; color: #888; margin-top: 2px; }
+
+    #header-menu-btn {
+      background: none; border: none;
+      color: #aaa; font-size: 20px; cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    #header-menu {
+      display: none;
+      position: absolute;
+      top: 58px; left: 12px;
+      background: #1a1a2e;
+      border: 1px solid #2a2a3e;
+      border-radius: 10px;
+      overflow: hidden;
+      z-index: 100;
+      min-width: 160px;
+    }
+    #header-menu.open { display: block; }
+    #header-menu button {
+      display: block; width: 100%;
+      padding: 12px 16px;
+      background: none; border: none;
+      color: #fff; font-family: 'Cairo', sans-serif;
+      font-size: 14px; text-align: right;
+      cursor: pointer;
+    }
+    #header-menu button:hover { background: #2a2a3e; }
+    #end-chat-btn { color: #f80566 !important; }
+
+    /* ─── Follow Banner ─── */
+    #follow-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: #1a0a14;
+      border-bottom: 1px solid #3a1a28;
+      font-size: 13px;
+    }
+    #follow-banner span { color: #ccc; }
+    #follow-banner button {
+      background: #f80566;
+      border: none; border-radius: 20px;
+      color: #fff; font-family: 'Cairo', sans-serif;
+      font-size: 13px; font-weight: 700;
+      padding: 5px 16px; cursor: pointer;
+    }
+
+    /* ─── Messages ─── */
+    #messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scroll-behavior: smooth;
+    }
+
+    .msg-wrap {
+      display: flex;
+      flex-direction: column;
+      max-width: 75%;
+    }
+    .msg-wrap.mine  { align-self: flex-end; align-items: flex-end; }
+    .msg-wrap.theirs { align-self: flex-start; align-items: flex-start; }
+
+    .msg-bubble {
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .mine  .msg-bubble { background: #f80566; color: #fff; border-bottom-right-radius: 4px; }
+    .theirs .msg-bubble { background: #1e1e2e; color: #eee; border-bottom-left-radius: 4px; }
+
+    .msg-time {
+      font-size: 10px;
+      color: #555;
+      margin-top: 3px;
+      padding: 0 4px;
+    }
+
+    .msg-sender-name {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 3px;
+      padding: 0 4px;
+    }
+
+    /* system msg */
+    .msg-system {
+      text-align: center;
+      font-size: 12px;
+      color: #555;
+      padding: 4px 0;
+    }
+
+    /* ─── Input Area ─── */
+    #input-area {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #0f0f18;
+      border-top: 1px solid #1e1e2e;
+    }
+
+    #msg-input {
+      flex: 1;
+      background: #1e1e2e;
+      border: 1px solid #2a2a3e;
+      border-radius: 20px;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      padding: 10px 16px;
+      resize: none;
+      max-height: 120px;
+      overflow-y: auto;
+      outline: none;
+      line-height: 1.5;
+    }
+    #msg-input::placeholder { color: #555; }
+
+    #send-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: #f80566;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: opacity .2s;
+    }
+    #send-btn:disabled { opacity: .4; cursor: default; }
+
+    /* ─── Identity Toggle ─── */
+    #identity-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: #0f0f18;
+      border-top: 1px solid #1e1e2e;
+      font-size: 12px;
+      color: #777;
+    }
+    #identity-toggle {
+      width: 34px; height: 18px;
+      background: #333;
+      border-radius: 9px;
+      position: relative;
+      cursor: pointer;
+      border: none;
+      transition: background .3s;
+    }
+    #identity-toggle.on { background: #f80566; }
+    #identity-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px; right: 2px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform .3s;
+    }
+    #identity-toggle.on::after { transform: translateX(-16px); }
+
+    /* ─── Typing indicator ─── */
+    .typing-dots {
+      display: flex; gap: 4px;
+      padding: 10px 14px;
+    }
+    .typing-dots span {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #555;
+      animation: bounce .8s infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: .15s; }
+    .typing-dots span:nth-child(3) { animation-delay: .3s; }
+    @keyframes bounce {
+      0%,80%,100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+
+    /* ─── Empty state ─── */
+    #empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #444;
+      gap: 12px;
+      font-size: 14px;
+    }
+    #empty-state .icon { font-size: 48px; }
+
+    /* ─── Loading ─── */
+    #loading-screen {
+      position: fixed; inset: 0;
+      background: #07070b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid #1e1e2e;
+      border-top-color: #f80566;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* scrollbar */
+    #messages-container::-webkit-scrollbar { width: 4px; }
+    #messages-container::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 4px; }
+  </style>
+    <script src="img-protect.js?v=1"></script>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-screen"><div class="spinner"></div></div>
+
+<!-- Header -->
+<div id="chat-header">
+  <button id="back-btn" onclick="history.back()">&#8594;</button>
+  <img id="peer-avatar" src="https://ui-avatars.com/api/?name=?&background=1e1e2e&color=fff" />
+  <div id="peer-info">
+    <div id="peer-name">...</div>
+    <div id="peer-status">جاري التحميل...</div>
+  </div>
+  <button id="header-menu-btn" onclick="toggleMenu()">⋮</button>
+  <div id="header-menu">
+    <button id="end-chat-btn" onclick="confirmEndChat()">🔴 إنهاء المحادثة</button>
+  </div>
+</div>
+
+<!-- Follow Banner -->
+<div id="follow-banner">
+  <span id="follow-banner-text">تابع <strong id="follow-name-span"></strong>؟</span>
+  <button onclick="handleFollow()">+ تابع</button>
+</div>
+
+<!-- Messages -->
+<div id="messages-container">
+  <div id="empty-state">
+    <div class="icon">💬</div>
+    <div>لا توجد رسائل بعد، ابدأ المحادثة!</div>
+  </div>
+</div>
+
+<!-- Identity Bar -->
+<div id="identity-bar">
+  <span id="identity-label">أنت مجهول</span>
+  <button id="identity-toggle" onclick="toggleIdentity()"></button>
+  <span>إظهار هويتي</span>
+</div>
+
+<!-- Input -->
+<div id="input-area">
+  <textarea id="msg-input" placeholder="اكتب رسالة..." rows="1"
+    oninput="autoResize(this); handleTyping()"
+    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
+  ></textarea>
+  <button id="send-btn" onclick="sendMessage()" disabled>&#10148;</button>
+</div>
+
+<!-- Firebase -->
+//
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+//
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG  –  غيّر القيم دي لـ config.js بتاعك
+// ══════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "anon-ht.firebaseapp.com",
+  projectId: "anon-ht",
+  storageBucket: "anon-ht.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let currentUser   = null;   // Firebase user أو null
+let myId          = null;   // uid أو guestId
+let isGuest       = false;
+let threadId      = null;
+let peerId        = null;
+let peerData      = null;   // { name, avatar, identityVisible }
+let identityVisible = true; // هويتي أنا
+let messagesUnsub  = null;
+let typingTimer    = null;
+let lastTypingSent = 0;
+
+// ── guestId ──
+function getGuestId() {
+  let id = localStorage.getItem('anonht_guest_id');
+  if (!id) {
+    id = 'guest_' + crypto.randomUUID();
+    localStorage.setItem('anonht_guest_id', id);
+  }
+  return id;
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+auth.onAuthStateChanged(async user => {
+  currentUser = user;
+
+  if (user) {
+    myId    = user.uid;
+    isGuest = false;
+    // جيب هوية المستخدم من Firestore
+    const snap = await db.collection('users').doc(myId).get();
+    if (snap.exists) {
+      identityVisible = snap.data().identityVisible !== false; // default true
+    }
+  } else {
+    myId    = getGuestId();
+    isGuest = true;
+    identityVisible = true; // الزائر بيحدد هويته في الشات
+  }
+
+  updateIdentityToggle();
+
+  // ── thread ID من URL ──
+  const params = new URLSearchParams(location.search);
+  threadId = params.get('thread');
+  peerId   = params.get('peer');   // طرف التاني
+
+  if (!threadId && !peerId) {
+    alert('رابط الشات غير صحيح');
+    return;
+  }
+
+  if (!threadId) {
+    // إنشاء أو إيجاد thread موجود بين myId و peerId
+    threadId = await findOrCreateThread(myId, peerId);
+    // تحديث الـ URL بدون reload
+    history.replaceState(null, '', `chat.html?thread=${threadId}&peer=${peerId}`);
+  }
+
+  await loadPeerData();
+  subscribeMessages();
+  hideLoading();
+});
+
+// ══════════════════════════════════════════════
+//  THREAD
+// ══════════════════════════════════════════════
+async function findOrCreateThread(idA, idB) {
+  const ids  = [idA, idB].sort();
+  const snap = await db.collection('guestThreads')
+    .where('participants', '==', ids)
+    .limit(1).get();
+
+  if (!snap.empty) return snap.docs[0].id;
+
+  // إنشاء جديد
+  const ref = await db.collection('guestThreads').add({
+    participants: ids,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    lastMessage: '',
+    lastAt: firebase.firestore.FieldValue.serverTimestamp(),
+    typing: {}
+  });
+  return ref.id;
+}
+
+// ══════════════════════════════════════════════
+//  PEER DATA
+// ══════════════════════════════════════════════
+async function loadPeerData() {
+  if (peerId.startsWith('guest_')) {
+    peerData = { name: 'زائر', avatar: null, identityVisible: false };
+  } else {
+    const snap = await db.collection('users').doc(peerId).get();
+    if (snap.exists) {
+      const d = snap.data();
+      peerData = {
+        name: d.identityVisible !== false ? (d.displayName || 'مستخدم') : 'مجهول',
+        avatar: d.identityVisible !== false ? (d.avatar || null) : null,
+        identityVisible: d.identityVisible !== false,
+        uid: peerId
+      };
+    } else {
+      peerData = { name: 'مستخدم', avatar: null, identityVisible: false };
+    }
+  }
+
+  document.getElementById('peer-name').textContent = peerData.name;
+  if (peerData.avatar) {
+    document.getElementById('peer-avatar').src = peerData.avatar;
+  }
+
+  // Follow banner
+  if (peerData.identityVisible && !peerId.startsWith('guest_')) {
+    document.getElementById('follow-name-span').textContent = peerData.name;
+    document.getElementById('follow-banner').style.display = 'flex';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  MESSAGES – real-time
+// ══════════════════════════════════════════════
+function subscribeMessages() {
+  const container = document.getElementById('messages-container');
+  document.getElementById('empty-state')?.remove();
+
+  messagesUnsub = db.collection('guestThreads').doc(threadId)
+    .collection('messages')
+    .orderBy('createdAt', 'asc')
+    .onSnapshot(snap => {
+      // إضافة رسائل جديدة بس (تجنب إعادة رسم الكل)
+      snap.docChanges().forEach(change => {
+        if (change.type === 'added') {
+          renderMessage(change.doc.data(), change.doc.id);
+        }
+      });
+      scrollToBottom();
+
+      // typing indicator
+      const threadSnap = snap; // نحتاج thread doc منفصل لـ typing
+    });
+
+  // Typing listener منفصل
+  db.collection('guestThreads').doc(threadId)
+    .onSnapshot(docSnap => {
+      if (!docSnap.exists) return;
+      const typing = docSnap.data().typing || {};
+      const peerTyping = typing[peerId];
+      // عرض typing dots
+      const existingDots = document.getElementById('typing-indicator');
+      if (peerTyping && (Date.now() / 1000 - peerTyping.seconds < 5)) {
+        if (!existingDots) {
+          const wrap = document.createElement('div');
+          wrap.id = 'typing-indicator';
+          wrap.className = 'msg-wrap theirs';
+          wrap.innerHTML = `<div class="msg-bubble" style="padding:8px 14px">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+          </div>`;
+          container.appendChild(wrap);
+          scrollToBottom();
+        }
+      } else {
+        existingDots?.remove();
+      }
+    });
+}
+
+function renderMessage(data, id) {
+  const container = document.getElementById('messages-container');
+
+  // system message
+  if (data.type === 'system') {
+    const div = document.createElement('div');
+    div.className = 'msg-system';
+    div.textContent = data.text;
+    container.appendChild(div);
+    return;
+  }
+
+  const isMine = data.senderId === myId;
+  const wrap   = document.createElement('div');
+  wrap.className = `msg-wrap ${isMine ? 'mine' : 'theirs'}`;
+  wrap.dataset.msgId = id;
+
+  // اسم المرسل (للطرف التاني فقط)
+  if (!isMine) {
+    const senderName = data.senderVisible ? (data.senderName || 'مستخدم') : 'مجهول';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'msg-sender-name';
+    nameEl.textContent = senderName;
+    wrap.appendChild(nameEl);
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = data.text;
+  wrap.appendChild(bubble);
+
+  const time = document.createElement('div');
+  time.className = 'msg-time';
+  const ts = data.createdAt?.toDate?.() || new Date();
+  time.textContent = ts.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+  wrap.appendChild(time);
+
+  container.appendChild(wrap);
+}
+
+// ══════════════════════════════════════════════
+//  SEND
+// ══════════════════════════════════════════════
+async function sendMessage() {
+  const input = document.getElementById('msg-input');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  autoResize(input);
+  document.getElementById('send-btn').disabled = true;
+
+  // اسم المرسل
+  let senderName = 'مجهول';
+  if (identityVisible && currentUser) {
+    senderName = currentUser.displayName || 'مستخدم';
+  }
+
+  try {
+    await db.collection('guestThreads').doc(threadId)
+      .collection('messages').add({
+        senderId: myId,
+        senderName: senderName,
+        senderVisible: identityVisible,
+        text: text,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+    // تحديث lastMessage في thread doc
+    await db.collection('guestThreads').doc(threadId).update({
+      lastMessage: text.slice(0, 80),
+      lastAt: firebase.firestore.FieldValue.serverTimestamp(),
+      [`typing.${myId}`]: firebase.firestore.FieldValue.delete()
+    });
+
+  } catch (e) {
+    console.error(e);
+    alert('فشل إرسال الرسالة');
+  }
+}
+
+// ══════════════════════════════════════════════
+//  TYPING
+// ══════════════════════════════════════════════
+function handleTyping() {
+  const now = Date.now();
+  if (now - lastTypingSent < 3000) return;
+  lastTypingSent = now;
+
+  db.collection('guestThreads').doc(threadId).update({
+    [`typing.${myId}`]: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(() => {});
+
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(() => {
+    db.collection('guestThreads').doc(threadId).update({
+      [`typing.${myId}`]: firebase.firestore.FieldValue.delete()
+    }).catch(() => {});
+  }, 5000);
+}
+
+// ══════════════════════════════════════════════
+//  IDENTITY TOGGLE
+// ══════════════════════════════════════════════
+function updateIdentityToggle() {
+  const btn   = document.getElementById('identity-toggle');
+  const label = document.getElementById('identity-label');
+  if (identityVisible) {
+    btn.classList.add('on');
+    label.textContent = currentUser?.displayName || 'أنت';
+  } else {
+    btn.classList.remove('on');
+    label.textContent = 'أنت مجهول';
+  }
+}
+
+async function toggleIdentity() {
+  identityVisible = !identityVisible;
+  updateIdentityToggle();
+  // حفظ في Firestore لو مسجل
+  if (!isGuest) {
+    await db.collection('users').doc(myId).update({ identityVisible });
+  }
+}
+
+// ══════════════════════════════════════════════
+//  FOLLOW
+// ══════════════════════════════════════════════
+function handleFollow() {
+  if (isGuest) {
+    // احفظ intention وودّيه يسجّل
+    localStorage.setItem('anonht_pending_action', JSON.stringify({
+      action: 'follow',
+      targetId: peerId
+    }));
+    location.href = `signup.html?redirect=${encodeURIComponent(`profile.html?id=${peerId}&action=follow`)}`;
+  } else {
+    followUser(peerId);
+  }
+}
+
+async function followUser(uid) {
+  try {
+    await db.collection('users').doc(myId)
+      .collection('following').doc(uid).set({ followedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection('users').doc(uid)
+      .collection('followers').doc(myId).set({ followedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    document.getElementById('follow-banner').style.display = 'none';
+    // notification اختياري
+  } catch(e) { console.error(e); }
+}
+
+// ══════════════════════════════════════════════
+//  END CHAT
+// ══════════════════════════════════════════════
+function confirmEndChat() {
+  toggleMenu();
+  if (!confirm('هل تريد إنهاء المحادثة؟ سيتم أرشفة الرسائل ثم حذفها.')) return;
+  endChat();
+}
+
+async function endChat() {
+  try {
+    // 1. نسخ الرسائل من messages subcollection
+    const msgsSnap = await db.collection('guestThreads').doc(threadId)
+      .collection('messages').get();
+
+    const messages = msgsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // 2. احفظ في chatLogs
+    await db.collection('chatLogs').doc(threadId).set({
+      threadId,
+      participants: [myId, peerId],
+      messages,
+      endedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      endedBy: myId,
+      deleteAfter: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+    });
+
+    // 3. حذف messages subcollection
+    const batch = db.batch();
+    msgsSnap.docs.forEach(d => batch.delete(d.ref));
+    await batch.commit();
+
+    // 4. حذف thread doc
+    await db.collection('guestThreads').doc(threadId).delete();
+
+    // رسالة نهاية
+    alert('تم إنهاء المحادثة وأرشفتها.');
+    history.back();
+
+  } catch (e) {
+    console.error(e);
+    alert('حدث خطأ أثناء إنهاء المحادثة');
+  }
+}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function scrollToBottom() {
+  const c = document.getElementById('messages-container');
+  c.scrollTop = c.scrollHeight;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('send-btn').disabled = !el.value.trim();
+}
+
+function toggleMenu() {
+  document.getElementById('header-menu').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#header-menu') && !e.target.closest('#header-menu-btn')) {
+    document.getElementById('header-menu').classList.remove('open');
+  }
+});
+
+function hideLoading() {
+  document.getElementById('loading-screen').style.display = 'none';
+}
+</script>
+</body>
+</html>

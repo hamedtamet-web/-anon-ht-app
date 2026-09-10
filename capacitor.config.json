@@ -1,9 +1,5 @@
 {
   "appId": "com.anonht.app",
   "appName": "Anon HT",
-  "webDir": "www",
-  "server": {
-    "url": "https://anonht.com",
-    "cleartext": false
-  }
+  "webDir": "www"
 }
