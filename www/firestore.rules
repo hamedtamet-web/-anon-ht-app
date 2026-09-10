@@ -1,0 +1,91 @@
+rules_version = '2';
+
+// ============================================================================
+// Zukksh Salon — Firestore Security Rules
+// Spark plan / no Cloud Functions / no Firebase Auth.
+//
+// IMPORTANT — read this before you deploy:
+// Because the login flow is client-side (compare a typed password's SHA-256
+// hash against a stored hash, no server, no Firebase Auth token), these rules
+// CANNOT truly verify "is this really the barber" for updates/deletes on
+// bookings. Anyone who opens dev tools and calls the Firestore SDK directly
+// could, in theory, call updateDoc/deleteDoc themselves — the rules below
+// restrict *what shape of data* can be written, not *who* is writing it.
+//
+// What these rules DO give you:
+//  - passwordHash is never in a bulk-readable collection (barbers_public has
+//    no secrets; barbers_auth can only be fetched by exact doc id, one at a
+//    time, never listed/queried in bulk).
+//  - Every write to `bookings` is checked field-by-field: required fields,
+//    correct types, sane string lengths, and only whitelisted status values.
+//  - Customers can create bookings and mark nothing else; only status/order/
+//    doneAt can be changed after creation, and only to valid values.
+//  - True "only the real barber can edit their own bookings" protection
+//    requires Firebase Auth (e.g. a Cloud Function issuing a custom token
+//    after password check), which needs the Blaze plan. If you ever want
+//    that harder guarantee, that's the upgrade path — happy to build it
+//    when/if you're ready.
+// ============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- barbers_public: { name, phone } — no secrets, safe to read ----------
+    match /barbers_public/{barberId} {
+      allow read: if true;   // booking page needs this to show barber name/phone
+      allow write: if false; // only you change this, via Firebase console / Termux script
+    }
+
+    // ---------- barbers_auth: { passwordHash } — get-only, never listable ----------
+    match /barbers_auth/{barberId} {
+      // "get" (single doc by known id) is allowed so the login flow can fetch
+      // the hash for the specific barber the customer typed. "list" is not
+      // allowed on this collection at all, so nobody can dump every hash at once.
+      allow get: if true;
+      allow list: if false;
+      allow write: if false;
+    }
+
+    // ---------- bookings ----------
+    match /bookings/{bookingId} {
+
+      allow read: if true; // needed for public queue-position calc + dashboard
+
+      // Anyone can create a booking, but only with a valid, complete shape.
+      allow create: if request.resource.data.keys().hasAll(
+                        ['name','phone','service','barberId','barberName','date','time','status']
+                      )
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 1
+                    && request.resource.data.name.size() < 80
+                    && request.resource.data.phone is string
+                    && request.resource.data.phone.matches('^01[0125][0-9]{8}$')
+                    && request.resource.data['service'] is string
+                    && request.resource.data['service'].size() > 0
+                    && request.resource.data['service'].size() < 200
+                    && request.resource.data.barberId is string
+                    && request.resource.data.barberName is string
+                    && request.resource.data.date is string
+                    && request.resource.data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+                    && request.resource.data.time is string
+                    && request.resource.data.status == 'upcoming';
+
+      // Updates: only status/order/doneAt may change, and only to valid values.
+      // (name/phone/service/barberId/date/time are locked after creation.)
+      allow update: if request.resource.data.diff(resource.data).affectedKeys()
+                        .hasOnly(['status', 'order', 'doneAt'])
+                    && (
+                         !('status' in request.resource.data.diff(resource.data).affectedKeys())
+                         || request.resource.data.status in ['upcoming', 'done']
+                       )
+                    && (
+                         !('order' in request.resource.data.diff(resource.data).affectedKeys())
+                         || request.resource.data.order is int
+                       );
+
+      // Deletes only allowed for bookings already marked done (the 1-hour
+      // sweep in the dashboard only ever deletes done bookings anyway).
+      allow delete: if resource.data.status == 'done';
+    }
+  }
+}

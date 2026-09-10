@@ -1,0 +1,164 @@
+# robots.txt — anonht.com
+# Last updated: 2026-05-31
+
+# ══════════════════════════════════════════
+#  Default: كل الـ bots
+# ══════════════════════════════════════════
+User-agent: *
+Allow: /
+Allow: /images/
+Allow: /fonts/
+Allow: /index.html
+Allow: /article.html
+Allow: /thread.html
+Allow: /questions.html
+Allow: /question-thread.html
+Allow: /game.html
+Allow: /quiet-corner.html
+Allow: /verification.html
+Allow: /lang.js
+Allow: /404.html
+
+Disallow: /signin.html
+Disallow: /profile.html
+Disallow: /notifications.html
+Disallow: /feed.html
+Disallow: /admin.html
+Disallow: /oldprofile.html
+Disallow: /migrate.html
+Disallow: /config.js
+Disallow: /ads.js
+Disallow: /header-ad.js
+Disallow: /footer-ad.js
+Disallow: /ad-banner.html
+Disallow: /manifest.json
+Disallow: /service-worker.js
+Disallow: /onesignal-notify.js
+Disallow: /OneSignalSDKWorker.js
+Disallow: /notify-prompt.js
+Disallow: /shoutout-tab.js
+Disallow: /questions-bank.js
+Disallow: /bad_words/
+Disallow: /sounds/
+Disallow: /.git/
+
+# ══════════════════════════════════════════
+#  Googlebot
+# ══════════════════════════════════════════
+User-agent: Googlebot
+Allow: /
+Allow: /images/
+Allow: /fonts/
+Allow: /lang.js
+Allow: /index.html
+Allow: /article.html
+Allow: /thread.html
+Allow: /questions.html
+Allow: /question-thread.html
+Allow: /game.html
+Allow: /quiet-corner.html
+Allow: /verification.html
+Disallow: /signin.html
+Disallow: /profile.html
+Disallow: /notifications.html
+Disallow: /feed.html
+Disallow: /admin.html
+Disallow: /config.js
+Disallow: /ads.js
+Disallow: /.git/
+Disallow: /bad_words/
+Disallow: /sounds/
+
+# ══════════════════════════════════════════
+#  Googlebot-Image
+# ══════════════════════════════════════════
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /og-cover.jpg
+
+# ══════════════════════════════════════════
+#  Bingbot
+# ══════════════════════════════════════════
+User-agent: Bingbot
+Allow: /
+Allow: /images/
+Allow: /fonts/
+Allow: /lang.js
+Allow: /index.html
+Allow: /article.html
+Allow: /thread.html
+Allow: /questions.html
+Allow: /question-thread.html
+Allow: /game.html
+Allow: /quiet-corner.html
+Allow: /verification.html
+Disallow: /signin.html
+Disallow: /profile.html
+Disallow: /notifications.html
+Disallow: /feed.html
+Disallow: /admin.html
+Disallow: /config.js
+Disallow: /ads.js
+Disallow: /.git/
+Disallow: /bad_words/
+Disallow: /sounds/
+
+# ══════════════════════════════════════════
+#  Social crawlers
+# ══════════════════════════════════════════
+User-agent: Twitterbot
+Allow: /
+Allow: /images/
+Disallow: /admin.html
+Disallow: /config.js
+
+User-agent: facebookexternalhit
+Allow: /
+Allow: /images/
+Disallow: /admin.html
+Disallow: /config.js
+
+User-agent: LinkedInBot
+Allow: /
+Allow: /images/
+Disallow: /admin.html
+Disallow: /config.js
+
+User-agent: WhatsApp
+Allow: /
+Allow: /images/
+Disallow: /admin.html
+Disallow: /config.js
+
+# ══════════════════════════════════════════
+#  AI scrapers — حماية المحتوى
+# ══════════════════════════════════════════
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+# ══════════════════════════════════════════
+Sitemap: https://anonht.com/sitemap.xml

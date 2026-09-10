@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شروط الاستخدام | Anon HT</title>
+<meta name="description" content="شروط الاستخدام لمنصة Anon HT — القواعد والسياسات التي تحكم استخدام المنصة.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://anonht.com/terms.html">
+<link rel="icon" type="image/png" href="images/logo.png">
+<link rel="apple-touch-icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#f80566;--pd:rgba(248,5,102,0.10);--pg:rgba(248,5,102,0.22);--bg:#050505;--card:#0d0d0d;--border:rgba(255,255,255,0.07);--bh:rgba(248,5,102,0.25);--text:#e2e2e2;--sub:#999;--muted:#555;--max:780px;--r:22px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden}
+::selection{background:var(--pd);color:#fff}
+
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:rgba(5,5,5,0.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center}
+.header-inner{max-width:var(--max);margin:0 auto;width:100%;display:flex;align-items:center;gap:14px}
+.header-logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.header-logo img{width:30px;height:30px;border-radius:8px;filter:drop-shadow(0 0 6px var(--pg))}
+.header-logo span{font-size:14px;font-weight:900;color:#fff}
+.header-sep{color:var(--muted);font-size:16px}
+.header-title{font-size:13px;font-weight:700;color:var(--sub)}
+.header-back{margin-right:auto;display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--primary);font-size:12px;font-weight:800;background:var(--pd);border:1px solid rgba(248,5,102,0.18);padding:6px 14px;border-radius:50px;transition:background .2s}
+.header-back:hover{background:rgba(248,5,102,0.17)}
+
+/* PROGRESS */
+#readProgress{position:fixed;top:58px;right:0;left:0;height:2px;background:var(--border);z-index:199}
+#progressBar{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#ff6b9d);width:0%;transition:width .1s linear}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;padding:60px 20px 50px;text-align:center;background:radial-gradient(ellipse at 50% -30%,rgba(248,5,102,0.13),transparent 70%);border-bottom:1px solid var(--border)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 50%,rgba(248,5,102,0.07),transparent 45%),radial-gradient(circle at 85% 50%,rgba(248,5,102,0.05),transparent 45%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--pd);border:1px solid rgba(248,5,102,0.22);border-radius:50px;padding:6px 16px;font-size:11px;font-weight:800;color:var(--primary);letter-spacing:.5px;margin-bottom:22px}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pdot 1.5s infinite}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.hero-icon{font-size:60px;display:block;margin-bottom:18px;filter:drop-shadow(0 0 24px rgba(248,5,102,0.4));animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{font-size:clamp(24px,5vw,34px);font-weight:900;color:#fff;margin-bottom:12px;line-height:1.3}
+.hero p{font-size:14px;color:var(--sub);max-width:500px;margin:0 auto 20px;line-height:1.9}
+.hero-meta{display:inline-flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.meta-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:50px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--sub)}
+.meta-pill em{color:var(--primary);font-style:normal}
+
+/* TOC */
+.toc-wrap{max-width:var(--max);margin:30px auto 0;padding:0 20px}
+.toc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.toc-label{font-size:11px;font-weight:800;color:var(--primary);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px;grid-column:1 / -1;display:flex;align-items:center;gap:8px}
+.toc-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.toc-item{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--sub);font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:12px;transition:background .2s,color .2s;border:1px solid transparent}
+.toc-item:hover{background:var(--pd);border-color:rgba(248,5,102,0.15);color:#fff}
+.toc-item .ti{font-size:14px;flex-shrink:0}
+
+/* CONTENT */
+.content{max-width:var(--max);margin:30px auto 0;padding:0 20px 60px;display:flex;flex-direction:column;gap:16px}
+
+/* SECTION CARD */
+.s-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .25s,box-shadow .25s}
+.s-card:hover{border-color:var(--bh);box-shadow:0 6px 28px rgba(248,5,102,0.08)}
+.s-head{display:flex;align-items:center;gap:14px;padding:20px 24px 16px;border-bottom:1px solid var(--border)}
+.s-num{width:28px;height:28px;border-radius:8px;background:var(--pd);border:1px solid rgba(248,5,102,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--primary);flex-shrink:0}
+.s-icon{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;border:1px solid var(--border)}
+.s-titles{flex:1}
+.s-title{font-size:15px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:2px}
+.s-sub{font-size:11px;color:var(--muted);font-weight:600}
+.s-body{padding:20px 24px}
+.s-body p{font-size:13.5px;color:#aaa;line-height:1.95;margin-bottom:12px}
+.s-body p:last-child{margin-bottom:0}
+.s-body strong{color:#ddd;font-weight:700}
+
+/* LIST */
+.dot-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.dot-list li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.035);font-size:13.5px;color:#aaa;line-height:1.7}
+.dot-list li:last-child{border-bottom:none;padding-bottom:0}
+.dot-list li .di{width:20px;height:20px;border-radius:6px;background:var(--pd);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:2px;color:var(--primary)}
+
+/* HIGHLIGHT */
+.hl-box{background:linear-gradient(135deg,rgba(248,5,102,0.07),rgba(100,0,50,0.04));border:1px solid rgba(248,5,102,0.18);border-radius:16px;padding:16px 18px;margin-top:14px;display:flex;align-items:flex-start;gap:12px}
+.hl-box .hl-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.hl-box p{margin:0!important;font-size:13px!important;color:#ccc!important}
+.hl-box p strong{color:#fff!important}
+
+/* INFO BOX */
+.info-box{background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.18);border-radius:16px;padding:16px 18px;margin-top:14px;display:flex;align-items:flex-start;gap:12px}
+.info-box .ib-icon{font-size:20px;flex-shrink:0}
+.info-box p{margin:0!important;font-size:13px!important;color:#aaa!important}
+
+/* VIOLATIONS TABLE */
+.v-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+.v-table th{background:rgba(255,255,255,0.04);color:var(--primary);font-weight:800;padding:10px 14px;text-align:right;border-bottom:1px solid var(--border);font-size:11px;letter-spacing:.5px}
+.v-table td{padding:10px 14px;color:#aaa;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle;line-height:1.6}
+.v-table tr:last-child td{border-bottom:none}
+.v-table tr:hover td{background:rgba(255,255,255,0.015)}
+.badge-warn{display:inline-flex;align-items:center;gap:5px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:700;color:#fbbf24}
+.badge-danger{display:inline-flex;align-items:center;gap:5px;background:rgba(248,5,102,0.08);border:1px solid rgba(248,5,102,0.2);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--primary)}
+
+/* CONTACT CARD */
+.contact-card{background:linear-gradient(135deg,rgba(248,5,102,0.09),rgba(80,0,40,0.06));border:1px solid rgba(248,5,102,0.28);border-radius:var(--r);padding:36px 24px;text-align:center;position:relative;overflow:hidden;margin-top:4px}
+.contact-card::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:280px;height:280px;background:radial-gradient(circle,rgba(248,5,102,0.12),transparent 65%);pointer-events:none}
+.contact-card h3{font-size:20px;font-weight:900;color:#fff;margin-bottom:8px}
+.contact-card p{font-size:13px;color:var(--sub);margin-bottom:22px;line-height:1.7}
+.contact-email{display:inline-flex;align-items:center;gap:10px;background:var(--primary);color:white;text-decoration:none;padding:13px 28px;border-radius:16px;font-weight:800;font-size:14px;box-shadow:0 6px 22px rgba(248,5,102,0.35);transition:transform .2s,box-shadow .2s}
+.contact-email:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(248,5,102,0.45)}
+
+/* FOOTER */
+.site-footer{border-top:1px solid var(--border);padding:28px 20px 40px;text-align:center}
+.footer-links{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 4px;margin-bottom:12px}
+.footer-links a{color:var(--sub);text-decoration:none;font-size:12px;font-weight:600;padding:5px 12px;border-radius:8px;transition:color .2s,background .2s}
+.footer-links a:hover{color:var(--primary);background:var(--pd)}
+.footer-links span{color:var(--muted);font-size:10px}
+.footer-copy{font-size:11px;color:var(--muted)}
+
+@media(max-width:600px){
+  .hero{padding:44px 16px 36px}
+  .s-head{padding:16px 18px 14px;gap:10px}
+  .s-body{padding:16px 18px}
+  .toc-card{grid-template-columns:1fr 1fr;padding:18px}
+}
+</style>
+    <script src="img-protect.js?v=1"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="header-logo">
+      <img src="images/logo.png" alt="Anon HT">
+      <span>Anon HT</span>
+    </a>
+    <span class="header-sep">/</span>
+    <span class="header-title">شروط الاستخدام</span>
+    <a href="/" class="header-back">← الرئيسية</a>
+  </div>
+</header>
+
+<div id="readProgress"><span id="progressBar"></span></div>
+
+<section class="hero">
+  <div class="hero-badge"><span></span> شروط محدّثة · يناير 2026</div>
+  <span class="hero-icon">📜</span>
+  <h1>شروط الاستخدام</h1>
+  <p>يُرجى قراءة هذه الشروط بعناية قبل استخدام منصة Anon HT. استخدامك للمنصة يعني موافقتك الكاملة على هذه الشروط.</p>
+  <div class="hero-meta">
+    <div class="meta-pill">📅 <em>يناير 2026</em></div>
+    <div class="meta-pill">⚖️ <em>ملزمة قانونياً</em></div>
+    <div class="meta-pill">🛡️ <em>محمية بالكامل</em></div>
+  </div>
+</section>
+
+<div class="toc-wrap">
+  <div class="toc-card">
+    <div class="toc-label">📑 المحتويات</div>
+    <a href="#s1"  class="toc-item"><span class="ti">📋</span> القبول والموافقة</a>
+    <a href="#s2"  class="toc-item"><span class="ti">👤</span> شروط إنشاء الحساب</a>
+    <a href="#s3"  class="toc-item"><span class="ti">✅</span> الاستخدام المسموح</a>
+    <a href="#s4"  class="toc-item"><span class="ti">🚫</span> المحتوى المحظور</a>
+    <a href="#s5"  class="toc-item"><span class="ti">⚠️</span> عواقب المخالفات</a>
+    <a href="#s6"  class="toc-item"><span class="ti">💎</span> الخدمات المدفوعة</a>
+    <a href="#s7"  class="toc-item"><span class="ti">🪙</span> Anon Coins</a>
+    <a href="#s8"  class="toc-item"><span class="ti">⚖️</span> إخلاء المسؤولية</a>
+    <a href="#s9"  class="toc-item"><span class="ti">🔄</span> تعديل الشروط</a>
+    <a href="#s10" class="toc-item"><span class="ti">🏛️</span> القانون المطبق</a>
+  </div>
+</div>
+
+<main class="content">
+
+  <article class="s-card" id="s1">
+    <div class="s-head">
+      <div class="s-num">01</div><div class="s-icon">📋</div>
+      <div class="s-titles"><div class="s-title">القبول والموافقة</div><div class="s-sub">ما يعنيه استخدامك للمنصة من التزام قانوني</div></div>
+    </div>
+    <div class="s-body">
+      <p>باستخدامك لمنصة <strong>Anon HT</strong> (anonht.com) أو تطبيقها على أي جهاز، فأنت توافق صراحةً على الالتزام بهذه الشروط وجميع السياسات المرتبطة بها.</p>
+      <p>إذا كنت لا توافق على أي بند من هذه الشروط، يُرجى التوقف عن استخدام المنصة فوراً وحذف حسابك إن وجد.</p>
+      <div class="hl-box">
+        <div class="hl-icon">📌</div>
+        <p>تُطبَّق هذه الشروط على جميع المستخدمين بلا استثناء، سواء على الموقع أو التطبيق أو أي نقطة وصول أخرى للمنصة.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="s-card" id="s2">
+    <div class="s-head">
+      <div class="s-num">02</div><div class="s-icon">👤</div>
+      <div class="s-titles"><div class="s-title">شروط إنشاء الحساب</div><div class="s-sub">متطلبات التسجيل والمسؤوليات الشخصية</div></div>
+    </div>
+    <div class="s-body">
+      <ul class="dot-list">
+        <li><div class="di">✓</div> يجب أن يكون عمرك 13 سنة أو أكثر لإنشاء حساب</li>
+        <li><div class="di">✓</div> يجب تقديم معلومات صحيحة ودقيقة عند التسجيل</li>
+        <li><div class="di">✓</div> أنت مسؤول عن الحفاظ على سرية كلمة مرورك وأمان حسابك</li>
+        <li><div class="di">✓</div> لا يُسمح بإنشاء أكثر من حساب واحد لنفس الشخص</li>
+        <li><div class="di">✓</div> يُحظر استخدام بيانات شخص آخر أو هوية مزيفة عند التسجيل</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="s-card" id="s3">
+    <div class="s-head">
+      <div class="s-num">03</div><div class="s-icon">✅</div>
+      <div class="s-titles"><div class="s-title">الاستخدام المسموح به</div><div class="s-sub">ما يمكنك فعله على المنصة</div></div>
+    </div>
+    <div class="s-body">
+      <ul class="dot-list">
+        <li><div class="di">✓</div> إرسال واستقبال الأسئلة المجهولة بشكل مشروع وحضاري</li>
+        <li><div class="di">✓</div> التفاعل الإيجابي والبنّاء مع مستخدمين آخرين</li>
+        <li><div class="di">✓</div> مشاركة رابطك الشخصي مع أصدقائك وجمهورك</li>
+        <li><div class="di">✓</div> استخدام ميزات المنصة المتاحة وفق اشتراكك الحالي</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="s-card" id="s4">
+    <div class="s-head">
+      <div class="s-num">04</div><div class="s-icon">🚫</div>
+      <div class="s-titles"><div class="s-title">المحتوى والسلوك المحظور</div><div class="s-sub">ما يُعرّضك للحظر الفوري أو الدائم</div></div>
+    </div>
+    <div class="s-body">
+      <ul class="dot-list">
+        <li><div class="di">✗</div> التحرش أو التنمر أو الإساءة اللفظية بأي شكل</li>
+        <li><div class="di">✗</div> نشر محتوى جنسي أو عنيف أو مسيء أو مثير للكراهية</li>
+        <li><div class="di">✗</div> انتهاك خصوصية الآخرين أو نشر بياناتهم بدون إذن</li>
+        <li><div class="di">✗</div> إرسال السبام أو الإعلانات غير المرغوب فيها</li>
+        <li><div class="di">✗</div> محاولة اختراق أو التلاعب بأنظمة المنصة أو قواعد بياناتها</li>
+        <li><div class="di">✗</div> استخدام بوتات أو برامج آلية أو أدوات غير مشروعة</li>
+        <li><div class="di">✗</div> نشر أي محتوى يخالف القوانين المحلية أو الدولية</li>
+        <li><div class="di">✗</div> انتحال شخصية مستخدمين آخرين أو جهات رسمية</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="s-card" id="s5">
+    <div class="s-head">
+      <div class="s-num">05</div><div class="s-icon">⚠️</div>
+      <div class="s-titles"><div class="s-title">عواقب المخالفات</div><div class="s-sub">نظام الإجراءات التصاعدية عند انتهاك الشروط</div></div>
+    </div>
+    <div class="s-body">
+      <table class="v-table">
+        <thead><tr><th>المرحلة</th><th>الإجراء</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge-warn">⚠️ إنذار أول</span></td><td>تحذير رسمي عبر البريد الإلكتروني</td></tr>
+          <tr><td><span class="badge-warn">⏸️ إنذار ثاني</span></td><td>حظر مؤقت لمدة 7 أيام</td></tr>
+          <tr><td><span class="badge-danger">🔴 إنذار ثالث</span></td><td>حظر دائم وحذف الحساب نهائياً</td></tr>
+        </tbody>
+      </table>
+      <div class="hl-box">
+        <div class="hl-icon">⚡</div>
+        <p>في حالات الانتهاكات الجسيمة كالاختراق أو المحتوى الجنسي المخل، يحق لنا <strong>الحظر الفوري بدون إنذار مسبق</strong>.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="s-card" id="s6">
+    <div class="s-head">
+      <div class="s-num">06</div><div class="s-icon">💎</div>
+      <div class="s-titles"><div class="s-title">الخدمات المدفوعة (VIP)</div><div class="s-sub">شروط الاشتراك في الميزات المميزة</div></div>
+    </div>
+    <div class="s-body">
+      <p>بعض الميزات متاحة حصرياً للمشتركين VIP. عند الاشتراك تنطبق عليك الشروط التالية:</p>
+      <ul class="dot-list">
+        <li><div class="di">📌</div> المبالغ المدفوعة غير قابلة للاسترداد بعد تفعيل الاشتراك</li>
+        <li><div class="di">📌</div> يجوز لنا تعديل مزايا VIP مع إشعار مسبق للمشتركين</li>
+        <li><div class="di">📌</div> انتهاك الشروط العامة يلغي الاشتراك تلقائياً بدون استرداد</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="s-card" id="s7">
+    <div class="s-head">
+      <div class="s-num">07</div><div class="s-icon">🪙</div>
+      <div class="s-titles"><div class="s-title">Anon Coins</div><div class="s-sub">شروط العملة الافتراضية الداخلية</div></div>
+    </div>
+    <div class="s-body">
+      <p>Anon Coins هي عملة افتراضية حصرية داخل المنصة تُستخدم للوصول لبعض الميزات:</p>
+      <ul class="dot-list">
+        <li><div class="di">🪙</div> لا يمكن تحويل Anon Coins إلى أموال حقيقية بأي طريقة</li>
+        <li><div class="di">🪙</div> تنتهي صلاحية الـ Coins نهائياً عند حذف الحساب</li>
+        <li><div class="di">🪙</div> نحتفظ بالحق في تعديل نظام الـ Coins أو قيمتها في أي وقت</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="s-card" id="s8">
+    <div class="s-head">
+      <div class="s-num">08</div><div class="s-icon">⚖️</div>
+      <div class="s-titles"><div class="s-title">إخلاء المسؤولية</div><div class="s-sub">حدود مسؤولية المنصة تجاه المحتوى والاستخدام</div></div>
+    </div>
+    <div class="s-body">
+      <p>المنصة لا تتحمل المسؤولية عن:</p>
+      <ul class="dot-list">
+        <li><div class="di">—</div> المحتوى الذي ينشره المستخدمون أو يتداولونه</li>
+        <li><div class="di">—</div> أي أضرار مادية أو معنوية ناجمة عن استخدام المنصة أو إساءة استخدامها</li>
+        <li><div class="di">—</div> انقطاع الخدمة أو الأعطال التقنية المؤقتة</li>
+      </ul>
+      <div class="hl-box">
+        <div class="hl-icon">📌</div>
+        <p><strong>المستخدم وحده مسؤول</strong> عن كل محتوى ينشره أو يرسله عبر المنصة.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="s-card" id="s9">
+    <div class="s-head">
+      <div class="s-num">09</div><div class="s-icon">🔄</div>
+      <div class="s-titles"><div class="s-title">تعديل الشروط</div><div class="s-sub">كيف نخطرك عند تغيير الشروط</div></div>
+    </div>
+    <div class="s-body">
+      <ul class="dot-list">
+        <li><div class="di">📢</div> إشعار داخل التطبيق قبل 7 أيام من تطبيق التغييرات الجوهرية</li>
+        <li><div class="di">📧</div> رسالة بريد إلكتروني للمستخدمين المسجلين عند التعديلات المهمة</li>
+        <li><div class="di">📅</div> تحديث تاريخ "آخر تعديل" في أعلى الصفحة</li>
+      </ul>
+      <p>استمرارك في استخدام المنصة بعد نشر التغييرات يُعدّ موافقة صريحة منك على الشروط الجديدة.</p>
+    </div>
+  </article>
+
+  <article class="s-card" id="s10">
+    <div class="s-head">
+      <div class="s-num">10</div><div class="s-icon">🏛️</div>
+      <div class="s-titles"><div class="s-title">القانون المطبق وتسوية النزاعات</div><div class="s-sub">الإطار القانوني الحاكم لهذه الشروط</div></div>
+    </div>
+    <div class="s-body">
+      <p>تخضع هذه الشروط للقوانين المعمول بها في نطاق تشغيل المنصة، وأي نزاع ينشأ يُسعى لتسويته أولاً بالطرق الودية، وعند تعذّر ذلك تُحسم النزاعات عبر الإجراءات القانونية المناسبة.</p>
+      <div class="info-box">
+        <div class="ib-icon">ℹ️</div>
+        <p>للإبلاغ عن انتهاك قانوني أو مطالبة قانونية، تواصل معنا مباشرة على support@anonht.com قبل اتخاذ أي إجراء رسمي.</p>
+      </div>
+    </div>
+  </article>
+
+  <div class="contact-card">
+    <h3>📞 تواصل معنا</h3>
+    <p>للاستفسار عن الشروط، الإبلاغ عن انتهاك، أو أي استفسار قانوني — نرد خلال 48 ساعة.</p>
+    <a href="mailto:support@anonht.com" class="contact-email">✉️ support@anonht.com</a>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="/privacy.html">سياسة الخصوصية</a>
+    <span>·</span>
+    <a href="/terms.html">شروط الاستخدام</a>
+    <span>·</span>
+    <a href="mailto:support@anonht.com">تواصل معنا</a>
+    <span>·</span>
+    <a href="/">الرئيسية</a>
+  </div>
+  <div class="footer-copy">© 2026 Anon HT Platform · جميع الحقوق محفوظة</div>
+</footer>
+
+<script>
+window.addEventListener('scroll',function(){
+  var d=document.documentElement;
+  var s=d.scrollTop||document.body.scrollTop;
+  var h=d.scrollHeight-d.clientHeight;
+  document.getElementById('progressBar').style.width=(h>0?(s/h)*100:0)+'%';
+});
+</script>
+</body>
+</html>

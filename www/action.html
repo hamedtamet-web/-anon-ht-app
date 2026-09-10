@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta name="referrer" content="no-referrer-when-downgrade" />
+<meta name="referrer" content="no-referrer-when-downgrade" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفعيل الحساب — Anon HT</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height: 100vh;
+    background: #07070b;
+    font-family: 'Cairo', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: #0c0c12;
+    border: 1px solid rgba(248,5,102,0.2);
+    border-radius: 28px;
+    padding: 48px 32px;
+    text-align: center;
+    max-width: 420px; width: 100%;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+  }
+  .icon { font-size: 64px; margin-bottom: 20px; }
+  h2 { color: #fff; font-size: 22px; font-weight: 900; margin-bottom: 8px; }
+  p { color: #888; font-size: 13px; line-height: 1.8; margin-bottom: 28px; }
+  .btn {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #f80566, #c4024e);
+    color: #fff; border: none; border-radius: 50px;
+    padding: 15px; font-size: 15px; font-weight: 800;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer; text-decoration: none;
+    box-shadow: 0 8px 24px rgba(248,5,102,0.4);
+  }
+  .loader {
+    width: 48px; height: 48px;
+    border: 4px solid rgba(255,255,255,0.08);
+    border-top-color: #f80566;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 24px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
+    <script src="img-protect.js?v=1"></script>
+</head>
+<body>
+
+<div class="card" id="card">
+  <div class="loader" id="loader"></div>
+  <h2 id="title">جاري التفعيل...</h2>
+  <p id="msg">لحظة من فضلك</p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="100271050.js"></script>
+<script>
+firebase.initializeApp(APP_CONFIG.firebase);
+const auth = firebase.auth();
+
+const params = new URLSearchParams(window.location.search);
+const mode   = params.get('mode');
+const code   = params.get('oobCode');
+
+const loader = document.getElementById('loader');
+const title  = document.getElementById('title');
+const msg    = document.getElementById('msg');
+
+function showSuccess() {
+  loader.style.display = 'none';
+  title.textContent = '✅ تم تفعيل حسابك!';
+  msg.textContent   = 'مبروك! حسابك مفعّل الآن. سيتم توجيهك لتسجيل الدخول...';
+  msg.style.color   = '#4ade80';
+  // توجيه تلقائي بعد 2 ثانية
+  setTimeout(() => {
+    window.location.replace('signin.html');
+  }, 2000);
+}
+
+function showError(text) {
+  loader.style.display = 'none';
+  document.getElementById('card').innerHTML = `
+    <div class="icon">❌</div>
+    <h2 style="color:#f80566">حدث خطأ</h2>
+    <p>${text}</p>
+    <a class="btn" href="signin.html">الذهاب لتسجيل الدخول</a>
+  `;
+}
+
+async function handleVerify() {
+  if (!code) { showError('رابط غير صالح'); return; }
+  try {
+    await auth.applyActionCode(code);
+    showSuccess();
+  } catch(err) {
+    if (err.code === 'auth/invalid-action-code') {
+      showError('انتهت صلاحية الرابط أو تم استخدامه مسبقاً.<br>يمكنك <a href="signin.html" style="color:#f80566">تسجيل الدخول</a> إذا كنت فعّلت حسابك من قبل.');
+    } else {
+      showError('حدث خطأ غير متوقع، حاول مرة أخرى.');
+    }
+  }
+}
+
+if (mode === 'verifyEmail') {
+  handleVerify();
+} else if (mode === 'resetPassword') {
+  window.location.replace('signin.html' + window.location.search);
+} else {
+  showError('رابط غير معروف.');
+}
+</script>
+</body>
+</html>

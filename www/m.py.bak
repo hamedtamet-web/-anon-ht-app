@@ -1,0 +1,424 @@
+#!/usr/bin/env python3
+import os, shutil, datetime
+
+FILENAME = "thread.html"   # غيّر ده لاسم الملف الفعلي عندك
+
+path = FILENAME
+if not os.path.exists(path):
+    print(f"❌ الملف {path} غير موجود — تأكد من المسار/الاسم")
+    raise SystemExit(1)
+
+backup = f"{path}.bak.{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+shutil.copy(path, backup)
+print(f"✅ نسخة احتياطية: {backup}")
+
+with open(path, "r", encoding="utf-8") as f:
+    content = f.read()
+
+edits = []
+
+# ============================================================
+# 1) CSS: استبدال فقاعات q-bubble / a-bubble بفقاعات الشات الجديدة
+# ============================================================
+old1 = """        .q-bubble {
+            background: rgba(255,255,255,0.04); border-radius: 14px;
+            padding: 14px 16px; margin-bottom: 14px; border: 1px solid var(--border);
+        }
+        .q-label {
+            font-size: 9px; font-weight: 800; color: var(--text-muted);
+            letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 7px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .q-label::before { content:''; width:3px; height:3px; border-radius:50%; background:var(--text-muted); }
+        .question-text { font-size: 15px; font-weight: 600; line-height: 1.8; color: var(--text); }
+        .a-bubble {
+            background: var(--primary-dim); border: 1px solid var(--primary-glow);
+            border-radius: 14px; padding: 14px 16px; margin-bottom: 14px;
+        }
+        .a-label {
+            font-size: 9px; font-weight: 800; color: var(--primary);
+            letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 7px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .answer-text { font-size: 15px; font-weight: 600; line-height: 1.8; color: var(--text); }"""
+
+new1 = """        .msg-time {
+            font-size: 10px; color: var(--text-muted); margin-bottom: 6px;
+        }
+        .msg-row {
+            display: flex; padding: 0 14px; margin-top: 14px;
+            animation: fadeUp 0.22s ease;
+        }
+        .msg-row.self  { justify-content: flex-start; }
+        .msg-row.other { justify-content: flex-end; }
+        .msg-group { max-width: 78%; display: flex; flex-direction: column; }
+        .msg-head { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+        .msg-avatar {
+            width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+            background: var(--surface2); border: 1px solid var(--border-strong);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 700; color: var(--text-sub);
+        }
+        .msg-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+        .msg-uname { font-size: 11px; font-weight: 700; color: var(--text-sub); display:flex; align-items:center; gap:4px; }
+        .msg-bubble {
+            padding: 11px 15px; font-size: 14px; font-weight: 600;
+            line-height: 1.75; word-wrap: break-word;
+        }
+        .msg-bubble.self {
+            background: var(--primary); color: #fff;
+            border-radius: 16px 16px 4px 16px;
+        }
+        .msg-bubble.other {
+            background: var(--surface2); border: 1px solid var(--border-strong);
+            color: var(--text); border-radius: 16px 16px 16px 4px;
+        }
+        .msg-foot { display: flex; align-items: center; gap: 12px; margin-top: 6px; }"""
+
+edits.append(("CSS فقاعات السؤال/الإجابة", old1, new1))
+
+# ============================================================
+# 2) CSS: تنضيف كلاسات الكومنتات القديمة (هنستخدم msg-* بدالها)
+# ============================================================
+old2 = """        .comment-card {
+            display: flex; gap: 10px; padding: 12px 16px;
+            border-bottom: 1px solid var(--border); animation: fadeUp 0.22s ease;
+        }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+        .comment-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: var(--surface2); border: 1px solid var(--border-strong);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; color: var(--text-sub); flex-shrink: 0; overflow: hidden;
+        }
+        .comment-avatar img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+        .comment-body { flex:1; min-width:0; }
+        .comment-top { display:flex; align-items:center; gap:7px; margin-bottom:3px; flex-wrap:wrap; }
+        .comment-username { font-size:12px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:4px; }
+        .comment-time { font-size:10px; color:var(--text-muted); }
+        .comment-text { font-size:13px; line-height:1.7; color:var(--text-sub); }
+        .comment-actions { display:flex; align-items:center; gap:12px; margin-top:6px; }"""
+
+new2 = """        @keyframes fadeUp { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }"""
+
+edits.append(("تنضيف CSS الكومنتات القديمة", old2, new2))
+
+# ============================================================
+# 3) شيل الـ CSS الميتة من محاولة سابقة ناقصة (bubble-answer / comment-row.owner)
+# ============================================================
+old3 = """        /* ألوان النصوص داخل فقاعات primary */
+        .bubble-answer .bubble-text { color: #fff; }
+        .comment-row.owner .comment-text     { color: #fff; }
+        .comment-row.owner .comment-time     { color: rgba(255,255,255,0.55); }
+        .comment-row.owner .comment-username { color: rgba(255,255,255,0.75); }
+        .comment-row.owner .c-action         { color: rgba(255,255,255,0.55); }
+        .comment-row.owner .c-action:hover   { color: #fff; }
+        .bubble-question .bubble-label       { color: rgba(255,255,255,0.40); justify-content: flex-end; }"""
+
+new3 = """        /* الألوان دلوقتي متغطية جوه .msg-bubble.self/.other أعلاه */"""
+
+edits.append(("شيل CSS ميتة قديمة", old3, new3))
+
+# ============================================================
+# 4) JS: إضافة متغير threadOwnerId لمعرفة هوية صاحب الإجابة
+# ============================================================
+old4 = """    let isAnon = true;
+    let isLiked = false;
+    let currentUser = null;
+    let currentUserData = null;"""
+
+new4 = """    let isAnon = true;
+    let isLiked = false;
+    let currentUser = null;
+    let currentUserData = null;
+    let threadOwnerId = null;
+    const seenSenders = new Set();"""
+
+edits.append(("متغيرات هوية الأونر", old4, new4))
+
+# ============================================================
+# 5) JS: إعادة كتابة loadPost() بفقاعات شات
+# ============================================================
+old5 = """    async function loadPost() {
+        const doc = await db.collection(\"answers\").doc(ansId).get();
+        if (!doc.exists) return;
+        const d = doc.data();
+        const userDoc = await db.collection(\"users\").doc(d.userId).get();
+        const u = userDoc.exists ? userDoc.data() : {};
+
+        const uname      = u.username   || 'مجهول';
+        const initial    = uname[0].toUpperCase();
+        const avatarUrl  = u.avatarUrl  || '';
+        const isVerified = u.isVerified || false;
+        const isAdmin    = u.role === 'admin' || u.isAdmin || false;
+
+        const likedByArr = Array.isArray(d.likedBy) ? d.likedBy : [];
+        isLiked = !!(currentUser && likedByArr.includes(currentUser.uid));
+        const likesCount = d.likesCount ?? likedByArr.length;
+
+        document.getElementById('threadCard').innerHTML = `
+            <div class=\"q-bubble\">
+                <div class=\"q-label\">السؤال</div>
+                <div class=\"question-text\">${escapeHtml(d.questionText || '')}</div>
+            </div>
+            <div class=\"a-bubble\">
+                <div class=\"a-label\">الإجابة</div>
+                <div class=\"answer-text\">${escapeHtml(d.reply || '')}</div>
+            </div>
+            <div class=\"card-owner-row\">
+                <div class=\"owner-left\">
+                    <div class=\"owner-avatar\">
+                        ${avatarUrl
+                            ? `<img src=\"${avatarUrl}\" onerror=\"this.parentElement.innerHTML='${initial}'\">`
+                            : initial}
+                    </div>
+                    <div>
+                        <div class=\"owner-name\">
+                            @${escapeHtml(uname)}
+                            ${badgeHtml(isAdmin, isVerified)}
+                        </div>
+                        <div class=\"owner-time\">${timeAgo(d.answeredAt)}</div>
+                    </div>
+                </div>
+                <div class=\"card-actions\">
+                    <button class=\"card-action-btn ${isLiked ? 'liked' : ''}\" id=\"likeBtn\" onclick=\"toggleLike()\">
+                        <i class=\"fa-${isLiked ? 'solid' : 'regular'} fa-heart\"></i>
+                        <span id=\"likeCount\">${likesCount}</span>
+                    </button>
+                    <button class=\"card-action-btn\" onclick=\"focusReply()\">
+                        <i class=\"fa-regular fa-comment\"></i>
+                        <span id=\"commentCount\">0</span>
+                    </button>
+                </div>
+            </div>`;
+    }"""
+
+new5 = """    async function loadPost() {
+        const doc = await db.collection(\"answers\").doc(ansId).get();
+        if (!doc.exists) return;
+        const d = doc.data();
+        const userDoc = await db.collection(\"users\").doc(d.userId).get();
+        const u = userDoc.exists ? userDoc.data() : {};
+
+        threadOwnerId = d.userId;
+
+        const uname      = u.username   || 'مجهول';
+        const initial    = uname[0].toUpperCase();
+        const avatarUrl  = u.avatarUrl  || '';
+        const isVerified = u.isVerified || false;
+        const isAdmin    = u.role === 'admin' || u.isAdmin || false;
+
+        const likedByArr = Array.isArray(d.likedBy) ? d.likedBy : [];
+        isLiked = !!(currentUser && likedByArr.includes(currentUser.uid));
+        const likesCount = d.likesCount ?? likedByArr.length;
+
+        document.getElementById('threadCard').innerHTML = `
+            <div class=\"msg-time\">${timeAgo(d.askedAt || d.answeredAt)}</div>
+            <div class=\"msg-row other\">
+                <div class=\"msg-group\">
+                    <div class=\"msg-head\"><span class=\"msg-uname\">سؤال</span></div>
+                    <div class=\"msg-bubble other\">${escapeHtml(d.questionText || '')}</div>
+                </div>
+            </div>
+
+            <div class=\"msg-time\">${timeAgo(d.answeredAt)}</div>
+            <div class=\"msg-row self\">
+                <div class=\"msg-group\">
+                    <div class=\"msg-head\">
+                        <div class=\"msg-avatar\">
+                            ${avatarUrl
+                                ? `<img src=\"${avatarUrl}\" onerror=\"this.parentElement.innerHTML='${initial}'\">`
+                                : initial}
+                        </div>
+                        <span class=\"msg-uname\">@${escapeHtml(uname)} ${badgeHtml(isAdmin, isVerified)}</span>
+                    </div>
+                    <div class=\"msg-bubble self\">${escapeHtml(d.reply || '')}</div>
+                    <div class=\"msg-foot\">
+                        <button class=\"card-action-btn ${isLiked ? 'liked' : ''}\" id=\"likeBtn\" onclick=\"toggleLike()\">
+                            <i class=\"fa-${isLiked ? 'solid' : 'regular'} fa-heart\"></i>
+                            <span id=\"likeCount\">${likesCount}</span>
+                        </button>
+                        <button class=\"card-action-btn\" onclick=\"focusReply()\">
+                            <i class=\"fa-regular fa-comment\"></i>
+                            <span id=\"commentCount\">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+    }"""
+
+edits.append(("إعادة كتابة loadPost", old5, new5))
+
+# ============================================================
+# 6) JS: إعادة كتابة loadComments() بمنطق الفقاعات + التجميع
+# ============================================================
+old6 = """    function loadComments() {
+        db.collection(\"answers\").doc(ansId).collection(\"comments\")
+            .orderBy(\"createdAt\", \"asc\")
+            .onSnapshot(snap => {
+                const countEl = document.getElementById('commentCount');
+                if (countEl) countEl.textContent = snap.size;
+                const list = document.getElementById('commentsList');
+                if (snap.empty) {
+                    list.innerHTML = `<div class=\"empty-state\"><i class=\"fa-regular fa-comments\"></i><p>لا توجد ردود بعد — كن أول من يرد!</p></div>`;
+                    return;
+                }
+                list.innerHTML = '';
+                snap.forEach(async doc => {
+                    const c       = doc.data();
+                    const isAnonC = c.isAnon;
+                    const initial = c.username ? c.username[0].toUpperCase() : '؟';
+                    const isOwn = c.userId === currentUser?.uid || (c.isAnon && c.sessionId === currentUser?.uid);
+
+                    /* جيب بيانات المستخدم من Firestore عشان role و isVerified */
+                    let isVerifiedUser = false;
+                    let isAdminUser    = false;
+                    let avatarFromDB   = c.avatar || '';
+
+                    if (!isAnonC && c.userId) {
+                        try {
+                            const uDoc = await db.collection(\"users\").doc(c.userId).get();
+                            if (uDoc.exists) {
+                                const ud       = uDoc.data();
+                                isVerifiedUser = ud.isVerified || false;
+                                isAdminUser    = ud.role === 'admin' || ud.isAdmin || false;
+                                avatarFromDB   = ud.avatarUrl || c.avatar || '';
+                            }
+                        } catch(e) { console.warn('user fetch error', e); }
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'comment-card';
+                    card.id = 'comment-' + doc.id;
+
+                    const avatarHtml = isAnonC
+                        ? '<i class=\"fa-solid fa-user-secret\" style=\"font-size:13px;opacity:0.7;\"></i>'
+                        : (avatarFromDB
+                            ? `<img src=\"${escapeHtml(avatarFromDB)}\" onerror=\"this.parentElement.innerHTML='${initial}'\">`
+                            : initial);
+
+                    card.innerHTML = `
+                        <div class=\"comment-avatar\" style=\"${isAnonC ? '' : 'background:var(--primary-dim);color:var(--primary);border-color:var(--primary-glow);'}\">
+                            ${avatarHtml}
+                        </div>
+                        <div class=\"comment-body\">
+                            <div class=\"comment-top\">
+                                <span class=\"comment-username\">
+                                    ${isAnonC ? 'مجهول' : '@' + escapeHtml(c.username || '')}
+                                    ${isAnonC ? '' : badgeHtml(isAdminUser, isVerifiedUser)}
+                                </span>
+                                <span class=\"comment-time\">${timeAgo(c.createdAt)}</span>
+                            </div>
+                            <div class=\"comment-text\">${escapeHtml(c.text || '')}</div>
+                            <div class=\"comment-actions\">
+                                <button class=\"c-action\"><i class=\"fa-regular fa-heart\"></i> إعجاب</button>
+                                ${isOwn
+                                    ? `<button class=\"c-action danger\" onclick=\"deleteComment('${doc.id}')\"><i class=\"fa-solid fa-trash-can\"></i> حذف</button>`
+                                    : `<button class=\"c-action\" onclick=\"showToast('تم الإبلاغ ✓')\"><i class=\"fa-solid fa-flag\"></i> إبلاغ</button>`}
+                            </div>
+                        </div>`;
+                    list.appendChild(card);
+                });
+            });
+    }"""
+
+new6 = """    function loadComments() {
+        db.collection(\"answers\").doc(ansId).collection(\"comments\")
+            .orderBy(\"createdAt\", \"asc\")
+            .onSnapshot(async snap => {
+                const countEl = document.getElementById('commentCount');
+                if (countEl) countEl.textContent = snap.size;
+                const list = document.getElementById('commentsList');
+                if (snap.empty) {
+                    list.innerHTML = `<div class=\"empty-state\"><i class=\"fa-regular fa-comments\"></i><p>لا توجد ردود بعد — كن أول من يرد!</p></div>`;
+                    return;
+                }
+                list.innerHTML = '';
+                seenSenders.clear();
+
+                for (const doc of snap.docs) {
+                    const c           = doc.data();
+                    const isAnonC     = c.isAnon;
+                    const isOwnerReply = !isAnonC && c.userId === threadOwnerId;
+                    const isOwn = c.userId === currentUser?.uid || (c.isAnon && c.sessionId === currentUser?.uid);
+                    const senderKey = isAnonC ? ('s:' + (c.sessionId || '')) : ('u:' + c.userId);
+
+                    /* جيب بيانات المستخدم من Firestore عشان role و isVerified */
+                    let isVerifiedUser = false;
+                    let isAdminUser    = false;
+                    let avatarFromDB   = c.avatar || '';
+
+                    if (!isAnonC && c.userId) {
+                        try {
+                            const uDoc = await db.collection(\"users\").doc(c.userId).get();
+                            if (uDoc.exists) {
+                                const ud       = uDoc.data();
+                                isVerifiedUser = ud.isVerified || false;
+                                isAdminUser    = ud.role === 'admin' || ud.isAdmin || false;
+                                avatarFromDB   = ud.avatarUrl || c.avatar || '';
+                            }
+                        } catch(e) { console.warn('user fetch error', e); }
+                    }
+
+                    const initial = c.username ? c.username[0].toUpperCase() : '؟';
+
+                    /* رد الأونر نفسه ما بيظهرلوش افاتار خالص — أي حد تاني بس يظهر أول مرة */
+                    const isFirstTime = !isOwnerReply && !seenSenders.has(senderKey);
+                    if (!isOwnerReply) seenSenders.add(senderKey);
+
+                    let headHtml = '';
+                    if (isFirstTime) {
+                        const avatarHtml = isAnonC
+                            ? '<i class=\"fa-solid fa-user-secret\" style=\"font-size:11px;opacity:0.7;\"></i>'
+                            : (avatarFromDB
+                                ? `<img src=\"${escapeHtml(avatarFromDB)}\" onerror=\"this.parentElement.innerHTML='${initial}'\">`
+                                : initial);
+                        headHtml = `
+                            <div class=\"msg-head\">
+                                <div class=\"msg-avatar\">${avatarHtml}</div>
+                                <span class=\"msg-uname\">
+                                    ${isAnonC ? 'مجهول' : '@' + escapeHtml(c.username || '')}
+                                    ${isAnonC ? '' : badgeHtml(isAdminUser, isVerifiedUser)}
+                                </span>
+                            </div>`;
+                    }
+
+                    const row = document.createElement('div');
+                    row.className = 'msg-row ' + (isOwnerReply ? 'self' : 'other');
+                    row.id = 'comment-' + doc.id;
+                    row.innerHTML = `
+                        <div class=\"msg-group\">
+                            <div class=\"msg-time\">${timeAgo(c.createdAt)}</div>
+                            ${headHtml}
+                            <div class=\"msg-bubble ${isOwnerReply ? 'self' : 'other'}\">${escapeHtml(c.text || '')}</div>
+                            <div class=\"msg-foot\">
+                                <button class=\"c-action\"><i class=\"fa-regular fa-heart\"></i> إعجاب</button>
+                                ${isOwn
+                                    ? `<button class=\"c-action danger\" onclick=\"deleteComment('${doc.id}')\"><i class=\"fa-solid fa-trash-can\"></i> حذف</button>`
+                                    : `<button class=\"c-action\" onclick=\"showToast('تم الإبلاغ ✓')\"><i class=\"fa-solid fa-flag\"></i> إبلاغ</button>`}
+                            </div>
+                        </div>`;
+                    list.appendChild(row);
+                }
+            });
+    }"""
+
+edits.append(("إعادة كتابة loadComments", old6, new6))
+
+# ============================================================
+# تطبيق كل التعديلات
+# ============================================================
+for label, old, new in edits:
+    count = content.count(old)
+    if count == 0:
+        print(f"⚠️  مش لاقي نص '{label}' — تأكد إن الملف زي الأصلي")
+        continue
+    if count > 1:
+        print(f"⚠️  '{label}' متكرر {count} مرة — هعدل أول ظهور بس")
+    content = content.replace(old, new, 1)
+    print(f"✅ تم: {label}")
+
+with open(path, "w", encoding="utf-8") as f:
+    f.write(content)
+
+print("🎉 خلصنا — راجع الملف وجرّبه")
